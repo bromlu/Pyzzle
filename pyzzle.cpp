@@ -112,13 +112,13 @@ static PyMethodDef PyzzleMethods[] = {
      "Initializes a SFML window."},
 
     {"makeSquare",  pyzzle_makeSquare, METH_VARARGS,
-     "Initializes a SFML window."},
+     "Initializes a square in the SFML window."},
 
     {"moveSquare",  pyzzle_moveSquare, METH_VARARGS,
-     "Initializes a SFML window."},
+     "Moves a square in the SFML window."},
 
     {"drawSquare",  pyzzle_drawSquare, METH_VARARGS,
-     "Initializes a SFML window."},
+     "Draws a square in the SFML window."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
