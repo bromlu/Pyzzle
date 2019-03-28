@@ -4,18 +4,20 @@ Welcome to Pyzzle! A game engine for making 2D puzzle games using python!
 
 ## Installation
 
-First you'll need to install SFML, there are tutorials on how to do that [here.](https://www.sfml-dev.org/tutorials/2.5/)
+First, get python3 installed. It is available [on the official python site.](https://www.python.org/downloads/)
+
+Then you'll need to install SFML, there are tutorials on how to do that [here.](https://www.sfml-dev.org/tutorials/2.5/)
 
 After you have installed SFML, run this command in the project root to build the python module.
 
 ```python
-python setup.py build
+python3 setup.py build
 ```
 
 Then install the module so that you can use it in your python game code.
 
 ```python
-python setup.py install
+python3 setup.py install
 ```
 
 ## Features
