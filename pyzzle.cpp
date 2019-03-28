@@ -34,6 +34,7 @@ pyzzle_init(PyObject *self, PyObject *args)
 
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
+
     if (pModule != NULL && PyObject_HasAttrString(pModule, "update")) {
         updateFunc = PyObject_GetAttrString(pModule, "update");
     } 
@@ -52,6 +53,15 @@ pyzzle_init(PyObject *self, PyObject *args)
         }
         last = now();
         
+        // Close window when needed
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+
         // Call update if provided
         if (updateFunc != NULL && PyCallable_Check(updateFunc)) {
             PyObject_CallObject(updateFunc, NULL);
@@ -62,14 +72,6 @@ pyzzle_init(PyObject *self, PyObject *args)
             window.clear();
             PyObject_CallObject(drawFunc, NULL);
             window.display();
-        }
-
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
         }
     }
     
@@ -83,6 +85,7 @@ pyzzle_makeSquare(PyObject *self, PyObject *args)
 {
     rectangles[0].setSize(sf::Vector2f(20, 20));
     rectangles[0].setPosition(20, 20);
+    rectangles[0].setFillColor(sf::Color::Red);
     Py_RETURN_NONE;
 }
 

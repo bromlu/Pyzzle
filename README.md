@@ -35,6 +35,16 @@ def draw():
 
 These functions are called 60 times a second, and all of your game code should be executed from inside these functions.
 
+Another consideration is the fact that Pyzzle will import your game code in order to run these functions. With that in mind, make sure to wrap
+your initialization code in the following if statement.
+
+```python
+if __name__ == "__main__":
+    pass
+```
+
+Basically, this just ensures that your code isn't run on the import, which would cause two copies of your game to open.
+
 ## Features
 
 Pyzzle includes various features in order to help you with creating the perfect puzzle game.

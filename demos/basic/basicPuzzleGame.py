@@ -4,11 +4,12 @@ import datetime
 WIDTH = 800
 HEIGHT = 800
 
-pyzzle.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
-pyzzle.makeSquare()
-
 x = 0.0
 y = 0.0
+
+if __name__ == "__main__":
+    pyzzle.makeSquare()
+    pyzzle.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def update(): 
     global x
@@ -21,7 +22,6 @@ def update():
     if(x > WIDTH): 
         x = 0.0
         y = 0.0
-
     pyzzle.moveSquare(x, y)
 
 def draw(): 
