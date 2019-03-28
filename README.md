@@ -20,16 +20,32 @@ Then install the module so that you can use it in your python game code.
 python3 setup.py install
 ```
 
+## Structure
+
+When you call pyzzle.init() the pyzzle game engine starts the game loop. The game loop calls the update and draw functions that you have
+implemented in your code, just make sure that they are called update and draw and have no parameters, like this:
+
+```python
+def update():
+    pass
+
+def draw():
+    pass
+```
+
+These functions are called 60 times a second, and all of your game code should be executed from inside these functions.
+
 ## Features
 
 Pyzzle includes various features in order to help you with creating the perfect puzzle game.
 
 ### Currently implemented
 
-- *None*
+- Sprite engine *Implementation in progress*
 
 ### Future possibilities
 
+- Animation engine
 - Audio engine
 - Collision engine
 - Event engine
@@ -37,6 +53,10 @@ Pyzzle includes various features in order to help you with creating the perfect 
 - Physics engine
 - Sprite engine
 - Tile engine
+
+### Animation engine
+
+- *TODO*
 
 ### Audio engine
 
@@ -60,7 +80,11 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ### Sprite engine
 
-- *TODO*
+Currently the sprite engine just supports three functions.
+
+makeSquare() --> makes a single square at location 20 20.
+moveSquare(x, y) --> moves the implemented square to the given x y coordinate.
+drawSquare() --> draws the square.
 
 ### Tile engine
 
