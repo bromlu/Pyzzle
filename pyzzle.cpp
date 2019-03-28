@@ -1,5 +1,15 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
+#include <ctime>
+
+#define ONE_BILLION (double)1000000000.0
+
+double now(void)
+{
+  struct timespec current_time;
+  clock_gettime(CLOCK_REALTIME, &current_time);
+  return current_time.tv_sec + (current_time.tv_nsec / ONE_BILLION);
+}
 
 static PyObject *
 pyzzle_init(PyObject *self, PyObject *args)
@@ -24,8 +34,14 @@ pyzzle_init(PyObject *self, PyObject *args)
 
     sf::RenderWindow window(sf::VideoMode(400, 400), gameName);
 
+    double last = 0.0;
     while (window.isOpen())
     {
+        while(now() - last < (1.0/60.0)){
+            continue;
+        }
+        last = now();
+        
         // Call update if provided
         if (updateFunc && PyCallable_Check(updateFunc)) {
             PyObject_CallObject(updateFunc, NULL);
