@@ -1,6 +1,8 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 #include <ctime>
+#include <iostream>
+using namespace std;
 
 #define ONE_BILLION (double)1000000000.0
 
@@ -11,6 +13,10 @@ double now(void)
   return current_time.tv_sec + (current_time.tv_nsec / ONE_BILLION);
 }
 
+sf::RenderWindow *window;
+sf::RectangleShape rectangles[1];
+PyObject *pName, *pModule, *updateFunc, *drawFunc;
+
 static PyObject *
 pyzzle_init(PyObject *self, PyObject *args)
 {
@@ -20,22 +26,24 @@ pyzzle_init(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "ss", &mainFileName, &gameName))
         return NULL;
 
-    PyObject *pName, *pModule, *updateFunc;
     Py_Initialize();
 
     pName = PyUnicode_DecodeFSDefault(mainFileName);
 
     pModule = PyImport_Import(pName);
+    Py_DECREF(pName);
     if (pModule != NULL && PyObject_HasAttrString(pModule, "update")) {
         updateFunc = PyObject_GetAttrString(pModule, "update");
     } 
-    Py_DECREF(pName);
+    if (pModule != NULL && PyObject_HasAttrString(pModule, "draw")) {
+        drawFunc = PyObject_GetAttrString(pModule, "draw");
+    } 
     Py_DECREF(pModule);
 
-    sf::RenderWindow window(sf::VideoMode(400, 400), gameName);
+    window = new sf::RenderWindow(sf::VideoMode(400, 400), gameName);
 
     double last = 0.0;
-    while (window.isOpen())
+    while (window->isOpen())
     {
         while(now() - last < (1.0/60.0)){
             continue;
@@ -43,27 +51,72 @@ pyzzle_init(PyObject *self, PyObject *args)
         last = now();
         
         // Call update if provided
-        if (updateFunc && PyCallable_Check(updateFunc)) {
+        if (updateFunc != NULL && PyCallable_Check(updateFunc)) {
             PyObject_CallObject(updateFunc, NULL);
         }
 
+        // Call draw if provided
+        if (drawFunc && PyCallable_Check(drawFunc)) {
+            window->clear();
+            PyObject_CallObject(drawFunc, NULL);
+            window->display();
+        }
+
         sf::Event event;
-        while (window.pollEvent(event))
+        while (window->pollEvent(event))
         {
             if (event.type == sf::Event::Closed) {
-                window.close();
+                window->close();
             }
         }
     }
     
+    Py_XDECREF(drawFunc);
     Py_XDECREF(updateFunc);
+    Py_RETURN_NONE;
+}
+
+static PyObject *
+pyzzle_makeSquare(PyObject *self, PyObject *args)
+{
+    rectangles[0].setSize(sf::Vector2f(20, 20));
+    rectangles[0].setPosition(20, 20);
+    Py_RETURN_NONE;
+}
+
+static PyObject *
+pyzzle_moveSquare(PyObject *self, PyObject *args)
+{
+    float x;
+    float y;
+
+    if (!PyArg_ParseTuple(args, "ff", &x, &y))
+        return NULL;
+
+    rectangles[0].setPosition(x, y);
+    Py_RETURN_NONE;
+}
+
+static PyObject *
+pyzzle_drawSquare(PyObject *self, PyObject *args)
+{
+    window->draw(rectangles[0]);
     Py_RETURN_NONE;
 }
 
 static PyMethodDef PyzzleMethods[] = {
 
     {"init",  pyzzle_init, METH_VARARGS,
-     "Initializes a SFML window."},
+     "Initializes a SFML window->"},
+
+    {"makeSquare",  pyzzle_makeSquare, METH_VARARGS,
+     "Initializes a SFML window->"},
+
+    {"moveSquare",  pyzzle_moveSquare, METH_VARARGS,
+     "Initializes a SFML window->"},
+
+    {"drawSquare",  pyzzle_drawSquare, METH_VARARGS,
+     "Initializes a SFML window->"},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
