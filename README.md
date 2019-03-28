@@ -4,7 +4,9 @@ Welcome to Pyzzle! A game engine for making 2D puzzle games using python!
 
 ## Installation
 
-Run this command to build the python module.
+First you'll need to install SFML, there are tutorials on how to do that [here.](https://www.sfml-dev.org/tutorials/2.5/)
+
+After you have installed SFML, run this command in the project root to build the python module.
 
 ```python
 python setup.py build
@@ -64,8 +66,10 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ## Demos
 
-Check out the demos folder to see five different puzzle games made using Pyzzle! Simply run each one with python3 like so:
+Check out the demos folder to see five different puzzle games made using Pyzzle! 
+
+To run, simply execute the following command in the demo/x folder (where x is the demo you want to see).
 
 ```python
-python3 basicPuzzleGame.py
+python3 x.py
 ```
