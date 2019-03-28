@@ -13,7 +13,7 @@ double now(void)
   return current_time.tv_sec + (current_time.tv_nsec / ONE_BILLION);
 }
 
-sf::RenderWindow *window;
+sf::RenderWindow window;
 sf::RectangleShape rectangles[1];
 PyObject *pName, *pModule, *updateFunc, *drawFunc;
 
@@ -22,8 +22,10 @@ pyzzle_init(PyObject *self, PyObject *args)
 {
     const char *mainFileName;
     const char *gameName;
+    int width;
+    int height;
 
-    if (!PyArg_ParseTuple(args, "ss", &mainFileName, &gameName))
+    if (!PyArg_ParseTuple(args, "ssII", &mainFileName, &gameName, &width, &height))
         return NULL;
 
     Py_Initialize();
@@ -40,10 +42,10 @@ pyzzle_init(PyObject *self, PyObject *args)
     } 
     Py_DECREF(pModule);
 
-    window = new sf::RenderWindow(sf::VideoMode(400, 400), gameName);
+    window.create(sf::VideoMode(width, height), gameName);
 
     double last = 0.0;
-    while (window->isOpen())
+    while (window.isOpen())
     {
         while(now() - last < (1.0/60.0)){
             continue;
@@ -57,16 +59,16 @@ pyzzle_init(PyObject *self, PyObject *args)
 
         // Call draw if provided
         if (drawFunc && PyCallable_Check(drawFunc)) {
-            window->clear();
+            window.clear();
             PyObject_CallObject(drawFunc, NULL);
-            window->display();
+            window.display();
         }
 
         sf::Event event;
-        while (window->pollEvent(event))
+        while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed) {
-                window->close();
+                window.close();
             }
         }
     }
@@ -100,23 +102,23 @@ pyzzle_moveSquare(PyObject *self, PyObject *args)
 static PyObject *
 pyzzle_drawSquare(PyObject *self, PyObject *args)
 {
-    window->draw(rectangles[0]);
+    window.draw(rectangles[0]);
     Py_RETURN_NONE;
 }
 
 static PyMethodDef PyzzleMethods[] = {
 
     {"init",  pyzzle_init, METH_VARARGS,
-     "Initializes a SFML window->"},
+     "Initializes a SFML window."},
 
     {"makeSquare",  pyzzle_makeSquare, METH_VARARGS,
-     "Initializes a SFML window->"},
+     "Initializes a SFML window."},
 
     {"moveSquare",  pyzzle_moveSquare, METH_VARARGS,
-     "Initializes a SFML window->"},
+     "Initializes a SFML window."},
 
     {"drawSquare",  pyzzle_drawSquare, METH_VARARGS,
-     "Initializes a SFML window->"},
+     "Initializes a SFML window."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
