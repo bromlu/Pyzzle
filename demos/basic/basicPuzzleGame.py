@@ -1,3 +1,3 @@
 import pyzzle
 
-pyzzle.init()
+pyzzle.init("basicPuzzleGame", "Basic Puzzle Game")

@@ -4,18 +4,43 @@
 static PyObject *
 pyzzle_init(PyObject *self, PyObject *args)
 {
-    sf::RenderWindow window(sf::VideoMode(400, 400), "Isn't my app cool Dr. Denning?!");
+    const char *mainFileName;
+    const char *gameName;
+
+    if (!PyArg_ParseTuple(args, "ss", &mainFileName, &gameName))
+        return NULL;
+
+    PyObject *pName, *pModule, *updateFunc;
+    Py_Initialize();
+
+    pName = PyUnicode_DecodeFSDefault(mainFileName);
+
+    pModule = PyImport_Import(pName);
+    if (pModule != NULL && PyObject_HasAttrString(pModule, "update")) {
+        updateFunc = PyObject_GetAttrString(pModule, "update");
+    } 
+    Py_DECREF(pName);
+    Py_DECREF(pModule);
+
+    sf::RenderWindow window(sf::VideoMode(400, 400), gameName);
 
     while (window.isOpen())
     {
+        // Call update if provided
+        if (updateFunc && PyCallable_Check(updateFunc)) {
+            PyObject_CallObject(updateFunc, NULL);
+        }
+
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed) {
                 window.close();
+            }
         }
     }
     
+    Py_XDECREF(updateFunc);
     Py_RETURN_NONE;
 }
 
