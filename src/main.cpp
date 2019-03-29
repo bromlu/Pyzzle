@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <ctime>
 #include <iostream>
+#include "global.cpp"
 using namespace std;
 
 #define ONE_BILLION (double)1000000000.0
@@ -13,12 +14,10 @@ double now(void)
   return current_time.tv_sec + (current_time.tv_nsec / ONE_BILLION);
 }
 
-sf::RenderWindow window;
-sf::RectangleShape rectangles[1];
 PyObject *pName, *pModule, *updateFunc, *drawFunc;
 
 static PyObject *
-pyzzle_init(PyObject *self, PyObject *args)
+main_init(PyObject *self, PyObject *args)
 {
     const char *mainFileName;
     const char *gameName;
@@ -80,63 +79,25 @@ pyzzle_init(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyObject *
-pyzzle_makeSquare(PyObject *self, PyObject *args)
-{
-    rectangles[0].setSize(sf::Vector2f(20, 20));
-    rectangles[0].setPosition(20, 20);
-    rectangles[0].setFillColor(sf::Color::Red);
-    Py_RETURN_NONE;
-}
+static PyMethodDef mainMethods[] = {
 
-static PyObject *
-pyzzle_moveSquare(PyObject *self, PyObject *args)
-{
-    float x;
-    float y;
-
-    if (!PyArg_ParseTuple(args, "ff", &x, &y))
-        return NULL;
-
-    rectangles[0].setPosition(x, y);
-    Py_RETURN_NONE;
-}
-
-static PyObject *
-pyzzle_drawSquare(PyObject *self, PyObject *args)
-{
-    window.draw(rectangles[0]);
-    Py_RETURN_NONE;
-}
-
-static PyMethodDef PyzzleMethods[] = {
-
-    {"init",  pyzzle_init, METH_VARARGS,
+    {"init",  main_init, METH_VARARGS,
      "Initializes a SFML window."},
-
-    {"makeSquare",  pyzzle_makeSquare, METH_VARARGS,
-     "Initializes a square in the SFML window."},
-
-    {"moveSquare",  pyzzle_moveSquare, METH_VARARGS,
-     "Moves a square in the SFML window."},
-
-    {"drawSquare",  pyzzle_drawSquare, METH_VARARGS,
-     "Draws a square in the SFML window."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
-static struct PyModuleDef pyzzlemodule = {
+static struct PyModuleDef mainModule = {
     PyModuleDef_HEAD_INIT,
-    "pyzzle",   /* name of module */
+    "main",   /* name of module */
     NULL, /* module documentation, may be NULL */
     -1,       /* size of per-interpreter state of the module,
                  or -1 if the module keeps state in global variables. */
-    PyzzleMethods
+    mainMethods
 };
 
 PyMODINIT_FUNC
-PyInit_pyzzle(void)
+PyInit_main(void)
 {
-    return PyModule_Create(&pyzzlemodule);
+    return PyModule_Create(&mainModule);
 }
