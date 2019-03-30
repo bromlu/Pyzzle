@@ -1,32 +1,21 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
-#include <ctime>
+#include "utils.cpp"
 #include <iostream>
-#define GAME_MODULE
-#include "game.hpp"
 using namespace std;
 
-#define ONE_BILLION (double)1000000000.0
-
-double now(void)
-{
-  struct timespec current_time;
-  clock_gettime(CLOCK_REALTIME, &current_time);
-  return current_time.tv_sec + (current_time.tv_nsec / ONE_BILLION);
-}
+#define GAME_MODULE
+#include "game.hpp"
 
 sf::RenderWindow window;
 
-static sf::RenderWindow*
-game_getWindow() {
+static sf::RenderWindow* game_getWindow() {
     return &window;
 }
 
-PyObject *pName, *pModule, *updateFunc, *drawFunc;
-
-static PyObject *
-game_init(PyObject *self, PyObject *args)
+static PyObject* game_init(PyObject *self, PyObject *args)
 {
+    PyObject *pName, *pModule, *updateFunc, *drawFunc;
     const char *gameFileName;
     const char *gameName;
     int width;
@@ -58,7 +47,6 @@ game_init(PyObject *self, PyObject *args)
         }
         last = now();
         
-        // Close window when needed
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -67,12 +55,10 @@ game_init(PyObject *self, PyObject *args)
             }
         }
 
-        // Call update if provided
         if (updateFunc != NULL && PyCallable_Check(updateFunc)) {
             PyObject_CallObject(updateFunc, NULL);
         }
 
-        // Call draw if provided
         if (drawFunc && PyCallable_Check(drawFunc)) {
             window.clear();
             PyObject_CallObject(drawFunc, NULL);
@@ -90,20 +76,18 @@ static PyMethodDef gameMethods[] = {
     {"init",  game_init, METH_VARARGS,
      "Initializes a SFML window."},
 
-    {NULL, NULL, 0, NULL}        /* Sentinel */
+    {NULL, NULL, 0, NULL} 
 };
 
 static struct PyModuleDef gameModule = {
     PyModuleDef_HEAD_INIT,
-    "pyzzle.game",   /* name of module */
-    NULL, /* module documentation, may be NULL */
-    -1,       /* size of per-interpreter state of the module,
-                 or -1 if the module keeps state in global variables. */
+    "pyzzle.game",
+    NULL,
+    -1,
     gameMethods
 };
 
-PyMODINIT_FUNC
-PyInit_game(void)
+PyMODINIT_FUNC PyInit_game(void)
 {
     PyObject *module;
     static void *Game_API[Game_API_pointers];
@@ -113,10 +97,8 @@ PyInit_game(void)
     if (module == NULL)
         return NULL;
 
-    /* Initialize the C API pointer array */
     Game_API[0] = (void *)&game_getWindow;
 
-    /* Create a Capsule containing the API pointer array's address */
     c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
 
     if (c_api_object != NULL)

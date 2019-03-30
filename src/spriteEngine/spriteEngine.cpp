@@ -1,7 +1,7 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include "./../game.hpp"
+#include <iostream>
 using namespace std;
 
 sf::RectangleShape rectangles[1];
@@ -15,8 +15,7 @@ spriteEngine_makeSquare(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyObject *
-spriteEngine_moveSquare(PyObject *self, PyObject *args)
+static PyObject * spriteEngine_moveSquare(PyObject *self, PyObject *args)
 {
     float x;
     float y;
@@ -28,8 +27,7 @@ spriteEngine_moveSquare(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyObject *
-spriteEngine_drawSquare(PyObject *self, PyObject *args)
+static PyObject * spriteEngine_drawSquare(PyObject *self, PyObject *args)
 {
     game_getWindow()->draw(rectangles[0]);
     Py_RETURN_NONE;
@@ -46,20 +44,18 @@ static PyMethodDef spriteEngineMethods[] = {
     {"drawSquare",  spriteEngine_drawSquare, METH_VARARGS,
      "Draws a square in the SFML window."},
 
-    {NULL, NULL, 0, NULL}        /* Sentinel */
+    {NULL, NULL, 0, NULL}
 };
 
 static struct PyModuleDef spriteEngineModule = {
     PyModuleDef_HEAD_INIT,
-    "pyzzle.spriteEngine",   /* name of module */
-    NULL, /* module documentation, may be NULL */
-    -1,       /* size of per-interpreter state of the module,
-                 or -1 if the module keeps state in global variables. */
+    "pyzzle.spriteEngine",
+    NULL,
+    -1,
     spriteEngineMethods
 };
 
-PyMODINIT_FUNC
-PyInit_spriteEngine(void)
+PyMODINIT_FUNC PyInit_spriteEngine(void)
 {
     PyObject *module;
 
