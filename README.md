@@ -74,7 +74,7 @@ Pyzzle includes various features in order to help you with creating the perfect 
 - Sprite engine
 - Tile engine
 
-## Game
+### Game
 
 The game module has the following functions available to you.
 
@@ -120,7 +120,7 @@ drawSquare() --> draws the square.
 
 ## Demos
 
-Check out the demos folder to see five different puzzle games made using Pyzzle! 
+Check out the demos folder to see five different puzzle games made using Pyzzle!
 
 To run, simply execute the following command in the demo/x folder (where x is the demo you want to see).
 
