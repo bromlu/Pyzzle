@@ -4,32 +4,38 @@
 #include <iostream>
 using namespace std;
 
-sf::RectangleShape rectangles[1];
-
 static PyObject *
 spriteEngine_makeSquare(PyObject *self, PyObject *args)
 {
-    rectangles[0].setSize(sf::Vector2f(20, 20));
-    rectangles[0].setPosition(20, 20);
-    rectangles[0].setFillColor(sf::Color::Red);
-    Py_RETURN_NONE;
+    long index = game_addRectangle();
+    sf::RectangleShape* rect = game_getRectangle(index);
+    rect->setSize(sf::Vector2f(20, 20));
+    rect->setPosition(20, 20);
+    rect->setFillColor(sf::Color::Red);
+    return PyLong_FromLong(index);
 }
 
 static PyObject * spriteEngine_moveSquare(PyObject *self, PyObject *args)
 {
     float x;
     float y;
+    long index;
 
-    if (!PyArg_ParseTuple(args, "ff", &x, &y))
+    if (!PyArg_ParseTuple(args, "ffl", &x, &y, &index))
         return NULL;
 
-    rectangles[0].setPosition(x, y);
+    game_getRectangle(index)->setPosition(x, y);
     Py_RETURN_NONE;
 }
 
 static PyObject * spriteEngine_drawSquare(PyObject *self, PyObject *args)
 {
-    game_getWindow()->draw(rectangles[0]);
+    long index;
+
+    if (!PyArg_ParseTuple(args, "l", &index))
+        return NULL;
+
+    game_getWindow()->draw(*game_getRectangle(index));
     Py_RETURN_NONE;
 }
 

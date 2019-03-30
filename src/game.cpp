@@ -8,9 +8,19 @@ using namespace std;
 #include "game.hpp"
 
 sf::RenderWindow window;
+vector<sf::RectangleShape> rectangles;
 
 static sf::RenderWindow* game_getWindow() {
     return &window;
+}
+
+static sf::RectangleShape* game_getRectangle(int index) {
+    return &(rectangles.at(index));
+}
+
+static long game_addRectangle() {
+    rectangles.push_back(sf::RectangleShape());
+    return rectangles.size() - 1;
 }
 
 static PyObject* game_init(PyObject *self, PyObject *args)
@@ -98,6 +108,8 @@ PyMODINIT_FUNC PyInit_game(void)
         return NULL;
 
     Game_API[0] = (void *)&game_getWindow;
+    Game_API[1] = (void *)&game_getRectangle;
+    Game_API[2] = (void *)&game_addRectangle;
 
     c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
 
