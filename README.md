@@ -8,16 +8,22 @@ First, get python3 installed. It is available [on the official python site.](htt
 
 Then you'll need to install SFML, there are tutorials on how to do that [here.](https://www.sfml-dev.org/tutorials/2.5/)
 
-After you have installed SFML, run this command in the project root to build the python module.
+After you have installed SFML, simply run make in the root directory in order to build and install the module.
 
-```python
-python3 setup.py build
+```bash
+$ make
 ```
 
-Then install the module so that you can use it in your python game code.
+To rebuild, run clean first to remove the build directory.
 
-```python
-python3 setup.py install
+```bash
+$ make clean
+```
+
+Note: if you make changes to the structure of the pyzzle package, then you will have to find where your python packages are and then delete the old version. If you don't do this, then when you import pyzzle it might import the old package, and not the updated one. As long as you don't make changes to setup.py though, this should never be an issue. Typically packages are installed here (for python3.7):
+
+```bash
+/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages
 ```
 
 ## Structure
@@ -108,11 +114,11 @@ The game module has the following functions available to you.
 
 ### Sprite engine
 
-Currently the sprite engine just supports three functions.
+Currently the sprite engine just supports three functions for testing purposes.
 
-makeSquare() --> makes a single square at location 20 20.
-moveSquare(x, y) --> moves the implemented square to the given x y coordinate.
-drawSquare() --> draws the square.
+makeSquare() --> makes a single square at location 20 20, and returns its index in the global rctangle vector.
+moveSquare(x, y, index) --> moves the square at the given index to the given x y coordinate.
+drawSquare(index) --> draws the square at the given index.
 
 ### Tile engine
 
