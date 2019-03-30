@@ -22,7 +22,17 @@ python3 setup.py install
 
 ## Structure
 
-When you call pyzzle.init() the pyzzle game engine starts the game loop. The game loop calls the update and draw functions that you have
+The main pyzzle module is called game, it stores all of the shared data and runs the game loop for you. **pyzzle.game MUST be imported before any other module is imported.** This is because all of the sub engines rely on the game module.
+
+When importing, because pyzzle is a package, you cannot use "from pyzzle import *". You need to import each module separately.
+
+```python
+import pyzzle.game
+import pyzzle.spriteEngine
+import pyzzle.tileEngine
+```
+
+When you call pyzzle.game.init() the pyzzle game engine starts the game loop. The game loop calls the update and draw functions that you have
 implemented in your code, just make sure that they are called update and draw and have no parameters, like this:
 
 ```python
@@ -40,7 +50,7 @@ your initialization code in the following if statement.
 
 ```python
 if __name__ == "__main__":
-    pass
+    pyzzle.game.init("MyGame", "My Game", 400, 400)
 ```
 
 Basically, this just ensures that your code isn't run on the import, which would cause two copies of your game to open.
@@ -63,6 +73,14 @@ Pyzzle includes various features in order to help you with creating the perfect 
 - Physics engine
 - Sprite engine
 - Tile engine
+
+## Game
+
+The game module has the following functions available to you.
+
+| Function | Parameters | Purpose | Example |
+| :------: | :--------: | :-----: | :-----: |
+| ```init(gameFileName, gameName, width, height)``` | (string) filename of your main game file, (string) name that appears on window, (int) window width, (int) window height | this function creates the window and starts the game loop | ```pyzzle.game.init("MyGame", "My Game", 400, 400)``` |
 
 ### Animation engine
 

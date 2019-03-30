@@ -1,28 +1,31 @@
-import pyzzle
-import datetime
+from pyzzle import game
+from pyzzle import spriteEngine
 
-WIDTH = 800
-HEIGHT = 800
+WIDTH = 400
+HEIGHT = 400
 
 x = 0.0
 y = 0.0
+speed = 1.0
 
 if __name__ == "__main__":
-    pyzzle.makeSquare()
-    pyzzle.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
+    spriteEngine.makeSquare()
+    game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def update(): 
     global x
     global y
+    global speed
     global WIDTH
 
-    x += 2.0
-    y += 2.0
+    x += speed
+    y += speed
+    speed += 0.01
 
     if(x > WIDTH): 
         x = 0.0
         y = 0.0
-    pyzzle.moveSquare(x, y)
+    spriteEngine.moveSquare(x, y)
 
 def draw(): 
-    pyzzle.drawSquare()
+    spriteEngine.drawSquare()

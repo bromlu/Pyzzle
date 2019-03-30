@@ -1,7 +1,7 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "./../global.cpp"
+#include "./../game.hpp"
 using namespace std;
 
 sf::RectangleShape rectangles[1];
@@ -31,7 +31,7 @@ spriteEngine_moveSquare(PyObject *self, PyObject *args)
 static PyObject *
 spriteEngine_drawSquare(PyObject *self, PyObject *args)
 {
-    window.draw(rectangles[0]);
+    game_getWindow()->draw(rectangles[0]);
     Py_RETURN_NONE;
 }
 
@@ -51,7 +51,7 @@ static PyMethodDef spriteEngineMethods[] = {
 
 static struct PyModuleDef spriteEngineModule = {
     PyModuleDef_HEAD_INIT,
-    "spriteEngine",   /* name of module */
+    "pyzzle.spriteEngine",   /* name of module */
     NULL, /* module documentation, may be NULL */
     -1,       /* size of per-interpreter state of the module,
                  or -1 if the module keeps state in global variables. */
@@ -61,5 +61,12 @@ static struct PyModuleDef spriteEngineModule = {
 PyMODINIT_FUNC
 PyInit_spriteEngine(void)
 {
-    return PyModule_Create(&spriteEngineModule);
+    PyObject *module;
+
+    module = PyModule_Create(&spriteEngineModule);
+    if (module == NULL)
+        return NULL;
+    if (import_game() < 0)
+        return NULL;
+    return module;
 }

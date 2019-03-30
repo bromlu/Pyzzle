@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <ctime>
 #include <iostream>
-#include "global.cpp"
+#define GAME_MODULE
+#include "game.hpp"
 using namespace std;
 
 #define ONE_BILLION (double)1000000000.0
@@ -14,22 +15,27 @@ double now(void)
   return current_time.tv_sec + (current_time.tv_nsec / ONE_BILLION);
 }
 
+sf::RenderWindow window;
+
+static sf::RenderWindow*
+game_getWindow() {
+    return &window;
+}
+
 PyObject *pName, *pModule, *updateFunc, *drawFunc;
 
 static PyObject *
-main_init(PyObject *self, PyObject *args)
+game_init(PyObject *self, PyObject *args)
 {
-    const char *mainFileName;
+    const char *gameFileName;
     const char *gameName;
     int width;
     int height;
 
-    if (!PyArg_ParseTuple(args, "ssII", &mainFileName, &gameName, &width, &height))
+    if (!PyArg_ParseTuple(args, "ssII", &gameFileName, &gameName, &width, &height))
         return NULL;
 
-    Py_Initialize();
-
-    pName = PyUnicode_DecodeFSDefault(mainFileName);
+    pName = PyUnicode_DecodeFSDefault(gameFileName);
 
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
@@ -79,25 +85,41 @@ main_init(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyMethodDef mainMethods[] = {
+static PyMethodDef gameMethods[] = {
 
-    {"init",  main_init, METH_VARARGS,
+    {"init",  game_init, METH_VARARGS,
      "Initializes a SFML window."},
 
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
-static struct PyModuleDef mainModule = {
+static struct PyModuleDef gameModule = {
     PyModuleDef_HEAD_INIT,
-    "main",   /* name of module */
+    "pyzzle.game",   /* name of module */
     NULL, /* module documentation, may be NULL */
     -1,       /* size of per-interpreter state of the module,
                  or -1 if the module keeps state in global variables. */
-    mainMethods
+    gameMethods
 };
 
 PyMODINIT_FUNC
-PyInit_main(void)
+PyInit_game(void)
 {
-    return PyModule_Create(&mainModule);
+    PyObject *module;
+    static void *Game_API[Game_API_pointers];
+    PyObject *c_api_object;
+
+    module = PyModule_Create(&gameModule);
+    if (module == NULL)
+        return NULL;
+
+    /* Initialize the C API pointer array */
+    Game_API[0] = (void *)&game_getWindow;
+
+    /* Create a Capsule containing the API pointer array's address */
+    c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
+
+    if (c_api_object != NULL)
+        PyModule_AddObject(module, "_C_API", c_api_object);
+    return module;
 }
