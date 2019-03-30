@@ -131,5 +131,5 @@ Check out the demos folder to see five different puzzle games made using Pyzzle!
 To run, simply execute the following command in the demo/x folder (where x is the demo you want to see).
 
 ```python
-python3 x.py
+$ python3 x.py
 ```
