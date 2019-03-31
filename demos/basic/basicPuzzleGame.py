@@ -1,5 +1,5 @@
 from pyzzle import game
-from pyzzle import spriteEngine
+from pyzzle import sprites
 
 WIDTH = 400
 HEIGHT = 400
@@ -12,8 +12,8 @@ y1 = 0.0
 speed = 1.0
 
 if __name__ == "__main__":
-    spriteEngine.makeSquare()
-    spriteEngine.makeSquare()
+    sprites.makeSquare()
+    sprites.makeSquare()
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def update(): 
@@ -38,9 +38,9 @@ def update():
         x1 = WIDTH-20
         y1 = 0.0
     
-    spriteEngine.moveSquare(x, y, 0)
-    spriteEngine.moveSquare(x1, y1, 1)
+    sprites.moveSquare(x, y, 0)
+    sprites.moveSquare(x1, y1, 1)
 
 def draw(): 
-    spriteEngine.drawSquare(0)
-    spriteEngine.drawSquare(1)
+    sprites.drawSquare(0)
+    sprites.drawSquare(1)

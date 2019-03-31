@@ -34,8 +34,8 @@ When importing, because pyzzle is a package, you cannot use "from pyzzle import 
 
 ```python
 import pyzzle.game
-import pyzzle.spriteEngine
-import pyzzle.tileEngine
+import pyzzle.sprites
+import pyzzle.tiles
 ```
 
 When you call pyzzle.game.init() the pyzzle game engine starts the game loop. The game loop calls the update and draw functions that you have
@@ -67,13 +67,14 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ### Currently implemented
 
-- Sprite engine *Implementation in progress*
+- Sprites (*Implementation in progress*)
 
 ### Future possibilities
 
 - Animation engine
 - Audio engine
 - Collision engine
+- Drawing engine
 - Event engine
 - Input engine
 - Physics engine
@@ -82,37 +83,51 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ### Game
 
-The game module has the following functions available to you.
+```python
+import pyzzle.game
+```
 
-| Function | Parameters | Purpose | Example |
-| :------: | :--------: | :-----: | :-----: |
-| ```init(gameFileName, gameName, width, height)``` | (string) filename of your main game file, (string) name that appears on window, (int) window width, (int) window height | this function creates the window and starts the game loop | ```pyzzle.game.init("MyGame", "My Game", 400, 400)``` |
+The game module has the following functions.
 
-### Animation engine
+| Function | Parameters | Purpose |
+| :------: | :--------: | :-----: |
+| ```init(string gameFileName, string gameName, int width, int height)``` | Filename of your main game file, name that appears on window, window width, window height | Creates the window and starts the game loop |
 
-- *TODO*
-
-### Audio engine
-
-- *TODO*
-
-### Collision engine
+### Animations
 
 - *TODO*
 
-### Event engine
+### Audio
 
 - *TODO*
 
-### Input engine
+### Collision
 
 - *TODO*
 
-### Physics engine
+### Draw
 
 - *TODO*
 
-### Sprite engine
+### Events
+
+- *TODO*
+
+### Input
+
+- *TODO*
+
+### Physics
+
+- *TODO*
+
+### Sprites
+
+```python
+import pyzzle.sprites
+```
+
+The sprites module has the following functions.
 
 Currently the sprite engine just supports three functions for testing purposes.
 
@@ -120,7 +135,7 @@ makeSquare() --> makes a single square at location 20 20, and returns its index 
 moveSquare(x, y, index) --> moves the square at the given index to the given x y coordinate.
 drawSquare(index) --> draws the square at the given index.
 
-### Tile engine
+### Tiles
 
 - *TODO*
 

@@ -5,7 +5,7 @@
 using namespace std;
 
 static PyObject *
-spriteEngine_makeSquare(PyObject *self, PyObject *args)
+sprites_makeSquare(PyObject *self, PyObject *args)
 {
     long index = game_addRectangle();
     sf::RectangleShape* rect = game_getRectangle(index);
@@ -15,7 +15,7 @@ spriteEngine_makeSquare(PyObject *self, PyObject *args)
     return PyLong_FromLong(index);
 }
 
-static PyObject * spriteEngine_moveSquare(PyObject *self, PyObject *args)
+static PyObject * sprites_moveSquare(PyObject *self, PyObject *args)
 {
     float x;
     float y;
@@ -28,7 +28,7 @@ static PyObject * spriteEngine_moveSquare(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyObject * spriteEngine_drawSquare(PyObject *self, PyObject *args)
+static PyObject * sprites_drawSquare(PyObject *self, PyObject *args)
 {
     long index;
 
@@ -39,33 +39,33 @@ static PyObject * spriteEngine_drawSquare(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyMethodDef spriteEngineMethods[] = {
+static PyMethodDef spritesMethods[] = {
 
-    {"makeSquare",  spriteEngine_makeSquare, METH_VARARGS,
+    {"makeSquare",  sprites_makeSquare, METH_VARARGS,
      "Initializes a square in the SFML window."},
 
-    {"moveSquare",  spriteEngine_moveSquare, METH_VARARGS,
+    {"moveSquare",  sprites_moveSquare, METH_VARARGS,
      "Moves a square in the SFML window."},
 
-    {"drawSquare",  spriteEngine_drawSquare, METH_VARARGS,
+    {"drawSquare",  sprites_drawSquare, METH_VARARGS,
      "Draws a square in the SFML window."},
 
     {NULL, NULL, 0, NULL}
 };
 
-static struct PyModuleDef spriteEngineModule = {
+static struct PyModuleDef spritesModule = {
     PyModuleDef_HEAD_INIT,
-    "pyzzle.spriteEngine",
+    "pyzzle.sprites",
     NULL,
     -1,
-    spriteEngineMethods
+    spritesMethods
 };
 
-PyMODINIT_FUNC PyInit_spriteEngine(void)
+PyMODINIT_FUNC PyInit_sprites(void)
 {
     PyObject *module;
 
-    module = PyModule_Create(&spriteEngineModule);
+    module = PyModule_Create(&spritesModule);
     if (module == NULL)
         return NULL;
     if (import_game() < 0)
