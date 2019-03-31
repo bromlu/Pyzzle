@@ -1,6 +1,5 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
-#include "utils.cpp"
 #include <iostream>
 using namespace std;
 
@@ -49,13 +48,13 @@ static PyObject* game_init(PyObject *self, PyObject *args)
 
     window.create(sf::VideoMode(width, height), gameName);
 
-    double last = 0.0;
+    sf::Clock clock;
     while (window.isOpen())
     {
-        while(now() - last < (1.0/60.0)){
+        while(clock.getElapsedTime().asSeconds() < (1.0/60.0)){
             continue;
         }
-        last = now();
+        clock.restart();
         
         sf::Event event;
         while (window.pollEvent(event))
