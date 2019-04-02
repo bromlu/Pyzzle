@@ -1,30 +1,33 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "./gameObject/GameObject.hpp"
 using namespace std;
 
 #define GAME_MODULE
 #include "game.hpp"
 
 sf::RenderWindow window;
-vector<sf::RectangleShape> rectangles;
+vector<GameObject> gameObjects;
 
 static sf::RenderWindow* game_getWindow() {
     return &window;
 }
 
-static sf::RectangleShape* game_getRectangle(int index) {
-    return &(rectangles.at(index));
+static GameObject* game_getGameObject(int index) {
+    return &(gameObjects.at(index));
 }
 
-static long game_addRectangle() {
-    rectangles.push_back(sf::RectangleShape());
-    return rectangles.size() - 1;
+static PyObject* game_createGameObject(PyObject *self, PyObject *args) 
+{
+    GameObject gameObject(gameObjects.size());
+    gameObjects.push_back(gameObject);
+    return PyLong_FromLong(gameObjects.size() - 1);
 }
 
 static PyObject* game_init(PyObject *self, PyObject *args)
 {
-    PyObject *pName, *pModule, *updateFunc, *drawFunc;
+    PyObject *pName, *pModule, *initFunc, *updateFunc, *drawFunc;
     const char *gameFileName;
     const char *gameName;
     int width;
@@ -38,12 +41,19 @@ static PyObject* game_init(PyObject *self, PyObject *args)
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
 
-    if (pModule != NULL && PyObject_HasAttrString(pModule, "update")) {
-        updateFunc = PyObject_GetAttrString(pModule, "update");
-    } 
-    if (pModule != NULL && PyObject_HasAttrString(pModule, "draw")) {
-        drawFunc = PyObject_GetAttrString(pModule, "draw");
-    } 
+    if (pModule != NULL) {
+        if(PyObject_HasAttrString(pModule, "init")) {
+            initFunc = PyObject_GetAttrString(pModule, "init");
+            PyObject_CallObject(initFunc, NULL);
+            Py_XDECREF(initFunc);
+        }
+        if (PyObject_HasAttrString(pModule, "update")) {
+            updateFunc = PyObject_GetAttrString(pModule, "update");
+        } 
+        if (PyObject_HasAttrString(pModule, "draw")) {
+            drawFunc = PyObject_GetAttrString(pModule, "draw");
+        } 
+    }
     Py_DECREF(pModule);
 
     window.create(sf::VideoMode(width, height), gameName);
@@ -64,11 +74,11 @@ static PyObject* game_init(PyObject *self, PyObject *args)
             }
         }
 
-        if (updateFunc != NULL && PyCallable_Check(updateFunc)) {
+        if (updateFunc) {
             PyObject_CallObject(updateFunc, NULL);
         }
 
-        if (drawFunc && PyCallable_Check(drawFunc)) {
+        if (drawFunc) {
             window.clear();
             PyObject_CallObject(drawFunc, NULL);
             window.display();
@@ -84,6 +94,9 @@ static PyMethodDef gameMethods[] = {
 
     {"init",  game_init, METH_VARARGS,
      "Initializes a SFML window."},
+
+    {"createGameObject",  game_createGameObject, METH_VARARGS,
+     "Creates a new game object and returns its global index."},
 
     {NULL, NULL, 0, NULL} 
 };
@@ -107,8 +120,7 @@ PyMODINIT_FUNC PyInit_game(void)
         return NULL;
 
     Game_API[0] = (void *)&game_getWindow;
-    Game_API[1] = (void *)&game_getRectangle;
-    Game_API[2] = (void *)&game_addRectangle;
+    Game_API[1] = (void *)&game_getGameObject;
 
     c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
 

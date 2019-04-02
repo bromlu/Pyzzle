@@ -36,3 +36,8 @@
 
 # python
 *.pyc
+
+# egg-info
+pyzzle.egg-info/
+dist/
+build/

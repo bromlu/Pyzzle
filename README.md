@@ -38,10 +38,14 @@ import pyzzle.sprites
 import pyzzle.tiles
 ```
 
-When you call pyzzle.game.init() the pyzzle game engine starts the game loop. The game loop calls the update and draw functions that you have
-implemented in your code, just make sure that they are called update and draw and have no parameters, like this:
+When you call pyzzle.game.init() the pyzzle game engine calls
+your init function then starts the game loop. The game loop calls the update and draw functions that you have
+implemented in your code, just make sure that all of these functions are called init, update and draw and have no parameters, like this:
 
 ```python
+def init():
+    pass
+
 def update():
     pass
 
@@ -49,10 +53,10 @@ def draw():
     pass
 ```
 
-These functions are called 60 times a second, and all of your game code should be executed from inside these functions.
+The update and draw functions are called 60 times a second, and all of your game code should be executed from inside these functions.
 
 Another consideration is the fact that Pyzzle will import your game code in order to run these functions. With that in mind, make sure to wrap
-your initialization code in the following if statement.
+your call to game.init in the following if statement.
 
 ```python
 if __name__ == "__main__":
@@ -89,9 +93,10 @@ import pyzzle.game
 
 The game module has the following functions.
 
-| Function | Parameters | Purpose |
-| :------: | :--------: | :-----: |
-| ```init(string gameFileName, string gameName, int width, int height)``` | Filename of your main game file, name that appears on window, window width, window height | Creates the window and starts the game loop |
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void init(string gameFileName, string gameName, int width, int height)``` | Filename of your main game file, name that appears on window, window width, window height | *None* | Creates the window and starts the game loop |
+| ```long createGameObject()``` | *None* | Index of the new object | Creates a new game object |
 
 ### Animations
 
@@ -129,11 +134,10 @@ import pyzzle.sprites
 
 The sprites module has the following functions.
 
-Currently the sprite engine just supports three functions for testing purposes.
-
-makeSquare() --> makes a single square at location 20 20, and returns its index in the global rctangle vector.
-moveSquare(x, y, index) --> moves the square at the given index to the given x y coordinate.
-drawSquare(index) --> draws the square at the given index.
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void addSprite(long GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
+| ```void draw(long GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
 
 ### Tiles
 
