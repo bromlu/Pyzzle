@@ -71,11 +71,11 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ### Currently implemented
 
+- Animations (*Implementation in progress*)
 - Sprites (*Implementation in progress*)
 
 ### Future possibilities
 
-- Animation engine
 - Audio engine
 - Collision engine
 - Drawing engine
@@ -100,7 +100,11 @@ The game module has the following functions.
 
 ### Animations
 
-- *TODO*
+The animations module has the following functions.
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void play(long GameObjectIndex)``` | The index the game object is at | *None* | Cycles through the sprite sheet from left to right |
 
 ### Audio
 
@@ -137,6 +141,7 @@ The sprites module has the following functions.
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
 | ```void addSprite(long GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
+| ```void setStartFrame(long GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
 | ```void draw(long GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
 
 ### Tiles

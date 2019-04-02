@@ -20,6 +20,24 @@ sprites_addSprite(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+static PyObject *
+sprites_setStartFrame(PyObject *self, PyObject *args)
+{
+    long index;
+    int left;
+    int top;
+    int width;
+    int height;
+
+    if (!PyArg_ParseTuple(args, "liiii", &index, &left, &top, &width, &height))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(index);
+    gameObject->getSprite(0)->setTextureRect(sf::IntRect(left, top, width, height));
+
+    Py_RETURN_NONE;
+}
+
 static PyObject * sprites_draw(PyObject *self, PyObject *args)
 {
     long index;
@@ -35,6 +53,9 @@ static PyMethodDef spritesMethods[] = {
 
     {"addSprite",  sprites_addSprite, METH_VARARGS,
      "Initializes a sprite in the SFML window."},
+
+    {"setStartFrame",  sprites_setStartFrame, METH_VARARGS,
+     "Sets the start frame of a sprite."},
 
     {"draw",  sprites_draw, METH_VARARGS,
      "Draws a sprite in the SFML window."},

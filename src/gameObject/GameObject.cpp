@@ -25,6 +25,14 @@ void GameObject::setY(float y) {
     this->y = y;
 }
 
+float GameObject::getAnimationElapsedTime(){
+    return this->animationClock.getElapsedTime().asSeconds();
+}
+
+void GameObject::restartAnimationClock(){
+    this->animationClock.restart();
+}
+
 void GameObject::addSprite(string fileName) {
     sf::Texture texture = sf::Texture();
     texture.loadFromFile(fileName);
@@ -32,7 +40,12 @@ void GameObject::addSprite(string fileName) {
 
     sf::Sprite sprite(this->textures.at(this->textures.size() - 1));
     sprite.setPosition(this->x, this->y);
+    sprite.setScale(5, 5);
     this->sprites.push_back(sprite);
+}
+
+sf::Sprite* GameObject::getSprite(int index) {
+    return &(this->sprites.at(index));
 }
 
 void GameObject::draw(sf::RenderWindow* window) {    
