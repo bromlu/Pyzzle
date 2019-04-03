@@ -72,6 +72,7 @@ Pyzzle includes various features in order to help you with creating the perfect 
 ### Currently implemented
 
 - Animations (*Implementation in progress*)
+- Input (*Implementation in progress*)
 - Sprites (*Implementation in progress*)
 
 ### Future possibilities
@@ -80,9 +81,7 @@ Pyzzle includes various features in order to help you with creating the perfect 
 - Collision engine
 - Drawing engine
 - Event engine
-- Input engine
 - Physics engine
-- Sprite engine
 - Tile engine
 
 ### Game
@@ -124,7 +123,15 @@ The animations module has the following functions.
 
 ### Input
 
-- *TODO*
+```python
+import pyzzle.input
+```
+
+The input module has the following functions.
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```bool isKeyPressed(int keyIndex)``` | The index of the key according to [the SFML enum](https://www.sfml-dev.org/documentation/2.5.1/classsf_1_1Keyboard.php) | A boolean answer | Check to see if a key is pressed or not |
 
 ### Physics
 

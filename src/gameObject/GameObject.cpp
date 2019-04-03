@@ -25,11 +25,11 @@ void GameObject::setY(float y) {
     this->y = y;
 }
 
-float GameObject::getAnimationElapsedTime(){
+float GameObject::getAnimationElapsedTime() {
     return this->animationClock.getElapsedTime().asSeconds();
 }
 
-void GameObject::restartAnimationClock(){
+void GameObject::restartAnimationClock() {
     this->animationClock.restart();
 }
 

@@ -34,7 +34,7 @@ static int
 import_game(void)
 {
     Game_API = (void **)PyCapsule_Import("pyzzle.game._C_API", 0);
-    return (Game_API != nullptr) ? 0 : -1;
+    return (Game_API != NULL) ? 0 : -1;
 }
 
 #endif

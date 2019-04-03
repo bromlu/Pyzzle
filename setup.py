@@ -16,7 +16,12 @@ animations = Extension('pyzzle.animations',
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
                     sources = ['./src/animations/animations.cpp', './src/gameObject/GameObject.cpp'])
 
+input = Extension('pyzzle.input',
+                    include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
+                    extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
+                    sources = ['./src/input/input.cpp', './src/gameObject/GameObject.cpp'])
+
 setup (name = 'pyzzle',
        version = '1.0',
        description = 'This is the pyzzle package',
-       ext_modules = [game, sprites, animations])
+       ext_modules = [game, sprites, animations, input])

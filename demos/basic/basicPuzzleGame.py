@@ -1,6 +1,7 @@
 from pyzzle import game
 from pyzzle import sprites
 from pyzzle import animations
+from pyzzle import input
 
 WIDTH = 800
 HEIGHT = 800
@@ -19,6 +20,8 @@ def init():
 def update(): 
     global gameObjects
     animations.play(gameObjects["MainCharacter"])
+    if input.isKeyPressed(22):
+        print(True)
     pass
 
 def draw(): 
