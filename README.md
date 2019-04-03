@@ -96,6 +96,8 @@ The game module has the following functions.
 | :------: | :--------: | :-----: | :-----: |
 | ```void init(string gameFileName, string gameName, int width, int height)``` | Filename of your main game file, name that appears on window, window width, window height | *None* | Creates the window and starts the game loop |
 | ```long createGameObject()``` | *None* | Index of the new object | Creates a new game object |
+| ```void moveGameObject(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Moves the object by the specified amount |
+| ```void setGameObjectPosition(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Sets the objects position to the specified coordinates |
 
 ### Animations
 
@@ -103,7 +105,7 @@ The animations module has the following functions.
 
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
-| ```void play(long GameObjectIndex)``` | The index the game object is at | *None* | Cycles through the sprite sheet from left to right |
+| ```void play(int GameObjectIndex)``` | The index the game object is at | *None* | Cycles through the sprite sheet from left to right |
 
 ### Audio
 

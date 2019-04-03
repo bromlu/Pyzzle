@@ -25,6 +25,32 @@ static PyObject* game_createGameObject(PyObject *self, PyObject *args)
     return PyLong_FromLong(gameObjects.size() - 1);
 }
 
+static PyObject* game_moveGameObject(PyObject *self, PyObject *args) 
+{
+    int index;
+    float x;
+    float y;
+
+    if (!PyArg_ParseTuple(args, "iff", &index, &x, &y))
+        return NULL;
+
+    gameObjects.at(index).move(sf::Vector2f(x, y));
+    Py_RETURN_NONE;
+}
+
+static PyObject* game_setGameObjectPosition(PyObject *self, PyObject *args) 
+{
+    int index;
+    float x;
+    float y;
+
+    if (!PyArg_ParseTuple(args, "iff", &index, &x, &y))
+        return NULL;
+
+    gameObjects.at(index).setPosition(sf::Vector2f(x, y));
+    Py_RETURN_NONE;
+}
+
 static PyObject* game_init(PyObject *self, PyObject *args)
 {
     PyObject *pName, *pModule, *initFunc, *updateFunc, *drawFunc;
@@ -96,6 +122,12 @@ static PyMethodDef gameMethods[] = {
      "Initializes a SFML window."},
 
     {"createGameObject",  game_createGameObject, METH_VARARGS,
+     "Creates a new game object and returns its global index."},
+
+    {"moveGameObject",  game_moveGameObject, METH_VARARGS,
+     "Creates a new game object and returns its global index."},
+
+    {"setGameObjectPosition",  game_setGameObjectPosition, METH_VARARGS,
      "Creates a new game object and returns its global index."},
 
     {NULL, NULL, 0, NULL} 

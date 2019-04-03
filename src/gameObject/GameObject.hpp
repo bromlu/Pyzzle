@@ -5,10 +5,9 @@ class GameObject {
     public:
     GameObject(int globalIndex);
 
-    float getX();
-    float getY();
-    void setX(float x);
-    void setY(float y);
+    sf::Vector2f getPosition();
+    void setPosition(sf::Vector2f position);
+    void move(sf::Vector2f distance);
 
     float getAnimationElapsedTime();
     void restartAnimationClock();
@@ -21,8 +20,7 @@ class GameObject {
 
     private:
     int globalIndex;
-    float x;
-    float y;
+    sf::Vector2f position;
     vector<sf::Sprite> sprites;
     vector<sf::Texture> textures;
     sf::Clock animationClock;

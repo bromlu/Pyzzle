@@ -5,24 +5,25 @@ using namespace std;
 
 GameObject::GameObject(int globalIndex) {
     this->globalIndex = globalIndex;
-    this->x = 0.0;
-    this->y = 0.0;
+    this->position = sf::Vector2f(0.0, 0.0);
 }
 
-float GameObject::getX() {
-    return this->x;
+sf::Vector2f GameObject::getPosition() {
+    return this->position;
 }
 
-float GameObject::getY() {
-    return this->y;
+void GameObject::setPosition(sf::Vector2f position) {
+    this->position = position;
+    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
+        it->setPosition(position);
+    }
 }
 
-void GameObject::setX(float x) {
-    this->x = x;
-}
-
-void GameObject::setY(float y) {
-    this->y = y;
+void GameObject::move(sf::Vector2f distance) {
+    this->position += distance;
+    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
+        it->move(distance);
+    }
 }
 
 float GameObject::getAnimationElapsedTime() {
@@ -39,7 +40,7 @@ void GameObject::addSprite(string fileName) {
     this->textures.push_back(texture);
 
     sf::Sprite sprite(this->textures.at(this->textures.size() - 1));
-    sprite.setPosition(this->x, this->y);
+    sprite.setPosition(this->position);
     sprite.setScale(5, 5);
     this->sprites.push_back(sprite);
 }
@@ -50,6 +51,6 @@ sf::Sprite* GameObject::getSprite(int index) {
 
 void GameObject::draw(sf::RenderWindow* window) {    
     for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        window->draw((*it));
+        window->draw(*it);
     }
 }

@@ -17,7 +17,7 @@ static PyObject * animations_play(PyObject *self, PyObject *args)
         Py_RETURN_NONE;
     }
     gameObject->restartAnimationClock();
-    sf::Sprite* sprite = game_getGameObject(index)->getSprite(0);
+    sf::Sprite* sprite = gameObject->getSprite(0);
     sf::IntRect oldFrame = sprite->getTextureRect();
     sf::Vector2u textureSize = sprite->getTexture()->getSize();
     unsigned int left = oldFrame.left + oldFrame.width;
