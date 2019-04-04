@@ -13,31 +13,33 @@ if __name__ == "__main__":
 
 def init():
     global gameObjects
-    gameObjects["MainCharacter"] = game.createGameObject()
-    sprites.addSprite(gameObjects["MainCharacter"], "MainCharacter.png")
-    sprites.setStartFrame(gameObjects["MainCharacter"], 0, 64, 24, 32)
-    game.setGameObjectPosition(gameObjects["MainCharacter"], WIDTH/2, HEIGHT/2)
+    gameObjects["MainCharacter"] = {}
+    gameObjects["MainCharacter"]["index"] = game.createGameObject()
+    sprites.addSprite(gameObjects["MainCharacter"]["index"], "MainCharacter.png")
+    sprites.setStartFrame(gameObjects["MainCharacter"]["index"], 0, 64, 24, 32)
+    game.setGameObjectPosition(gameObjects["MainCharacter"]["index"], WIDTH/2, HEIGHT/2)
+    gameObjects["MainCharacter"]["RunUpAnimation"] = animations.addAnimation(gameObjects["MainCharacter"]["index"], 0)
+    gameObjects["MainCharacter"]["RunRightAnimation"] = animations.addAnimation(gameObjects["MainCharacter"]["index"], 32)
+    gameObjects["MainCharacter"]["RunDownAnimation"] = animations.addAnimation(gameObjects["MainCharacter"]["index"], 64)
+    gameObjects["MainCharacter"]["RunLeftAnimation"] = animations.addAnimation(gameObjects["MainCharacter"]["index"], 96)
 
 def update(): 
     global gameObjects
     if input.isKeyPressed(22): #W
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 0, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], 0, -10)
-        animations.play(gameObjects["MainCharacter"])
+        game.moveGameObject(gameObjects["MainCharacter"]["index"], 0, -10)
+        animations.play(gameObjects["MainCharacter"]["index"], gameObjects["MainCharacter"]["RunUpAnimation"])
     if input.isKeyPressed(0): #A
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 96, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], -10, 0)
-        animations.play(gameObjects["MainCharacter"])
+        game.moveGameObject(gameObjects["MainCharacter"]["index"], -10, 0)
+        animations.play(gameObjects["MainCharacter"]["index"], gameObjects["MainCharacter"]["RunLeftAnimation"])
     if input.isKeyPressed(3): #D
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 32, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], 10, 0)
-        animations.play(gameObjects["MainCharacter"])
+        game.moveGameObject(gameObjects["MainCharacter"]["index"], 10, 0)
+        animations.play(gameObjects["MainCharacter"]["index"], gameObjects["MainCharacter"]["RunRightAnimation"])
     if input.isKeyPressed(18): #S
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 64, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], 0, 10)
-        animations.play(gameObjects["MainCharacter"])
-    pass
+        game.moveGameObject(gameObjects["MainCharacter"]["index"], 0, 10)
+        animations.play(gameObjects["MainCharacter"]["index"], gameObjects["MainCharacter"]["RunDownAnimation"])
+    if not input.isKeyPressed(22) and not input.isKeyPressed(0) and not input.isKeyPressed(3) and not input.isKeyPressed(18) :
+        animations.stop(gameObjects["MainCharacter"]["index"], gameObjects["MainCharacter"]["RunUpAnimation"])
 
 def draw(): 
     global gameObjects
-    sprites.draw(gameObjects["MainCharacter"])
+    sprites.draw(gameObjects["MainCharacter"]["index"])

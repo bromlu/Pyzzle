@@ -34,6 +34,15 @@ void GameObject::restartAnimationClock() {
     this->animationClock.restart();
 }
 
+int GameObject::addAnimation(int y) {
+    this->animations.push_back(y);
+    return (this->animations.size() - 1);
+}
+
+int GameObject::getAnimation(int index) {
+    return this->animations.at(index);
+}
+
 void GameObject::addSprite(string fileName) {
     sf::Texture texture = sf::Texture();
     texture.loadFromFile(fileName);

@@ -16,6 +16,9 @@ class GameObject {
     sf::Sprite* getSprite(int index);
     void addSprite(string fileName);
 
+    int getAnimation(int index);
+    int addAnimation(int y);
+
     void draw(sf::RenderWindow* window);
 
     private:
@@ -23,5 +26,6 @@ class GameObject {
     sf::Vector2f position;
     vector<sf::Sprite> sprites;
     vector<sf::Texture> textures;
+    vector<int> animations;
     sf::Clock animationClock;
 };

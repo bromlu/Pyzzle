@@ -107,6 +107,10 @@ The animations module has the following functions.
 | :------: | :--------: | :-----: | :-----: |
 | ```void play(int GameObjectIndex)``` | The index the game object is at | *None* | Cycles through the sprite sheet from left to right |
 
+A quick breakdown of how animations work in our game engine.
+
+If you want to animate a sprite, you need to load up a sprite sheet with each stage of the animation on it. Make sure that every frame of a given animation appears on one line. You set the initial frame to be displayed with the Sprite engine, but in order to animate you need to add an animation with the addAnimation function. This animation just consists of the Y coordinate of the sprite sheet that the animation appears at, when you call play on a given animation, it cycles through all X coordinates and then loops around to the beginning.
+
 ### Audio
 
 - *TODO*
