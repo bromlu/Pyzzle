@@ -21,7 +21,7 @@ sprites_add(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-sprites_setStartFrame(PyObject *self, PyObject *args)
+sprites_setFrame(PyObject *self, PyObject *args)
 {
     long index;
     int left;
@@ -54,8 +54,8 @@ static PyMethodDef spritesMethods[] = {
     {"add",  sprites_add, METH_VARARGS,
      "Initializes a sprite in the SFML window."},
 
-    {"setStartFrame",  sprites_setStartFrame, METH_VARARGS,
-     "Sets the start frame of a sprite."},
+    {"setFrame",  sprites_setFrame, METH_VARARGS,
+     "Sets the frame of a sprite to be displayed."},
 
     {"draw",  sprites_draw, METH_VARARGS,
      "Draws a sprite in the SFML window."},
