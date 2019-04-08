@@ -14,7 +14,11 @@ class Animation {
     void addAnimationFrames(long fromX, long fromY, long toX, long toY, long width, long height);
     void animate();
 
-    void setGlobalIndex(long index);
+    void pause();
+    void resume();
+    void start(long index);
+    void stop();
+
     long getGlobalIndex();
 
     private:
@@ -23,6 +27,7 @@ class Animation {
     int textureWidth;
     int currentFrame;
     long globalIndex;
+    bool paused;
     GameObject* gameObject;
     vector<sf::IntRect > animationFrames;
 };

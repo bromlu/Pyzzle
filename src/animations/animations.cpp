@@ -67,8 +67,10 @@ static PyObject * animations_stop(PyObject *self, PyObject *args) {
 
     GameObject* gameObject = game_getGameObject(gameObjectIndex);
     Animation* animation = gameObject->getAnimation(animationIndex);
-    game_removeActiveAnimation(animation->getGlobalIndex());
-    animation->setGlobalIndex(-1);
+    if (animation->getGlobalIndex() != -1) {
+        animation->stop();
+        game_removeActiveAnimation(animation->getGlobalIndex());
+    }
     Py_RETURN_NONE;
 }
 
@@ -83,8 +85,36 @@ static PyObject * animations_play(PyObject *self, PyObject *args)
     GameObject* gameObject = game_getGameObject(gameObjectIndex);
     Animation* animation = gameObject->getAnimation(animationIndex);
     if (animation->getGlobalIndex() == -1) {
-        animation->setGlobalIndex(game_addActiveAnimation(animation));
+        animation->start(game_addActiveAnimation(animation));
     }
+    Py_RETURN_NONE;
+}
+
+static PyObject * animations_pause(PyObject *self, PyObject *args)
+{
+    long gameObjectIndex;
+    long animationIndex;
+
+    if (!PyArg_ParseTuple(args, "ll", &gameObjectIndex, &animationIndex))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(gameObjectIndex);
+    Animation* animation = gameObject->getAnimation(animationIndex);
+    animation->pause();
+    Py_RETURN_NONE;
+}
+
+static PyObject * animations_resume(PyObject *self, PyObject *args)
+{
+    long gameObjectIndex;
+    long animationIndex;
+
+    if (!PyArg_ParseTuple(args, "ll", &gameObjectIndex, &animationIndex))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(gameObjectIndex);
+    Animation* animation = gameObject->getAnimation(animationIndex);
+    animation->resume();
     Py_RETURN_NONE;
 }
 
@@ -94,6 +124,12 @@ static PyMethodDef animationsMethods[] = {
 
     {"stop",  animations_stop, METH_VARARGS,
      "Stops a game objects animation."},
+
+    {"pause",  animations_pause, METH_VARARGS,
+     "Pauses a game objects animation."},
+
+    {"resume",  animations_resume, METH_VARARGS,
+     "Resumes a game objects animation."},
 
     {"add",  animations_add, METH_VARARGS,
      "Adds a game objects animation."},

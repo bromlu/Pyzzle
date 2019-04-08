@@ -9,6 +9,7 @@ Animation::Animation(int textureWidth, GameObject* gameObject) {
     this->gameObject = gameObject;
     this->currentFrame = 0;
     this->globalIndex = -1;
+    this->paused = false;
 }
 
 sf::IntRect Animation::getNextFrame() {
@@ -29,15 +30,29 @@ void Animation::addAnimationFrames(long fromX, long fromY, long toX, long toY, l
 }
 
 void Animation::animate() {
-    if(this->gameObject->getAnimationElapsedTime() < 0.02){
+    if(this->paused || this->gameObject->getAnimationElapsedTime() < 0.02){
         return;
     }
     this->gameObject->restartAnimationClock();
     this->gameObject->getSprite()->setTextureRect(this->getNextFrame());
 }
 
-void Animation::setGlobalIndex(long index) {
+void Animation::pause() {
+    this->paused = true;
+}
+
+void Animation::resume() {
+    this->paused = false;
+}
+
+void Animation::start(long index) {
     this->globalIndex = index;
+}
+
+void Animation::stop() {
+    this->globalIndex = -1;
+    this->currentFrame = 0;
+    this->paused = false;
 }
 
 long Animation::getGlobalIndex() {
