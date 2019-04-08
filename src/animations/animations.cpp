@@ -16,11 +16,45 @@ static PyObject * animations_add(PyObject *self, PyObject *args) {
 }
 
 static PyObject * animations_addFrame(PyObject *self, PyObject *args) {
-    return PyLong_FromLong(0);
+    long index;
+    long animationIndex;
+    long x;
+    long y;
+    long width;
+    long height;
+
+    if (!PyArg_ParseTuple(args, "llllll", &index, &animationIndex, &x, &y, &width, &height))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(index);
+    gameObject->addAnimationFrame(animationIndex, x, y, width, height);
+    Py_RETURN_NONE;
 }
 
 static PyObject * animations_addFrames(PyObject *self, PyObject *args) {
-    return PyLong_FromLong(0);
+    long index;
+    long animationIndex;
+    long fromX;
+    long fromY;
+    long toX;
+    long toY;
+    long width;
+    long height;
+
+    if (!PyArg_ParseTuple(args, "llllllll", 
+        &index,  
+        &animationIndex, 
+        &fromX, 
+        &fromY, 
+        &toX,
+        &toY,
+        &width,
+        &height))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(index);
+    gameObject->addAnimationFrames(animationIndex, fromX, fromY, toX, toY, width, height);
+    Py_RETURN_NONE;
 }
 
 static PyObject * animations_stop(PyObject *self, PyObject *args) {

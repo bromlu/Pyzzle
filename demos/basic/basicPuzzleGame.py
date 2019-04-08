@@ -20,6 +20,9 @@ class MainCharacter:
         self.runRightAnimation = animations.add(self.index)
         self.runLeftAnimation = animations.add(self.index)
 
+        animations.addFrame(self.index, self.runUpAnimation, 0, 64, 24, 32)
+        animations.addFrames(self.index, self.runUpAnimation, 0, 0, 64, 64, 24, 32)
+
 if __name__ == "__main__":
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 

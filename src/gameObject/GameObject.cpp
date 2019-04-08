@@ -31,16 +31,16 @@ void GameObject::restartAnimationClock() {
 }
 
 int GameObject::addAnimation() {
-    this->animations.push_back(Animation());
+    this->animations.push_back(Animation(this->sprite.getTexture()->getSize().x));
     return this->animations.size() - 1;
 }
 
-int GameObject::addAnimationFrame(sf::IntRect frame) {
-    return 0;
+void GameObject::addAnimationFrame(long index, long x, long y, long width, long height) {
+    this->animations.at(index).addAnimationFrame(x, y, width, height);
 }
 
-int GameObject::addAnimationFrames(sf::IntRect startFrame, sf::IntRect endFrame) {
-    return 0;
+void GameObject::addAnimationFrames(long index, long fromX, long fromY, long toX, long toY, long width, long height) {
+    this->animations.at(index).addAnimationFrames(fromX, fromY, toX, toY, width, height);
 }
 
 int GameObject::getAnimation(int index) {

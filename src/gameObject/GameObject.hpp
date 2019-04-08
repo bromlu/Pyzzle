@@ -18,8 +18,8 @@ class GameObject {
 
     int getAnimation(int index);
     int addAnimation();
-    int addAnimationFrame(sf::IntRect frame);
-    int addAnimationFrames(sf::IntRect startFrame, sf::IntRect endFrame);
+    void addAnimationFrame(long index, long x, long y, long width, long height);
+    void addAnimationFrames(long index, long fromX, long fromY, long toX, long toY, long width, long height);
 
     void draw(sf::RenderWindow* window);
 
