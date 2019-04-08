@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "Animation.hpp"
 using namespace std;
 
 class GameObject {
@@ -12,20 +13,20 @@ class GameObject {
     float getAnimationElapsedTime();
     void restartAnimationClock();
 
-    sf::Sprite* addSprite(int index);
-    sf::Sprite* getSprite(int index);
+    sf::Sprite* getSprite();
     void addSprite(string fileName);
 
     int getAnimation(int index);
-    int addAnimation(int y);
+    int addAnimationFrame(sf::IntRect frame);
+    int addAnimationFrames(sf::IntRect startFrame, sf::IntRect endFrame);
 
     void draw(sf::RenderWindow* window);
 
     private:
     int globalIndex;
     sf::Vector2f position;
-    vector<sf::Sprite> sprites;
-    vector<sf::Texture> textures;
-    vector<int> animations;
+    sf::Sprite sprite;
+    sf::Texture texture;
+    vector<Animation> animations;
     sf::Clock animationClock;
 };

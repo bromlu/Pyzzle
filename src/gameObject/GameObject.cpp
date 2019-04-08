@@ -14,16 +14,12 @@ sf::Vector2f GameObject::getPosition() {
 
 void GameObject::setPosition(sf::Vector2f position) {
     this->position = position;
-    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        it->setPosition(position);
-    }
+    this->sprite.setPosition(position);
 }
 
 void GameObject::move(sf::Vector2f distance) {
     this->position += distance;
-    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        it->move(distance);
-    }
+    this->sprite.move(distance);
 }
 
 float GameObject::getAnimationElapsedTime() {
@@ -34,32 +30,31 @@ void GameObject::restartAnimationClock() {
     this->animationClock.restart();
 }
 
-int GameObject::addAnimation(int y) {
-    this->animations.push_back(y);
-    return (this->animations.size() - 1);
+int GameObject::addAnimationFrame(sf::IntRect frame) {
+    return 0;
+}
+
+int GameObject::addAnimationFrames(sf::IntRect startFrame, sf::IntRect endFrame) {
+    return 0;
 }
 
 int GameObject::getAnimation(int index) {
-    return this->animations.at(index);
+    return 0;
 }
 
 void GameObject::addSprite(string fileName) {
-    sf::Texture texture = sf::Texture();
+    this->texture = sf::Texture();
     texture.loadFromFile(fileName);
-    this->textures.push_back(texture);
 
-    sf::Sprite sprite(this->textures.at(this->textures.size() - 1));
-    sprite.setPosition(this->position);
-    sprite.setScale(5, 5);
-    this->sprites.push_back(sprite);
+    this->sprite = sf::Sprite(this->texture);
+    this->sprite.setPosition(this->position);
+    this->sprite.setScale(5, 5);
 }
 
-sf::Sprite* GameObject::getSprite(int index) {
-    return &(this->sprites.at(index));
+sf::Sprite* GameObject::getSprite() {
+    return &(this->sprite);
 }
 
-void GameObject::draw(sf::RenderWindow* window) {    
-    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        window->draw(*it);
-    }
+void GameObject::draw(sf::RenderWindow* window) {  
+    window->draw(this->sprite);  
 }

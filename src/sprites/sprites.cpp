@@ -33,7 +33,7 @@ sprites_setStartFrame(PyObject *self, PyObject *args)
         return NULL;
 
     GameObject* gameObject = game_getGameObject(index);
-    gameObject->getSprite(0)->setTextureRect(sf::IntRect(left, top, width, height));
+    gameObject->getSprite()->setTextureRect(sf::IntRect(left, top, width, height));
 
     Py_RETURN_NONE;
 }

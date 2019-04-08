@@ -4,22 +4,22 @@ from setuptools import setup, Extension, Command
 game = Extension('pyzzle.game',
                     include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
-                    sources = ['./src/game.cpp', './src/gameObject/GameObject.cpp'])
+                    sources = ['./src/game.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
 
 sprites = Extension('pyzzle.sprites',
                     include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
-                    sources = ['./src/sprites/sprites.cpp', './src/gameObject/GameObject.cpp'])
+                    sources = ['./src/sprites/sprites.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
 
 animations = Extension('pyzzle.animations',
                     include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
-                    sources = ['./src/animations/animations.cpp', './src/gameObject/GameObject.cpp'])
+                    sources = ['./src/animations/animations.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
 
 input = Extension('pyzzle.input',
                     include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
-                    sources = ['./src/input/input.cpp', './src/gameObject/GameObject.cpp'])
+                    sources = ['./src/input/input.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
 
 setup (name = 'pyzzle',
        version = '1.0',
