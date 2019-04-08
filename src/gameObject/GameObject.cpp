@@ -30,6 +30,11 @@ void GameObject::restartAnimationClock() {
     this->animationClock.restart();
 }
 
+int GameObject::addAnimation() {
+    this->animations.push_back(Animation());
+    return this->animations.size() - 1;
+}
+
 int GameObject::addAnimationFrame(sf::IntRect frame) {
     return 0;
 }

@@ -5,53 +5,30 @@
 #include <iostream>
 using namespace std;
 
-static PyObject * animations_addAnimation(PyObject *self, PyObject *args) {
-    int index;
-    int y;
+static PyObject * animations_add(PyObject *self, PyObject *args) {
+    long index;
 
-    if (!PyArg_ParseTuple(args, "ii", &index, &y))
+    if (!PyArg_ParseTuple(args, "l", &index))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(index);
-    return PyLong_FromLong(gameObject->addAnimation(y));
+    return PyLong_FromLong(gameObject->addAnimation());
+}
+
+static PyObject * animations_addFrame(PyObject *self, PyObject *args) {
+    return PyLong_FromLong(0);
+}
+
+static PyObject * animations_addFrames(PyObject *self, PyObject *args) {
+    return PyLong_FromLong(0);
 }
 
 static PyObject * animations_stop(PyObject *self, PyObject *args) {
-    int gameObjectIndex;
-    int animationIndex;
-
-    if (!PyArg_ParseTuple(args, "ii", &gameObjectIndex, &animationIndex))
-        return NULL;
-
-    GameObject* gameObject = game_getGameObject(gameObjectIndex);
-    sf::Sprite* sprite = gameObject->getSprite(0);
-    sf::IntRect oldFrame = sprite->getTextureRect();
-    sprite->setTextureRect(sf::IntRect(0, oldFrame.top, oldFrame.width, oldFrame.height));
     Py_RETURN_NONE;
 }
 
 static PyObject * animations_play(PyObject *self, PyObject *args)
 {
-    int gameObjectIndex;
-    int animationIndex;
-
-    if (!PyArg_ParseTuple(args, "ii", &gameObjectIndex, &animationIndex))
-        return NULL;
-
-    GameObject* gameObject = game_getGameObject(gameObjectIndex);
-    if(gameObject->getAnimationElapsedTime() < 0.02){
-        Py_RETURN_NONE;
-    }
-    gameObject->restartAnimationClock();
-    sf::Sprite* sprite = gameObject->getSprite(0);
-    sf::IntRect oldFrame = sprite->getTextureRect();
-    sf::Vector2u textureSize = sprite->getTexture()->getSize();
-    unsigned int left = oldFrame.left + oldFrame.width;
-    int top = gameObject->getAnimation(animationIndex);
-    if(left >= textureSize.x) {
-        left = 0;
-    }
-    sprite->setTextureRect(sf::IntRect(left, top, oldFrame.width, oldFrame.height));
     Py_RETURN_NONE;
 }
 
@@ -60,10 +37,16 @@ static PyMethodDef animationsMethods[] = {
      "Plays a game objects animation."},
 
     {"stop",  animations_stop, METH_VARARGS,
-     "Plays a game objects animation."},
+     "Stops a game objects animation."},
 
-    {"addAnimation",  animations_addAnimation, METH_VARARGS,
-     "Plays a game objects animation."},
+    {"add",  animations_add, METH_VARARGS,
+     "Adds a game objects animation."},
+
+    {"addFrame",  animations_addFrame, METH_VARARGS,
+     "Adds a frame to an animation."},
+
+    {"addFrames",  animations_addFrames, METH_VARARGS,
+     "Adds frames between two points to an animation."},
 
     {NULL, NULL, 0, NULL}
 };

@@ -12,14 +12,13 @@ class MainCharacter:
     def __init__(self):
         self.index = game.createGameObject()
         game.setGameObjectPosition(self.index, WIDTH/2, HEIGHT/2)
-        sprites.addSprite(self.index, "MainCharacter.png")
+        sprites.add(self.index, "MainCharacter.png")
         sprites.setStartFrame(self.index, 0, 64, 24, 32)
 
-        self.runUpAnimation = animations.addAnimation(self.index, 0)
-        self.runDownAnimation = animations.addAnimation(self.index, 32)
-        self.runRightAnimation = animations.addAnimation(self.index, 64)
-        self.runLeftAnimation = animations.addAnimation(self.index, 96)
-
+        self.runUpAnimation = animations.add(self.index)
+        self.runDownAnimation = animations.add(self.index)
+        self.runRightAnimation = animations.add(self.index)
+        self.runLeftAnimation = animations.add(self.index)
 
 if __name__ == "__main__":
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
@@ -27,7 +26,6 @@ if __name__ == "__main__":
 def init():
     global mainCharacter
     mainCharacter = MainCharacter()
-    print(mainCharacter.index)
 
 def update(): 
     global mainCharacter

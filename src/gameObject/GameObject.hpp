@@ -17,6 +17,7 @@ class GameObject {
     void addSprite(string fileName);
 
     int getAnimation(int index);
+    int addAnimation();
     int addAnimationFrame(sf::IntRect frame);
     int addAnimationFrames(sf::IntRect startFrame, sf::IntRect endFrame);
 
