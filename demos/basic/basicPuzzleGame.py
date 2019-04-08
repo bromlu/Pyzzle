@@ -13,15 +13,27 @@ class MainCharacter:
         self.index = game.createGameObject()
         game.setGameObjectPosition(self.index, WIDTH/2, HEIGHT/2)
         sprites.add(self.index, "MainCharacter.png")
-        sprites.setStartFrame(self.index, 0, 64, 24, 32)
+        sprites.setFrame(self.index, 0, 64, 24, 32)
 
-        self.runUpAnimation = animations.add(self.index)
-        self.runDownAnimation = animations.add(self.index)
-        self.runRightAnimation = animations.add(self.index)
-        self.runLeftAnimation = animations.add(self.index)
+        self.runUp = animations.add(self.index)
+        self.runDown = animations.add(self.index)
+        self.runRight = animations.add(self.index)
+        self.runLeft = animations.add(self.index)
+        self.spin = animations.add(self.index)
 
-        animations.addFrame(self.index, self.runUpAnimation, 0, 64, 24, 32)
-        animations.addFrames(self.index, self.runUpAnimation, 0, 0, 64, 64, 24, 32)
+        animations.addFrames(self.index, self.runUp, 0, 0, 552, 0, 24, 32)
+        animations.addFrames(self.index, self.runRight, 0, 32, 552, 32, 24, 32)
+        animations.addFrames(self.index, self.runDown, 0, 64, 552, 64, 24, 32)
+        animations.addFrames(self.index, self.runLeft, 0, 96, 552, 96, 24, 32)
+
+        animations.addFrame(self.index, self.spin, 0, 0, 24, 32)
+        animations.addFrame(self.index, self.spin, 0, 32, 24, 32)
+        animations.addFrame(self.index, self.spin, 0, 64, 24, 32)
+        animations.addFrame(self.index, self.spin, 0, 96, 24, 32)
+
+        animations.play(self.index, self.runDown)
+        animations.play(self.index, self.runDown)
+        animations.stop(self.index, self.runDown)
 
 if __name__ == "__main__":
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)

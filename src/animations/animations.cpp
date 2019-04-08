@@ -1,6 +1,7 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 #include "./../game.hpp"
+#include "./../gameObject/Animation.hpp"
 #include "./../gameObject/GameObject.hpp"
 #include <iostream>
 using namespace std;
@@ -58,11 +59,32 @@ static PyObject * animations_addFrames(PyObject *self, PyObject *args) {
 }
 
 static PyObject * animations_stop(PyObject *self, PyObject *args) {
+    long gameObjectIndex;
+    long animationIndex;
+
+    if (!PyArg_ParseTuple(args, "ll", &gameObjectIndex, &animationIndex))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(gameObjectIndex);
+    Animation* animation = gameObject->getAnimation(animationIndex);
+    game_removeActiveAnimation(animation->getGlobalIndex());
+    animation->setGlobalIndex(-1);
     Py_RETURN_NONE;
 }
 
 static PyObject * animations_play(PyObject *self, PyObject *args)
 {
+    long gameObjectIndex;
+    long animationIndex;
+
+    if (!PyArg_ParseTuple(args, "ll", &gameObjectIndex, &animationIndex))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(gameObjectIndex);
+    Animation* animation = gameObject->getAnimation(animationIndex);
+    if (animation->getGlobalIndex() == -1) {
+        animation->setGlobalIndex(game_addActiveAnimation(animation));
+    }
     Py_RETURN_NONE;
 }
 

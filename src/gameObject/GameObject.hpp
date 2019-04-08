@@ -1,6 +1,10 @@
+#ifndef GAMEOBJECT
+#define GAMEOBJECT
+
 #include <SFML/Graphics.hpp>
-#include "Animation.hpp"
 using namespace std;
+
+class Animation;
 
 class GameObject {
     public:
@@ -16,10 +20,10 @@ class GameObject {
     sf::Sprite* getSprite();
     void addSprite(string fileName);
 
-    int getAnimation(int index);
     int addAnimation();
     void addAnimationFrame(long index, long x, long y, long width, long height);
     void addAnimationFrames(long index, long fromX, long fromY, long toX, long toY, long width, long height);
+    Animation* getAnimation(int index);
 
     void draw(sf::RenderWindow* window);
 
@@ -31,3 +35,5 @@ class GameObject {
     vector<Animation> animations;
     sf::Clock animationClock;
 };
+
+#endif

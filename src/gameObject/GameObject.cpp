@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "GameObject.hpp"
+#include "Animation.hpp"
 #include <iostream>
 using namespace std;
 
@@ -31,7 +32,7 @@ void GameObject::restartAnimationClock() {
 }
 
 int GameObject::addAnimation() {
-    this->animations.push_back(Animation(this->sprite.getTexture()->getSize().x));
+    this->animations.push_back(Animation(this->sprite.getTexture()->getSize().x, this));
     return this->animations.size() - 1;
 }
 
@@ -43,8 +44,8 @@ void GameObject::addAnimationFrames(long index, long fromX, long fromY, long toX
     this->animations.at(index).addAnimationFrames(fromX, fromY, toX, toY, width, height);
 }
 
-int GameObject::getAnimation(int index) {
-    return 0;
+Animation* GameObject::getAnimation(int index) {
+    return &(this->animations.at(index));
 }
 
 void GameObject::addSprite(string fileName) {
