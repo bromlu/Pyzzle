@@ -6,7 +6,7 @@
 using namespace std;
 
 static PyObject *
-sprites_addSprite(PyObject *self, PyObject *args)
+sprites_add(PyObject *self, PyObject *args)
 {
     long index;
     const char * fileName;
@@ -51,7 +51,7 @@ static PyObject * sprites_draw(PyObject *self, PyObject *args)
 
 static PyMethodDef spritesMethods[] = {
 
-    {"addSprite",  sprites_addSprite, METH_VARARGS,
+    {"add",  sprites_add, METH_VARARGS,
      "Initializes a sprite in the SFML window."},
 
     {"setStartFrame",  sprites_setStartFrame, METH_VARARGS,
