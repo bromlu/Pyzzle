@@ -87,9 +87,13 @@ void GameObject::stopAnimation() {
 }
 
 void GameObject::pauseAnimation() {
-    this->animations.at(activeAnimationLocalIndex).pause();
+    if(activeAnimationLocalIndex != -1) {
+        this->animations.at(activeAnimationLocalIndex).pause();
+    }
 }
 
 void GameObject::resumeAnimation() {
-    this->animations.at(activeAnimationLocalIndex).resume();
+    if(activeAnimationLocalIndex != -1) {
+        this->animations.at(activeAnimationLocalIndex).resume();
+    }
 }
