@@ -80,8 +80,9 @@ Pyzzle includes various features in order to help you with creating the perfect 
 - Audio engine
 - Collision engine
 - Drawing engine
-- Event engine
+- Particle engine
 - Physics engine
+- State engine
 - Tile engine
 
 ### Game
