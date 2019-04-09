@@ -95,7 +95,7 @@ The game module has the following functions.
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
 | ```void init(string gameFileName, string gameName, int width, int height)``` | Filename of your main game file, name that appears on window, window width, window height | *None* | Creates the window and starts the game loop |
-| ```long createGameObject()``` | *None* | Index of the new object | Creates a new game object |
+| ```int createGameObject()``` | *None* | Index of the new object | Creates a new game object |
 | ```void moveGameObject(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Moves the object by the specified amount |
 | ```void setGameObjectPosition(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Sets the objects position to the specified coordinates |
 
@@ -153,9 +153,9 @@ The sprites module has the following functions.
 
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
-| ```void addSprite(long GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
-| ```void setStartFrame(long GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
-| ```void draw(long GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
+| ```void addSprite(int GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
+| ```void setStartFrame(int GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
+| ```void draw(int GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
 
 ### Tiles
 

@@ -8,10 +8,10 @@ using namespace std;
 static PyObject *
 sprites_add(PyObject *self, PyObject *args)
 {
-    long index;
+    int index;
     const char * fileName;
 
-    if (!PyArg_ParseTuple(args, "ls", &index, &fileName))
+    if (!PyArg_ParseTuple(args, "is", &index, &fileName))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(index);
@@ -23,13 +23,13 @@ sprites_add(PyObject *self, PyObject *args)
 static PyObject *
 sprites_setFrame(PyObject *self, PyObject *args)
 {
-    long index;
+    int index;
     int left;
     int top;
     int width;
     int height;
 
-    if (!PyArg_ParseTuple(args, "liiii", &index, &left, &top, &width, &height))
+    if (!PyArg_ParseTuple(args, "iiiii", &index, &left, &top, &width, &height))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(index);
@@ -40,9 +40,9 @@ sprites_setFrame(PyObject *self, PyObject *args)
 
 static PyObject * sprites_draw(PyObject *self, PyObject *args)
 {
-    long index;
+    int index;
 
-    if (!PyArg_ParseTuple(args, "l", &index))
+    if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
     game_getGameObject(index)->draw(game_getWindow());

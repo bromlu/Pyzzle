@@ -38,11 +38,11 @@ int GameObject::addAnimation() {
     return this->animations.size() - 1;
 }
 
-void GameObject::addAnimationFrame(long index, long x, long y, long width, long height) {
+void GameObject::addAnimationFrame(int index, int x, int y, int width, int height) {
     this->animations.at(index).addAnimationFrame(x, y, width, height);
 }
 
-void GameObject::addAnimationFrames(long index, long fromX, long fromY, long toX, long toY, long width, long height) {
+void GameObject::addAnimationFrames(int index, int fromX, int fromY, int toX, int toY, int width, int height) {
     this->animations.at(index).addAnimationFrames(fromX, fromY, toX, toY, width, height);
 }
 
@@ -67,15 +67,15 @@ void GameObject::draw(sf::RenderWindow* window) {
     window->draw(this->sprite);  
 }
 
-long GameObject::getActiveAnimationLocalIndex() {
+int GameObject::getActiveAnimationLocalIndex() {
     return this->activeAnimationLocalIndex;
 }
 
-long GameObject::getActiveAnimationGlobalIndex() {
+int GameObject::getActiveAnimationGlobalIndex() {
     return this->activeAnimationGlobalIndex;
 }
 
-void GameObject::playAnimation(long globalIndex, long localIndex) {
+void GameObject::playAnimation(int globalIndex, int localIndex) {
     this->activeAnimationGlobalIndex = globalIndex;
     this->activeAnimationLocalIndex = localIndex;
 }

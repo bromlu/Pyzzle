@@ -7,9 +7,9 @@
 using namespace std;
 
 static PyObject * animations_add(PyObject *self, PyObject *args) {
-    long index;
+    int index;
 
-    if (!PyArg_ParseTuple(args, "l", &index))
+    if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(index);
@@ -17,11 +17,11 @@ static PyObject * animations_add(PyObject *self, PyObject *args) {
 }
 
 static PyObject * animations_setDelay(PyObject *self, PyObject *args) {
-    long gameObjectIndex;
-    long animationIndex;
+    int gameObjectIndex;
+    int animationIndex;
     float delay;
 
-    if (!PyArg_ParseTuple(args, "llf", &gameObjectIndex, &animationIndex, &delay))
+    if (!PyArg_ParseTuple(args, "iif", &gameObjectIndex, &animationIndex, &delay))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(gameObjectIndex);
@@ -31,14 +31,14 @@ static PyObject * animations_setDelay(PyObject *self, PyObject *args) {
 }
 
 static PyObject * animations_addFrame(PyObject *self, PyObject *args) {
-    long index;
-    long animationIndex;
-    long x;
-    long y;
-    long width;
-    long height;
+    int index;
+    int animationIndex;
+    int x;
+    int y;
+    int width;
+    int height;
 
-    if (!PyArg_ParseTuple(args, "llllll", &index, &animationIndex, &x, &y, &width, &height))
+    if (!PyArg_ParseTuple(args, "iiiiii", &index, &animationIndex, &x, &y, &width, &height))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(index);
@@ -47,16 +47,16 @@ static PyObject * animations_addFrame(PyObject *self, PyObject *args) {
 }
 
 static PyObject * animations_addFrames(PyObject *self, PyObject *args) {
-    long index;
-    long animationIndex;
-    long fromX;
-    long fromY;
-    long toX;
-    long toY;
-    long width;
-    long height;
+    int index;
+    int animationIndex;
+    int fromX;
+    int fromY;
+    int toX;
+    int toY;
+    int width;
+    int height;
 
-    if (!PyArg_ParseTuple(args, "llllllll", 
+    if (!PyArg_ParseTuple(args, "iiiiiiii", 
         &index,  
         &animationIndex, 
         &fromX, 
@@ -73,13 +73,13 @@ static PyObject * animations_addFrames(PyObject *self, PyObject *args) {
 }
 
 static PyObject * animations_stop(PyObject *self, PyObject *args) {
-    long gameObjectIndex;
+    int gameObjectIndex;
 
-    if (!PyArg_ParseTuple(args, "l", &gameObjectIndex))
+    if (!PyArg_ParseTuple(args, "i", &gameObjectIndex))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(gameObjectIndex);
-    long activeAnimationGlobalIndex = gameObject->getActiveAnimationGlobalIndex();
+    int activeAnimationGlobalIndex = gameObject->getActiveAnimationGlobalIndex();
     if (activeAnimationGlobalIndex != -1) {
         game_removeActiveAnimation(activeAnimationGlobalIndex);
         gameObject->stopAnimation();
@@ -89,15 +89,15 @@ static PyObject * animations_stop(PyObject *self, PyObject *args) {
 
 static PyObject * animations_play(PyObject *self, PyObject *args)
 {
-    long gameObjectIndex;
-    long animationIndex;
+    int gameObjectIndex;
+    int animationIndex;
 
-    if (!PyArg_ParseTuple(args, "ll", &gameObjectIndex, &animationIndex))
+    if (!PyArg_ParseTuple(args, "ii", &gameObjectIndex, &animationIndex))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(gameObjectIndex);
     if(gameObject->getActiveAnimationLocalIndex() != animationIndex) {
-        long activeAnimationGlobalIndex = gameObject->getActiveAnimationGlobalIndex();
+        int activeAnimationGlobalIndex = gameObject->getActiveAnimationGlobalIndex();
         if (activeAnimationGlobalIndex != -1) {
             game_removeActiveAnimation(activeAnimationGlobalIndex);
             gameObject->stopAnimation();
@@ -110,9 +110,9 @@ static PyObject * animations_play(PyObject *self, PyObject *args)
 
 static PyObject * animations_pause(PyObject *self, PyObject *args)
 {
-    long gameObjectIndex;
+    int gameObjectIndex;
 
-    if (!PyArg_ParseTuple(args, "l", &gameObjectIndex))
+    if (!PyArg_ParseTuple(args, "i", &gameObjectIndex))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(gameObjectIndex);
@@ -122,9 +122,9 @@ static PyObject * animations_pause(PyObject *self, PyObject *args)
 
 static PyObject * animations_resume(PyObject *self, PyObject *args)
 {
-    long gameObjectIndex;
+    int gameObjectIndex;
 
-    if (!PyArg_ParseTuple(args, "l", &gameObjectIndex))
+    if (!PyArg_ParseTuple(args, "i", &gameObjectIndex))
         return NULL;
 
     GameObject* gameObject = game_getGameObject(gameObjectIndex);

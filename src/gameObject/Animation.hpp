@@ -10,8 +10,8 @@ class Animation {
     public:
     Animation(int textrueWidth, GameObject* gameObject);
 
-    void addAnimationFrame(long x, long y, long width, long height);
-    void addAnimationFrames(long fromX, long fromY, long toX, long toY, long width, long height);
+    void addAnimationFrame(int x, int y, int width, int height);
+    void addAnimationFrames(int fromX, int fromY, int toX, int toY, int width, int height);
     void animate();
 
     void setDelay(float delay);
