@@ -71,19 +71,19 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ### Currently implemented
 
-- Animations (*Implementation in progress*)
-- Input (*Implementation in progress*)
-- Sprites (*Implementation in progress*)
+- Animations
+- Audio *Implementation in progress*
+- Collision *Implementation in progress*
+- Drawing *Implementation in progress*
+- Tile *Implementation in progress*
+- Input
+- Sprites
 
 ### Future possibilities
 
-- Audio engine
-- Collision engine
-- Drawing engine
-- Particle engine
-- Physics engine
-- State engine
-- Tile engine
+- Particle
+- Physics
+- State
 
 ### Game
 
