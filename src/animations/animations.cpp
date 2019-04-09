@@ -16,6 +16,20 @@ static PyObject * animations_add(PyObject *self, PyObject *args) {
     return PyLong_FromLong(gameObject->addAnimation());
 }
 
+static PyObject * animations_setDelay(PyObject *self, PyObject *args) {
+    long gameObjectIndex;
+    long animationIndex;
+    float delay;
+
+    if (!PyArg_ParseTuple(args, "llf", &gameObjectIndex, &animationIndex, &delay))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(gameObjectIndex);
+    Animation* animation = gameObject->getAnimation(animationIndex);
+    animation->setDelay(delay);
+    return PyLong_FromLong(gameObject->addAnimation());
+}
+
 static PyObject * animations_addFrame(PyObject *self, PyObject *args) {
     long index;
     long animationIndex;
@@ -130,6 +144,9 @@ static PyMethodDef animationsMethods[] = {
 
     {"resume",  animations_resume, METH_VARARGS,
      "Resumes a game objects animation."},
+
+    {"setDelay",  animations_setDelay, METH_VARARGS,
+     "Sets the delay between animation frames."},
 
     {"add",  animations_add, METH_VARARGS,
      "Adds a game objects animation."},

@@ -10,6 +10,7 @@ Animation::Animation(int textureWidth, GameObject* gameObject) {
     this->currentFrame = 0;
     this->globalIndex = -1;
     this->paused = false;
+    this->delay = 0.1;
 }
 
 sf::IntRect Animation::getNextFrame() {
@@ -29,8 +30,12 @@ void Animation::addAnimationFrames(long fromX, long fromY, long toX, long toY, l
     }
 }
 
+void Animation::setDelay(float delay) {
+    this->delay = delay;
+}
+
 void Animation::animate() {
-    if(this->paused || this->gameObject->getAnimationElapsedTime() < 0.02){
+    if(this->paused || this->gameObject->getAnimationElapsedTime() < this->delay){
         return;
     }
     this->gameObject->restartAnimationClock();

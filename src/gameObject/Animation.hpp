@@ -14,6 +14,8 @@ class Animation {
     void addAnimationFrames(long fromX, long fromY, long toX, long toY, long width, long height);
     void animate();
 
+    void setDelay(float delay);
+
     void pause();
     void resume();
     void start(long index);
@@ -27,6 +29,7 @@ class Animation {
     int textureWidth;
     int currentFrame;
     long globalIndex;
+    float delay;
     bool paused;
     GameObject* gameObject;
     vector<sf::IntRect > animationFrames;
