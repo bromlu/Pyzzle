@@ -37,11 +37,6 @@ class MainCharacter:
         animations.setDelay(self.index, self.runLeft, 0.02)
 
         animations.play(self.index, self.spin)
-        animations.pause(self.index)
-        animations.stop(self.index)
-        animations.play(self.index, self.runDown)
-        animations.play(self.index, self.runUp)
-        animations.play(self.index, self.spin)
 
 if __name__ == "__main__":
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
@@ -55,16 +50,16 @@ def update():
     if input.isKeyPressed(22): #W
         game.moveGameObject(mainCharacter.index, 0, -10)
         animations.play(mainCharacter.index, mainCharacter.runUp)
-    if input.isKeyPressed(0): #A
+    elif input.isKeyPressed(0): #A
         game.moveGameObject(mainCharacter.index, -10, 0)
         animations.play(mainCharacter.index, mainCharacter.runLeft)
-    if input.isKeyPressed(3): #D
+    elif input.isKeyPressed(3): #D
         game.moveGameObject(mainCharacter.index, 10, 0)
         animations.play(mainCharacter.index, mainCharacter.runRight)
-    if input.isKeyPressed(18): #S
+    elif input.isKeyPressed(18): #S
         game.moveGameObject(mainCharacter.index, 0, 10)
         animations.play(mainCharacter.index, mainCharacter.runDown)
-    if not input.isKeyPressed(22) and not input.isKeyPressed(0) and not input.isKeyPressed(3) and not input.isKeyPressed(18) :
+    else:
         animations.stop(mainCharacter.index)
 
 def draw(): 
