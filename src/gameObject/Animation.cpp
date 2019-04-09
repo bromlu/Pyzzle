@@ -50,6 +50,7 @@ void Animation::resume() {
 }
 
 void Animation::stop() {
-    this->currentFrame = 0;
+    this->currentFrame = -1;
+    this->gameObject->getSprite()->setTextureRect(this->getNextFrame());
     this->paused = false;
 }
