@@ -10,7 +10,7 @@ using namespace std;
 #include "game.hpp"
 
 sf::RenderWindow window;
-vector<GameObject> gameObjects;
+vector<GameObject*> gameObjects;
 vector<Animation*> activeAnimations;
 
 static sf::RenderWindow* game_getWindow() {
@@ -18,7 +18,7 @@ static sf::RenderWindow* game_getWindow() {
 }
 
 static GameObject* game_getGameObject(int index) {
-    return &(gameObjects.at(index));
+    return gameObjects.at(index);
 }
 
 static int game_addActiveAnimation(Animation* animation) {
@@ -32,8 +32,7 @@ static void game_removeActiveAnimation(int index) {
 
 static PyObject* game_createGameObject(PyObject *self, PyObject *args) 
 {
-    GameObject gameObject(gameObjects.size());
-    gameObjects.push_back(gameObject);
+    gameObjects.push_back(new GameObject(gameObjects.size()));
     return PyLong_FromLong(gameObjects.size() - 1);
 }
 
@@ -46,7 +45,7 @@ static PyObject* game_moveGameObject(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "iff", &index, &x, &y))
         return NULL;
 
-    gameObjects.at(index).move(sf::Vector2f(x, y));
+    gameObjects.at(index)->move(sf::Vector2f(x, y));
     Py_RETURN_NONE;
 }
 
@@ -59,7 +58,7 @@ static PyObject* game_setGameObjectPosition(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "iff", &index, &x, &y))
         return NULL;
 
-    gameObjects.at(index).setPosition(sf::Vector2f(x, y));
+    gameObjects.at(index)->setPosition(sf::Vector2f(x, y));
     Py_RETURN_NONE;
 }
 
