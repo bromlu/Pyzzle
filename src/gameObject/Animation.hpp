@@ -18,17 +18,13 @@ class Animation {
 
     void pause();
     void resume();
-    void start(long index);
     void stop();
-
-    long getGlobalIndex();
 
     private:
     sf::IntRect getNextFrame();
 
     int textureWidth;
     int currentFrame;
-    long globalIndex;
     float delay;
     bool paused;
     GameObject* gameObject;

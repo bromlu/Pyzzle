@@ -27,8 +27,19 @@ class GameObject {
 
     void draw(sf::RenderWindow* window);
 
+    long getActiveAnimationLocalIndex();
+    long getActiveAnimationGlobalIndex();
+
+    void playAnimation(long globalIndex, long localIndex);
+    void stopAnimation();
+    void pauseAnimation();
+    void resumeAnimation();
+
+
     private:
     int globalIndex;
+    long activeAnimationLocalIndex;
+    long activeAnimationGlobalIndex;
     sf::Vector2f position;
     sf::Sprite sprite;
     sf::Texture texture;

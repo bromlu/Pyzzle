@@ -7,6 +7,8 @@ using namespace std;
 GameObject::GameObject(int globalIndex) {
     this->globalIndex = globalIndex;
     this->position = sf::Vector2f(0.0, 0.0);
+    this->activeAnimationGlobalIndex = -1;
+    this->activeAnimationLocalIndex = -1;
 }
 
 sf::Vector2f GameObject::getPosition() {
@@ -63,4 +65,31 @@ sf::Sprite* GameObject::getSprite() {
 
 void GameObject::draw(sf::RenderWindow* window) {  
     window->draw(this->sprite);  
+}
+
+long GameObject::getActiveAnimationLocalIndex() {
+    return this->activeAnimationLocalIndex;
+}
+
+long GameObject::getActiveAnimationGlobalIndex() {
+    return this->activeAnimationGlobalIndex;
+}
+
+void GameObject::playAnimation(long globalIndex, long localIndex) {
+    this->activeAnimationGlobalIndex = globalIndex;
+    this->activeAnimationLocalIndex = localIndex;
+}
+
+void GameObject::stopAnimation() {
+    this->animations.at(activeAnimationLocalIndex).stop();
+    this->activeAnimationGlobalIndex = -1;
+    this->activeAnimationLocalIndex = -1;
+}
+
+void GameObject::pauseAnimation() {
+    this->animations.at(activeAnimationLocalIndex).pause();
+}
+
+void GameObject::resumeAnimation() {
+    this->animations.at(activeAnimationLocalIndex).resume();
 }
