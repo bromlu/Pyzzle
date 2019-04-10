@@ -2,6 +2,8 @@ from pyzzle import game
 from pyzzle import sprites
 from pyzzle import animations
 from pyzzle import input
+from pyzzle import audio
+
 
 WIDTH = 800
 HEIGHT = 800
@@ -17,6 +19,7 @@ def init():
     sprites.addSprite(gameObjects["MainCharacter"], "MainCharacter.png")
     sprites.setStartFrame(gameObjects["MainCharacter"], 0, 64, 24, 32)
     game.setGameObjectPosition(gameObjects["MainCharacter"], WIDTH/2, HEIGHT/2)
+    audio.loadAudio("nice_music.ogg") 
 
 def update(): 
     global gameObjects

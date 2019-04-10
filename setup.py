@@ -21,7 +21,12 @@ input = Extension('pyzzle.input',
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
                     sources = ['./src/input/input.cpp', './src/gameObject/GameObject.cpp'])
 
+audio = Extension('pyzzle.audio',
+                    include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
+                    extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system', '-lsfml-audio'],
+                    sources = ['./src/audio/audio.cpp', './src/gameObject/GameObject.cpp'])
+
 setup (name = 'pyzzle',
        version = '1.0',
        description = 'This is the pyzzle package',
-       ext_modules = [game, sprites, animations, input])
+       ext_modules = [game, sprites, animations, input, audio])
