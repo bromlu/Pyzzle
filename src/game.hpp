@@ -21,7 +21,11 @@ extern "C" {
 #define Game_removeActiveAnimation_RETURN void
 #define Game_removeActiveAnimation_PROTO (int index)
 
-#define Game_API_pointers 4
+#define Game_addTile_NUM 4
+#define Game_addTile_RETURN void
+#define Game_addTile_PROTO (sf::Texture* tileTexture, float x, float y, float tileWidth, float tileHeight)
+
+#define Game_API_pointers 5
 
 #ifdef GAME_MODULE
 
@@ -29,6 +33,7 @@ static Game_GetWindow_RETURN game_getWindow Game_GetWindow_PROTO;
 static Game_GetGameObject_RETURN game_GetGameObject Game_GetGameObject_PROTO;
 static Game_addActiveAnimation_RETURN game_addActiveAnimation Game_addActiveAnimation_PROTO;
 static Game_removeActiveAnimation_RETURN game_removeActiveAnimation Game_removeActiveAnimation_PROTO;
+static Game_addTile_RETURN game_addTile Game_addTile_PROTO;
 
 #else
 
@@ -45,6 +50,9 @@ static void **Game_API;
 
 #define game_removeActiveAnimation \
  (*(Game_removeActiveAnimation_RETURN (*)Game_removeActiveAnimation_PROTO) Game_API[Game_removeActiveAnimation_NUM])
+
+#define game_addTile \
+ (*(Game_addTile_RETURN (*)Game_addTile_PROTO) Game_API[Game_addTile_NUM])
 
 static int
 import_game(void)

@@ -12,6 +12,7 @@ using namespace std;
 sf::RenderWindow window;
 vector<GameObject*> gameObjects;
 vector<Animation*> activeAnimations;
+vector<sf::Sprite> tiles;
 
 static sf::RenderWindow* game_getWindow() {
     return &window;
@@ -28,6 +29,15 @@ static int game_addActiveAnimation(Animation* animation) {
 
 static void game_removeActiveAnimation(int index) {
     activeAnimations.erase(activeAnimations.begin()+index);
+}
+
+static void game_addTile(sf::Texture* tileTexture, float x, float y, float tileWidth, float tileHeight) {
+    sf::Sprite sprite(*tileTexture);
+    sprite.setPosition(x, y);
+    sprite.setScale(
+        tileWidth / sprite.getLocalBounds().width, 
+        tileHeight / sprite.getLocalBounds().height);
+    tiles.push_back(sprite);
 }
 
 static PyObject* game_createGameObject(PyObject *self, PyObject *args) 
@@ -121,6 +131,9 @@ static PyObject* game_init(PyObject *self, PyObject *args)
 
         if (drawFunc) {
             window.clear();
+            for (vector<sf::Sprite>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
+                window.draw(*it);
+            }
             PyObject_CallObject(drawFunc, NULL);
             window.display();
         }
@@ -170,6 +183,7 @@ PyMODINIT_FUNC PyInit_game(void)
     Game_API[1] = (void *)&game_getGameObject;
     Game_API[2] = (void *)&game_addActiveAnimation;
     Game_API[3] = (void *)&game_removeActiveAnimation;
+    Game_API[4] = (void *)&game_addTile;
 
     c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
 
