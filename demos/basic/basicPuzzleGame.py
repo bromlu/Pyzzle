@@ -2,6 +2,7 @@ from pyzzle import game
 from pyzzle import sprites
 from pyzzle import animations
 from pyzzle import input
+from pyzzle import tiles
 
 WIDTH = 800
 HEIGHT = 800
@@ -14,6 +15,7 @@ class MainCharacter:
         game.setGameObjectPosition(self.index, WIDTH/2, HEIGHT/2)
         sprites.add(self.index, "MainCharacter.png")
         sprites.setFrame(self.index, 0, 64, 24, 32)
+        sprites.setScale(self.index, 1, 1)
 
         self.runUp = animations.add(self.index)
         self.runDown = animations.add(self.index)
@@ -39,6 +41,11 @@ class MainCharacter:
         animations.play(self.index, self.spin)
 
 if __name__ == "__main__":
+    tiles.setTileWidth(100)
+    tiles.setTileHeight(100)
+    tiles.addTileType("black-marble.png")
+    tiles.addTileType("wood-tile.png")
+    tiles.loadFromTextFile("map.txt")
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def init():
