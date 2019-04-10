@@ -71,18 +71,19 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ### Currently implemented
 
-- Animations (*Implementation in progress*)
-- Input (*Implementation in progress*)
-- Sprites (*Implementation in progress*)
+- Animations
+- Audio *Implementation in progress*
+- Collision *Implementation in progress*
+- Drawing *Implementation in progress*
+- Tile *Implementation in progress*
+- Input
+- Sprites
 
 ### Future possibilities
 
-- Audio engine
-- Collision engine
-- Drawing engine
-- Event engine
-- Physics engine
-- Tile engine
+- Particle
+- Physics
+- State
 
 ### Game
 
@@ -95,17 +96,28 @@ The game module has the following functions.
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
 | ```void init(string gameFileName, string gameName, int width, int height)``` | Filename of your main game file, name that appears on window, window width, window height | *None* | Creates the window and starts the game loop |
-| ```long createGameObject()``` | *None* | Index of the new object | Creates a new game object |
+| ```int createGameObject()``` | *None* | Index of the new object | Creates a new game object |
 | ```void moveGameObject(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Moves the object by the specified amount |
 | ```void setGameObjectPosition(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Sets the objects position to the specified coordinates |
 
 ### Animations
 
+```python
+import pyzzle.animations
+```
+
 The animations module has the following functions.
 
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
-| ```void play(int GameObjectIndex)``` | The index the game object is at | *None* | Cycles through the sprite sheet from left to right |
+| ```void play(int gameObjectIndex, int AnimationIndex)``` | Index of the game object, index of the animation to play | *None* | Starts playing the given animation, stops any existing animations |
+| ```void stop(int gameObjectIndex)``` | Index of the game object | *None* | Stops the objects animations |
+| ```void pause(int gameObjectIndex)``` | Index of the game object | *None* | Pauses the objects animations at the current frame |
+| ```void resume(int gameObjectIndex)``` | Index of the game object | *None* | Resumes the objects animations from where it was paused |
+| ```void setDelay(int gameObjectIndex, int AnimationIndex, float delay)``` | Index of the game object, index of the animation, number of seconds to delay by | *None* | Sets the delay time between animation frames |
+| ```int add(int gameObjectIndex)``` | Index of the game object | Index of the new animation | Creates a new animation object on the game object |
+| ```void addFrame(int gameObjectIndex, int AnimationIndex, int x, int y, int width, int height)``` | Index of the game object, index of the animation, left location of frame, top location of frame, width of frame, height of frame | *None* | Add a single frame to the animation object |
+| ```void addFrames(int gameObjectIndex, int AnimationIndex, int fromX, int fromY, int toX, int toY, int width, int height)``` | Index of the game object, index of the animation, left location of start frame, top location of start frame, left location of end frame, top location of end frame, width of frame, height of frame | *None* | Adds a set of frames between the start and stop point to the animation object |
 
 ### Audio
 
@@ -149,9 +161,9 @@ The sprites module has the following functions.
 
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
-| ```void addSprite(long GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
-| ```void setStartFrame(long GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
-| ```void draw(long GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
+| ```void add(int GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
+| ```void setFrame(int GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
+| ```void draw(int GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
 
 ### Tiles
 

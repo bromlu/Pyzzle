@@ -1,5 +1,10 @@
+#ifndef GAMEOBJECT
+#define GAMEOBJECT
+
 #include <SFML/Graphics.hpp>
 using namespace std;
+
+class Animation;
 
 class GameObject {
     public:
@@ -12,16 +17,34 @@ class GameObject {
     float getAnimationElapsedTime();
     void restartAnimationClock();
 
-    sf::Sprite* addSprite(int index);
-    sf::Sprite* getSprite(int index);
+    sf::Sprite* getSprite();
     void addSprite(string fileName);
+
+    int addAnimation();
+    void addAnimationFrame(int index, int x, int y, int width, int height);
+    void addAnimationFrames(int index, int fromX, int fromY, int toX, int toY, int width, int height);
+    Animation* getAnimation(int index);
 
     void draw(sf::RenderWindow* window);
 
+    int getActiveAnimationLocalIndex();
+    int getActiveAnimationGlobalIndex();
+
+    void playAnimation(int globalIndex, int localIndex);
+    void stopAnimation();
+    void pauseAnimation();
+    void resumeAnimation();
+
+
     private:
     int globalIndex;
+    int activeAnimationLocalIndex;
+    int activeAnimationGlobalIndex;
     sf::Vector2f position;
-    vector<sf::Sprite> sprites;
-    vector<sf::Texture> textures;
+    sf::Sprite sprite;
+    sf::Texture texture;
+    vector<Animation> animations;
     sf::Clock animationClock;
 };
+
+#endif

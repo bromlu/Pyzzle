@@ -2,26 +2,37 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "./gameObject/GameObject.hpp"
+#include "./gameObject/Animation.hpp"
+#include <tuple>
 using namespace std;
 
 #define GAME_MODULE
 #include "game.hpp"
 
 sf::RenderWindow window;
-vector<GameObject> gameObjects;
+vector<GameObject*> gameObjects;
+vector<Animation*> activeAnimations;
 
 static sf::RenderWindow* game_getWindow() {
     return &window;
 }
 
 static GameObject* game_getGameObject(int index) {
-    return &(gameObjects.at(index));
+    return gameObjects.at(index);
+}
+
+static int game_addActiveAnimation(Animation* animation) {
+    activeAnimations.push_back(animation);
+    return activeAnimations.size() - 1;
+}
+
+static void game_removeActiveAnimation(int index) {
+    activeAnimations.erase(activeAnimations.begin()+index);
 }
 
 static PyObject* game_createGameObject(PyObject *self, PyObject *args) 
 {
-    GameObject gameObject(gameObjects.size());
-    gameObjects.push_back(gameObject);
+    gameObjects.push_back(new GameObject(gameObjects.size()));
     return PyLong_FromLong(gameObjects.size() - 1);
 }
 
@@ -34,7 +45,7 @@ static PyObject* game_moveGameObject(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "iff", &index, &x, &y))
         return NULL;
 
-    gameObjects.at(index).move(sf::Vector2f(x, y));
+    gameObjects.at(index)->move(sf::Vector2f(x, y));
     Py_RETURN_NONE;
 }
 
@@ -47,7 +58,7 @@ static PyObject* game_setGameObjectPosition(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "iff", &index, &x, &y))
         return NULL;
 
-    gameObjects.at(index).setPosition(sf::Vector2f(x, y));
+    gameObjects.at(index)->setPosition(sf::Vector2f(x, y));
     Py_RETURN_NONE;
 }
 
@@ -104,6 +115,10 @@ static PyObject* game_init(PyObject *self, PyObject *args)
             PyObject_CallObject(updateFunc, NULL);
         }
 
+        for (vector<Animation*>::iterator it = activeAnimations.begin(); it != activeAnimations.end(); ++it) {
+            (*it)->animate();
+        }
+
         if (drawFunc) {
             window.clear();
             PyObject_CallObject(drawFunc, NULL);
@@ -153,6 +168,8 @@ PyMODINIT_FUNC PyInit_game(void)
 
     Game_API[0] = (void *)&game_getWindow;
     Game_API[1] = (void *)&game_getGameObject;
+    Game_API[2] = (void *)&game_addActiveAnimation;
+    Game_API[3] = (void *)&game_removeActiveAnimation;
 
     c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
 

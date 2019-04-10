@@ -8,39 +8,64 @@ from pyzzle import audio
 WIDTH = 800
 HEIGHT = 800
 
-gameObjects = { }
+mainCharacter = None
+
+class MainCharacter:
+    def __init__(self):
+        self.index = game.createGameObject()
+        game.setGameObjectPosition(self.index, WIDTH/2, HEIGHT/2)
+        sprites.add(self.index, "MainCharacter.png")
+        sprites.setFrame(self.index, 0, 64, 24, 32)
+
+        self.runUp = animations.add(self.index)
+        self.runDown = animations.add(self.index)
+        self.runRight = animations.add(self.index)
+        self.runLeft = animations.add(self.index)
+        self.spin = animations.add(self.index)
+
+        animations.addFrames(self.index, self.runUp, 0, 0, 552, 0, 24, 32)
+        animations.addFrames(self.index, self.runRight, 0, 32, 552, 32, 24, 32)
+        animations.addFrames(self.index, self.runDown, 0, 64, 552, 64, 24, 32)
+        animations.addFrames(self.index, self.runLeft, 0, 96, 552, 96, 24, 32)
+
+        animations.addFrame(self.index, self.spin, 0, 0, 24, 32)
+        animations.addFrame(self.index, self.spin, 0, 32, 24, 32)
+        animations.addFrame(self.index, self.spin, 0, 64, 24, 32)
+        animations.addFrame(self.index, self.spin, 0, 96, 24, 32)
+
+        animations.setDelay(self.index, self.runUp, 0.02)
+        animations.setDelay(self.index, self.runRight, 0.02)
+        animations.setDelay(self.index, self.runDown, 0.02)
+        animations.setDelay(self.index, self.runLeft, 0.02)
+
+        animations.play(self.index, self.spin)
 
 if __name__ == "__main__":
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def init():
-    global gameObjects
-    gameObjects["MainCharacter"] = game.createGameObject()
-    sprites.addSprite(gameObjects["MainCharacter"], "MainCharacter.png")
-    sprites.setStartFrame(gameObjects["MainCharacter"], 0, 64, 24, 32)
-    game.setGameObjectPosition(gameObjects["MainCharacter"], WIDTH/2, HEIGHT/2)
+    global mainCharacter
+    mainCharacter = MainCharacter()
     audio.loadAudio("nice_music.ogg") 
 
+
 def update(): 
-    global gameObjects
+    global mainCharacter
     if input.isKeyPressed(22): #W
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 0, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], 0, -10)
-        animations.play(gameObjects["MainCharacter"])
-    if input.isKeyPressed(0): #A
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 96, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], -10, 0)
-        animations.play(gameObjects["MainCharacter"])
-    if input.isKeyPressed(3): #D
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 32, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], 10, 0)
-        animations.play(gameObjects["MainCharacter"])
-    if input.isKeyPressed(18): #S
-        sprites.setStartFrame(gameObjects["MainCharacter"], 0, 64, 24, 32)
-        game.moveGameObject(gameObjects["MainCharacter"], 0, 10)
-        animations.play(gameObjects["MainCharacter"])
-    pass
+        game.moveGameObject(mainCharacter.index, 0, -10)
+        animations.play(mainCharacter.index, mainCharacter.runUp)
+    elif input.isKeyPressed(0): #A
+        game.moveGameObject(mainCharacter.index, -10, 0)
+        animations.play(mainCharacter.index, mainCharacter.runLeft)
+    elif input.isKeyPressed(3): #D
+        game.moveGameObject(mainCharacter.index, 10, 0)
+        animations.play(mainCharacter.index, mainCharacter.runRight)
+    elif input.isKeyPressed(18): #S
+        game.moveGameObject(mainCharacter.index, 0, 10)
+        animations.play(mainCharacter.index, mainCharacter.runDown)
+    else:
+        animations.stop(mainCharacter.index)
 
 def draw(): 
-    global gameObjects
-    sprites.draw(gameObjects["MainCharacter"])
+    global mainCharacter
+    sprites.draw(mainCharacter.index)
