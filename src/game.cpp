@@ -13,7 +13,7 @@ sf::RenderWindow window;
 vector<GameObject*> gameObjects;
 vector<Animation*> activeAnimations;
 vector<vector<sf::Sprite> > tiles;
-sf::IntRect tileFrame(0,0,0,0);
+sf::Rect<float> tileFrame(0.0,0.0,0.0,0.0);
 float TILE_WIDTH = 32.0;
 float TILE_HEIGHT = 32.0;
 
@@ -46,7 +46,7 @@ static void game_addTile(sf::Texture* tileTexture, int x, int y) {
     tiles.at(y).push_back(sprite);
 }
 
-static void game_setTileFrame(sf::IntRect rect) {
+static void game_setTileFrame(sf::Rect<float> rect) {
     tileFrame = rect;
 }
 
@@ -165,8 +165,8 @@ static PyObject* game_init(PyObject *self, PyObject *args)
             window.clear();
             for (int y = tileFrame.top; y < tileFrame.height + tileFrame.top; y++) {
                 for (int x = tileFrame.left; x < tileFrame.width + tileFrame.left; x++) {
-                    tiles.at(y).at(x).setPosition((x - tileFrame.left) * TILE_WIDTH, (y - tileFrame.top) * TILE_HEIGHT);
-                    window.draw(tiles.at(y).at(x));
+                    tiles.at(floor(y)).at(floor(x)).setPosition((x - tileFrame.left) * TILE_WIDTH, (y - tileFrame.top) * TILE_HEIGHT);
+                    window.draw(tiles.at(floor(y)).at(floor(x)));
                 }
             }
             PyObject_CallObject(drawFunc, NULL);

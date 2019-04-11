@@ -27,7 +27,7 @@ extern "C" {
 
 #define Game_setTileFrame_NUM 5
 #define Game_setTileFrame_RETURN void
-#define Game_setTileFrame_PROTO (sf::IntRect rect)
+#define Game_setTileFrame_PROTO (sf::Rect<float> rect)
 
 #define Game_setTileWidth_NUM 6
 #define Game_setTileWidth_RETURN void

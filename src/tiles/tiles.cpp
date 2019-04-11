@@ -33,15 +33,15 @@ static PyObject * tiles_setTileHeight(PyObject *self, PyObject *args)
 
 static PyObject * tiles_setTileFrame(PyObject *self, PyObject *args)
 {
-    int x;
-    int y;
-    int width;
-    int height;
+    float x;
+    float y;
+    float width;
+    float height;
 
-    if (!PyArg_ParseTuple(args, "iiii", &x, &y, &width, &height))
+    if (!PyArg_ParseTuple(args, "ffff", &x, &y, &width, &height))
         return NULL;
 
-    game_setTileFrame(sf::IntRect(x, y, width, height));
+    game_setTileFrame(sf::Rect<float>(x, y, width, height));
     Py_RETURN_NONE;
 }
 
