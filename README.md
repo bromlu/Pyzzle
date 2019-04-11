@@ -99,6 +99,7 @@ The game module has the following functions.
 | ```int createGameObject()``` | *None* | Index of the new object | Creates a new game object |
 | ```void moveGameObject(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Moves the object by the specified amount |
 | ```void setGameObjectPosition(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Sets the objects position to the specified coordinates |
+| ```tuple getGameObjectPosition(int GameObjectIndex)``` | The index the game object is at | A tuple with 0 as x and 2 as y | returns the objects position |
 
 ### Animations
 

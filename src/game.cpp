@@ -12,7 +12,10 @@ using namespace std;
 sf::RenderWindow window;
 vector<GameObject*> gameObjects;
 vector<Animation*> activeAnimations;
-vector<sf::Sprite> tiles;
+vector<vector<sf::Sprite> > tiles;
+sf::IntRect tileFrame(0,0,0,0);
+float TILE_WIDTH = 32.0;
+float TILE_HEIGHT = 32.0;
 
 static sf::RenderWindow* game_getWindow() {
     return &window;
@@ -31,13 +34,28 @@ static void game_removeActiveAnimation(int index) {
     activeAnimations.erase(activeAnimations.begin()+index);
 }
 
-static void game_addTile(sf::Texture* tileTexture, float x, float y, float tileWidth, float tileHeight) {
+static void game_addTile(sf::Texture* tileTexture, int x, int y) {
     sf::Sprite sprite(*tileTexture);
-    sprite.setPosition(x, y);
+    sprite.setPosition(x * TILE_WIDTH, y * TILE_HEIGHT);
     sprite.setScale(
-        tileWidth / sprite.getLocalBounds().width, 
-        tileHeight / sprite.getLocalBounds().height);
-    tiles.push_back(sprite);
+        TILE_WIDTH / sprite.getLocalBounds().width, 
+        TILE_HEIGHT / sprite.getLocalBounds().height);
+    if (int(tiles.size()) == y) {
+        tiles.push_back(vector<sf::Sprite>());
+    }
+    tiles.at(y).push_back(sprite);
+}
+
+static void game_setTileFrame(sf::IntRect rect) {
+    tileFrame = rect;
+}
+
+static void game_setTileWidth(float width) {
+    TILE_WIDTH = width;
+}
+
+static void game_setTileHeight(float height) {
+    TILE_HEIGHT = height;
 }
 
 static PyObject* game_createGameObject(PyObject *self, PyObject *args) 
@@ -70,6 +88,20 @@ static PyObject* game_setGameObjectPosition(PyObject *self, PyObject *args)
 
     gameObjects.at(index)->setPosition(sf::Vector2f(x, y));
     Py_RETURN_NONE;
+}
+
+static PyObject* game_getGameObjectPosition(PyObject *self, PyObject *args) 
+{
+    int index;
+    PyObject* positionTuple = PyTuple_New(2);
+
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+
+    sf::Vector2f position = gameObjects.at(index)->getPosition();
+    PyTuple_SetItem(positionTuple, 0, PyFloat_FromDouble(double(position.x)));
+    PyTuple_SetItem(positionTuple, 1, PyFloat_FromDouble(double(position.y)));
+    return positionTuple;
 }
 
 static PyObject* game_init(PyObject *self, PyObject *args)
@@ -131,8 +163,11 @@ static PyObject* game_init(PyObject *self, PyObject *args)
 
         if (drawFunc) {
             window.clear();
-            for (vector<sf::Sprite>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
-                window.draw(*it);
+            for (int y = tileFrame.top; y < tileFrame.height + tileFrame.top; y++) {
+                for (int x = tileFrame.left; x < tileFrame.width + tileFrame.left; x++) {
+                    tiles.at(y).at(x).setPosition((x - tileFrame.left) * TILE_WIDTH, (y - tileFrame.top) * TILE_HEIGHT);
+                    window.draw(tiles.at(y).at(x));
+                }
             }
             PyObject_CallObject(drawFunc, NULL);
             window.display();
@@ -156,6 +191,9 @@ static PyMethodDef gameMethods[] = {
      "Creates a new game object and returns its global index."},
 
     {"setGameObjectPosition",  game_setGameObjectPosition, METH_VARARGS,
+     "Creates a new game object and returns its global index."},
+
+    {"getGameObjectPosition",  game_getGameObjectPosition, METH_VARARGS,
      "Creates a new game object and returns its global index."},
 
     {NULL, NULL, 0, NULL} 
@@ -184,6 +222,9 @@ PyMODINIT_FUNC PyInit_game(void)
     Game_API[2] = (void *)&game_addActiveAnimation;
     Game_API[3] = (void *)&game_removeActiveAnimation;
     Game_API[4] = (void *)&game_addTile;
+    Game_API[5] = (void *)&game_setTileFrame;
+    Game_API[6] = (void *)&game_setTileWidth;
+    Game_API[7] = (void *)&game_setTileHeight;
 
     c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
 

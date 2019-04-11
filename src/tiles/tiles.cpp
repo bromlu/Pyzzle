@@ -7,9 +7,6 @@
 #include <string>
 using namespace std;
 
-float TILE_WIDTH = 32.0;
-float TILE_HEIGHT = 32.0;
-
 vector<sf::Texture> textures;
 
 static PyObject * tiles_setTileWidth(PyObject *self, PyObject *args)
@@ -19,7 +16,7 @@ static PyObject * tiles_setTileWidth(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "f", &width))
         return NULL;
 
-    TILE_WIDTH = width;
+    game_setTileWidth(width);
     Py_RETURN_NONE;
 }
 
@@ -30,7 +27,21 @@ static PyObject * tiles_setTileHeight(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "f", &height))
         return NULL;
 
-    TILE_HEIGHT = height;
+    game_setTileHeight(height);
+    Py_RETURN_NONE;
+}
+
+static PyObject * tiles_setTileFrame(PyObject *self, PyObject *args)
+{
+    int x;
+    int y;
+    int width;
+    int height;
+
+    if (!PyArg_ParseTuple(args, "iiii", &x, &y, &width, &height))
+        return NULL;
+
+    game_setTileFrame(sf::IntRect(x, y, width, height));
     Py_RETURN_NONE;
 }
 
@@ -65,7 +76,7 @@ static PyObject * tiles_loadFromTextFile(PyObject *self, PyObject *args)
             if(isspace(character)) {
                 if(currentNumber.length() != 0) {
                     int index = stoi(currentNumber);
-                    game_addTile(&textures.at(index), x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+                    game_addTile(&textures.at(index), x, y);
                     currentNumber = "";
                 }
                 if(character == '\n') {
@@ -80,7 +91,7 @@ static PyObject * tiles_loadFromTextFile(PyObject *self, PyObject *args)
         }
         if(currentNumber.length() != 0) {
             int index = stoi(currentNumber);
-            game_addTile(&textures.at(index), x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+            game_addTile(&textures.at(index), x, y);
         }
         mapFile.close();
     }
@@ -94,6 +105,9 @@ static PyMethodDef tilesMethods[] = {
 
     {"setTileHeight",  tiles_setTileHeight, METH_VARARGS,
      "sets the height of all tiles."},
+
+    {"setTileFrame",  tiles_setTileFrame, METH_VARARGS,
+     "sets the frame of tiles to be displayed."},
 
     {"addTileType",  tiles_addTileType, METH_VARARGS,
      "sets the height of all tiles."},
