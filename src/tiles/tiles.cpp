@@ -8,6 +8,22 @@
 using namespace std;
 
 vector<sf::Texture> textures;
+vector<vector<sf::Sprite> > tiles;
+sf::Rect<float> tileFrame(0.0,0.0,0.0,0.0);
+float TILE_WIDTH = 32.0;
+float TILE_HEIGHT = 32.0;
+
+static void addTile(sf::Texture* tileTexture, int x, int y) {
+    sf::Sprite sprite(*tileTexture);
+    sprite.setPosition(x * TILE_WIDTH, y * TILE_HEIGHT);
+    sprite.setScale(
+        TILE_WIDTH / sprite.getLocalBounds().width, 
+        TILE_HEIGHT / sprite.getLocalBounds().height);
+    if (int(tiles.size()) == y) {
+        tiles.push_back(vector<sf::Sprite>());
+    }
+    tiles.at(y).push_back(sprite);
+}
 
 static PyObject * tiles_setTileWidth(PyObject *self, PyObject *args)
 {
@@ -16,7 +32,7 @@ static PyObject * tiles_setTileWidth(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "f", &width))
         return NULL;
 
-    game_setTileWidth(width);
+    TILE_WIDTH = width;
     Py_RETURN_NONE;
 }
 
@@ -27,7 +43,7 @@ static PyObject * tiles_setTileHeight(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "f", &height))
         return NULL;
 
-    game_setTileHeight(height);
+    TILE_HEIGHT = height;
     Py_RETURN_NONE;
 }
 
@@ -41,7 +57,7 @@ static PyObject * tiles_setTileFrame(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "ffff", &x, &y, &width, &height))
         return NULL;
 
-    game_setTileFrame(sf::Rect<float>(x, y, width, height));
+    tileFrame = sf::Rect<float>(x, y, width, height);
     Py_RETURN_NONE;
 }
 
@@ -76,7 +92,7 @@ static PyObject * tiles_loadFromTextFile(PyObject *self, PyObject *args)
             if(isspace(character)) {
                 if(currentNumber.length() != 0) {
                     int index = stoi(currentNumber);
-                    game_addTile(&textures.at(index), x, y);
+                    addTile(&textures.at(index), x, y);
                     currentNumber = "";
                 }
                 if(character == '\n') {
@@ -91,11 +107,22 @@ static PyObject * tiles_loadFromTextFile(PyObject *self, PyObject *args)
         }
         if(currentNumber.length() != 0) {
             int index = stoi(currentNumber);
-            game_addTile(&textures.at(index), x, y);
+            addTile(&textures.at(index), x, y);
         }
         mapFile.close();
     }
 
+    Py_RETURN_NONE;
+}
+
+static PyObject * tiles_draw(PyObject *self, PyObject *args)
+{
+    for (int y = tileFrame.top; y < tileFrame.height + tileFrame.top; y++) {
+        for (int x = tileFrame.left; x < tileFrame.width + tileFrame.left; x++) {
+            tiles.at(floor(y)).at(floor(x)).setPosition((x - tileFrame.left) * TILE_WIDTH, (y - tileFrame.top) * TILE_HEIGHT);
+            game_getWindow()->draw(tiles.at(floor(y)).at(floor(x)));
+        }
+    }
     Py_RETURN_NONE;
 }
 
@@ -110,10 +137,14 @@ static PyMethodDef tilesMethods[] = {
      "sets the frame of tiles to be displayed."},
 
     {"addTileType",  tiles_addTileType, METH_VARARGS,
-     "sets the height of all tiles."},
+     "Adds a new tile type."},
 
     {"loadFromTextFile",  tiles_loadFromTextFile, METH_VARARGS,
-     "sets the height of all tiles."},
+     "Loads the tiles from a text file."},
+
+    {"draw",  tiles_draw, METH_VARARGS,
+     "Draws the tiles."},
+
 
     {NULL, NULL, 0, NULL}
 };

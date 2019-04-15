@@ -99,4 +99,5 @@ def update():
 
 def draw(): 
     global mainCharacter
+    tiles.draw()
     sprites.draw(mainCharacter.index)

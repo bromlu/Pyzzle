@@ -12,10 +12,6 @@ using namespace std;
 sf::RenderWindow window;
 vector<GameObject*> gameObjects;
 vector<Animation*> activeAnimations;
-vector<vector<sf::Sprite> > tiles;
-sf::Rect<float> tileFrame(0.0,0.0,0.0,0.0);
-float TILE_WIDTH = 32.0;
-float TILE_HEIGHT = 32.0;
 
 static sf::RenderWindow* game_getWindow() {
     return &window;
@@ -32,30 +28,6 @@ static int game_addActiveAnimation(Animation* animation) {
 
 static void game_removeActiveAnimation(int index) {
     activeAnimations.erase(activeAnimations.begin()+index);
-}
-
-static void game_addTile(sf::Texture* tileTexture, int x, int y) {
-    sf::Sprite sprite(*tileTexture);
-    sprite.setPosition(x * TILE_WIDTH, y * TILE_HEIGHT);
-    sprite.setScale(
-        TILE_WIDTH / sprite.getLocalBounds().width, 
-        TILE_HEIGHT / sprite.getLocalBounds().height);
-    if (int(tiles.size()) == y) {
-        tiles.push_back(vector<sf::Sprite>());
-    }
-    tiles.at(y).push_back(sprite);
-}
-
-static void game_setTileFrame(sf::Rect<float> rect) {
-    tileFrame = rect;
-}
-
-static void game_setTileWidth(float width) {
-    TILE_WIDTH = width;
-}
-
-static void game_setTileHeight(float height) {
-    TILE_HEIGHT = height;
 }
 
 static PyObject* game_createGameObject(PyObject *self, PyObject *args) 
@@ -163,12 +135,6 @@ static PyObject* game_init(PyObject *self, PyObject *args)
 
         if (drawFunc) {
             window.clear();
-            for (int y = tileFrame.top; y < tileFrame.height + tileFrame.top; y++) {
-                for (int x = tileFrame.left; x < tileFrame.width + tileFrame.left; x++) {
-                    tiles.at(floor(y)).at(floor(x)).setPosition((x - tileFrame.left) * TILE_WIDTH, (y - tileFrame.top) * TILE_HEIGHT);
-                    window.draw(tiles.at(floor(y)).at(floor(x)));
-                }
-            }
             PyObject_CallObject(drawFunc, NULL);
             window.display();
         }
@@ -221,10 +187,6 @@ PyMODINIT_FUNC PyInit_game(void)
     Game_API[1] = (void *)&game_getGameObject;
     Game_API[2] = (void *)&game_addActiveAnimation;
     Game_API[3] = (void *)&game_removeActiveAnimation;
-    Game_API[4] = (void *)&game_addTile;
-    Game_API[5] = (void *)&game_setTileFrame;
-    Game_API[6] = (void *)&game_setTileWidth;
-    Game_API[7] = (void *)&game_setTileHeight;
 
     c_api_object = PyCapsule_New((void *)Game_API, "pyzzle.game._C_API", NULL);
 
