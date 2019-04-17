@@ -99,6 +99,7 @@ The game module has the following functions.
 | ```int createGameObject()``` | *None* | Index of the new object | Creates a new game object |
 | ```void moveGameObject(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Moves the object by the specified amount |
 | ```void setGameObjectPosition(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Sets the objects position to the specified coordinates |
+| ```tuple getGameObjectPosition(int GameObjectIndex)``` | The index the game object is at | A tuple with 0 as x and 2 as y | returns the objects position |
 
 ### Animations
 
@@ -163,11 +164,29 @@ The sprites module has the following functions.
 | :------: | :--------: | :-----: | :-----: |
 | ```void add(int GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
 | ```void setFrame(int GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
+| ```void setScale(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x scale factor, the y scale factor | *None* | Sets the scale of the sprite to be displayed |
 | ```void draw(int GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
 
 ### Tiles
 
-- *TODO*
+```python
+import pyzzle.tiles
+```
+
+The tiles module has the following functions.
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void setTileWidth(float width)``` | The width you want all tiles to be | *None* | Sets the width of all tiles and scales the tilemap appropriately |
+| ```void setTileHeight(float height)``` | The height you want all tiles to be | *None* | Sets the height of all tiles and scales the tilemap appropriately |
+| ```void setTileFrame(int x, int y, int width, int height)``` | The upper left of the frame, the width and the height of the frame | *None* | Sets the section of the tilemap to be displayed |
+| ```void addTextTileType(string filename)``` | The name of the file for the texture | *None* | Adds a tile that it represented by its index, i.e. the first tile you add is represented by a 0, the second a 1, and so on |
+| ```void addPngTileType(string filename, int R, int G, int B)``` | The name of the file for the texture, the RGB values associated with this tile | *None* | Adds a tile that it represented by its color |
+| ```void loadFromText(string filename, int width, int height)``` | The file to be loaded, the width and height of that file | *None* | Loads the given text file and translates it into a tilemap |
+| ```void loadFromPng(string filename, int width, int height)``` | The file to be loaded, the width and height of that file | *None* | Loads the given PNG file and translates it into a tilemap |
+| ```void draw()``` | *None* | *None* | Draws the tilemap |
+
+The Tile subsystem allows you to load a tilemap with either text files or PNG files. Make sure to be consistent with what functions you use, if you mix and match the addTile functions and the loadFrom functions it will lead to undefined behavior.
 
 ## Demos
 

@@ -38,6 +38,22 @@ sprites_setFrame(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+static PyObject *
+sprites_setScale(PyObject *self, PyObject *args)
+{
+    int index;
+    float x;
+    float y;
+
+    if (!PyArg_ParseTuple(args, "iff", &index, &x, &y))
+        return NULL;
+
+    GameObject* gameObject = game_getGameObject(index);
+    gameObject->getSprite()->setScale(x, y);
+
+    Py_RETURN_NONE;
+}
+
 static PyObject * sprites_draw(PyObject *self, PyObject *args)
 {
     int index;
@@ -56,6 +72,9 @@ static PyMethodDef spritesMethods[] = {
 
     {"setFrame",  sprites_setFrame, METH_VARARGS,
      "Sets the frame of a sprite to be displayed."},
+
+    {"setScale",  sprites_setScale, METH_VARARGS,
+     "Sets the scale of a sprite to be displayed."},
 
     {"draw",  sprites_draw, METH_VARARGS,
      "Draws a sprite in the SFML window."},

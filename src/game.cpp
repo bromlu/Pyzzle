@@ -62,6 +62,20 @@ static PyObject* game_setGameObjectPosition(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+static PyObject* game_getGameObjectPosition(PyObject *self, PyObject *args) 
+{
+    int index;
+    PyObject* positionTuple = PyTuple_New(2);
+
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+
+    sf::Vector2f position = gameObjects.at(index)->getPosition();
+    PyTuple_SetItem(positionTuple, 0, PyFloat_FromDouble(double(position.x)));
+    PyTuple_SetItem(positionTuple, 1, PyFloat_FromDouble(double(position.y)));
+    return positionTuple;
+}
+
 static PyObject* game_init(PyObject *self, PyObject *args)
 {
     PyObject *pName, *pModule, *initFunc, *updateFunc, *drawFunc;
@@ -143,6 +157,9 @@ static PyMethodDef gameMethods[] = {
      "Creates a new game object and returns its global index."},
 
     {"setGameObjectPosition",  game_setGameObjectPosition, METH_VARARGS,
+     "Creates a new game object and returns its global index."},
+
+    {"getGameObjectPosition",  game_getGameObjectPosition, METH_VARARGS,
      "Creates a new game object and returns its global index."},
 
     {NULL, NULL, 0, NULL} 

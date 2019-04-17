@@ -56,7 +56,6 @@ void GameObject::addSprite(string fileName) {
 
     this->sprite = sf::Sprite(this->texture);
     this->sprite.setPosition(this->position);
-    this->sprite.setScale(5, 5);
 }
 
 sf::Sprite* GameObject::getSprite() {
