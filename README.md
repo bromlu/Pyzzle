@@ -169,7 +169,24 @@ The sprites module has the following functions.
 
 ### Tiles
 
-- *TODO*
+```python
+import pyzzle.tiles
+```
+
+The tiles module has the following functions.
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void setTileWidth(float width)``` | The width you want all tiles to be | *None* | Sets the width of all tiles and scales the tilemap appropriately |
+| ```void setTileHeight(float height)``` | The height you want all tiles to be | *None* | Sets the height of all tiles and scales the tilemap appropriately |
+| ```void setTileFrame(int x, int y, int width, int height)``` | The upper left of the frame, the width and the height of the frame | *None* | Sets the section of the tilemap to be displayed |
+| ```void addTextTileType(string filename)``` | The name of the file for the texture | *None* | Adds a tile that it represented by its index, i.e. the first tile you add is represented by a 0, the second a 1, and so on |
+| ```void addPngTileType(string filename, int R, int G, int B)``` | The name of the file for the texture, the RGB values associated with this tile | *None* | Adds a tile that it represented by its color |
+| ```void loadFromText(string filename, int width, int height)``` | The file to be loaded, the width and height of that file | *None* | Loads the given text file and translates it into a tilemap |
+| ```void loadFromPng(string filename, int width, int height)``` | The file to be loaded, the width and height of that file | *None* | Loads the given PNG file and translates it into a tilemap |
+| ```void draw()``` | *None* | *None* | Draws the tilemap |
+
+The Tile subsystem allows you to load a tilemap with either text files or PNG files. Make sure to be consistent with what functions you use, if you mix and match the addTile functions and the loadFrom functions it will lead to undefined behavior.
 
 ## Demos
 
