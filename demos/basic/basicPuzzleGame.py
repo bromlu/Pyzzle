@@ -45,9 +45,9 @@ class MainCharacter:
 if __name__ == "__main__":
     tiles.setTileWidth(50)
     tiles.setTileHeight(50)
-    tiles.addTileType("black-marble.png")
-    tiles.addTileType("wood-tile.png")
-    tiles.loadFromTextFile("map.txt", 32,32)
+    tiles.addPngTileType("black-marble.png", 255,255,255)
+    tiles.addPngTileType("wood-tile.png",0,0,0)
+    tiles.loadFromPng("map.png", 32,32)
     tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
