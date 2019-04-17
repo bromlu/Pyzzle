@@ -47,14 +47,14 @@ if __name__ == "__main__":
     tiles.setTileHeight(50)
     tiles.addTileType("black-marble.png")
     tiles.addTileType("wood-tile.png")
-    tiles.loadFromTextFile("map.txt")
-    tiles.setTileFrame(0,0,16,16)
+    tiles.loadFromTextFile("map.txt", 32,32)
+    tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def clampCamera(x):
-    # x = x /50
-    if x >= 16:
-        return 16
+    return x
+    if x >= WIDTH:
+        return WIDTH
     elif x <= 0:
         return 0
     else:
@@ -69,33 +69,32 @@ def update():
     global cameraX
     global cameraY
     if input.isKeyPressed(22): #W
-        if(cameraY == 0 or game.getGameObjectPosition(mainCharacter.index)[1] > HEIGHT/2):
+        if(cameraY <= 0 or game.getGameObjectPosition(mainCharacter.index)[1] > HEIGHT/2):
             game.moveGameObject(mainCharacter.index, 0, -5)
         else:
-            cameraY = clampCamera(cameraY-0.15)
+            cameraY = clampCamera(cameraY-8)
         animations.play(mainCharacter.index, mainCharacter.runUp)
     elif input.isKeyPressed(0): #A
-        if(cameraX == 0 or game.getGameObjectPosition(mainCharacter.index)[0] > WIDTH/2):
+        if(cameraX <= 0 or game.getGameObjectPosition(mainCharacter.index)[0] > WIDTH/2):
             game.moveGameObject(mainCharacter.index, -5, 0)
         else:
-            cameraX = clampCamera(cameraX-0.15)
+            cameraX = clampCamera(cameraX-8)
         animations.play(mainCharacter.index, mainCharacter.runLeft)
     elif input.isKeyPressed(3): #D
-        if(cameraX == 16 or game.getGameObjectPosition(mainCharacter.index)[0] < WIDTH/2):
+        if(cameraX >= WIDTH or game.getGameObjectPosition(mainCharacter.index)[0] < WIDTH/2):
             game.moveGameObject(mainCharacter.index, 5, 0)
         else:
-            cameraX = clampCamera(cameraX+0.15)
+            cameraX = clampCamera(cameraX+8)
         animations.play(mainCharacter.index, mainCharacter.runRight)
     elif input.isKeyPressed(18): #S
-        if(cameraY == 16 or game.getGameObjectPosition(mainCharacter.index)[1] < HEIGHT/2):
+        if(cameraY >= WIDTH or game.getGameObjectPosition(mainCharacter.index)[1] < HEIGHT/2):
             game.moveGameObject(mainCharacter.index, 0, 5)
         else:
-            cameraY = clampCamera(cameraY+0.15)
+            cameraY = clampCamera(cameraY+8)
         animations.play(mainCharacter.index, mainCharacter.runDown)
     else:
         animations.stop(mainCharacter.index)
-    # print(cameraX, cameraY)
-    tiles.setTileFrame(cameraX,cameraY,16,16)
+    tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
 
 def draw(): 
     global mainCharacter
