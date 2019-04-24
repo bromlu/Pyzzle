@@ -43,12 +43,6 @@ class MainCharacter:
         animations.play(self.index, self.spin)
 
 if __name__ == "__main__":
-    tiles.setTileWidth(50)
-    tiles.setTileHeight(50)
-    tiles.addPngTileType("black-marble.png", 255,255,255)
-    tiles.addPngTileType("wood-tile.png",0,0,0)
-    tiles.loadFromPng("map.png", 32,32)
-    tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def clampCamera(x):
@@ -61,6 +55,12 @@ def clampCamera(x):
         return x
 
 def init():
+    tiles.setTileWidth(50)
+    tiles.setTileHeight(50)
+    tiles.addPngTileType("black-marble.png", 255,255,255)
+    tiles.addPngTileType("wood-tile.png",0,0,0)
+    tiles.loadFromPng("map.png", 32,32)
+    tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
     global mainCharacter
     mainCharacter = MainCharacter()
 
