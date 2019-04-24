@@ -47,6 +47,7 @@ def init():
     global mainCharacter
     mainCharacter = MainCharacter()
     audio.loadMusic("nice_music.ogg")
+    audio.loadAudio("whistle.ogg")
     audio.playMusic(0)
     
 
@@ -66,6 +67,7 @@ def update():
         animations.play(mainCharacter.index, mainCharacter.runDown)
     else:
         animations.stop(mainCharacter.index)
+        audio.playAudio(0)
 
 def draw(): 
     global mainCharacter

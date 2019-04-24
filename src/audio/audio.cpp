@@ -70,9 +70,8 @@ static PyObject * audio_playAudio(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
-    cout << "calling music" << endl;
     audio.at(index)->play();
-    cout << "playing music" << endl;
+    cout << "playing sound Fx" << endl;
 
     Py_RETURN_FALSE;
 };
