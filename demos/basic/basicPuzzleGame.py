@@ -46,8 +46,9 @@ if __name__ == "__main__":
 def init():
     global mainCharacter
     mainCharacter = MainCharacter()
-    audio.loadAudio("nice_music.ogg") 
-
+    audio.loadMusic("nice_music.ogg")
+    audio.playMusic(0)
+    
 
 def update(): 
     global mainCharacter
