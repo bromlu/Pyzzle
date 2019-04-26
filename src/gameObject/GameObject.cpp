@@ -17,7 +17,10 @@ sf::Vector2f GameObject::getPosition() {
 
 void GameObject::setPosition(sf::Vector2f position) {
     this->position = position;
-    this->sprite.setPosition(position);
+    sf::Vector2f offset(this->sprite.getGlobalBounds().width / 2, this->sprite.getGlobalBounds().height / 2);
+    cout << this->sprite.getGlobalBounds().width << endl;
+    cout << offset.x << " : " << offset.y << endl;
+    this->sprite.setPosition(position - offset);
 }
 
 void GameObject::move(sf::Vector2f distance) {
