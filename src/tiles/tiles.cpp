@@ -9,6 +9,7 @@ using namespace std;
 
 vector<sf::Texture> textures;
 map<string, int> colorMap;
+sf::Image inputMap;
 sf::Texture tileMap;
 sf::Sprite tileMapSprite;
 float TILE_WIDTH = 32.0;
@@ -18,8 +19,8 @@ int MAP_HEIGHT = 0;
 
 void setScale() {
     tileMapSprite.setScale(
-    TILE_WIDTH / (tileMapSprite.getLocalBounds().width / MAP_WIDTH), 
-    TILE_HEIGHT / (tileMapSprite.getLocalBounds().height / MAP_HEIGHT));
+    TILE_WIDTH / textures.at(0).getSize().x, 
+    TILE_HEIGHT / textures.at(0).getSize().y);
 }
 
 static PyObject * tiles_setTileWidth(PyObject *self, PyObject *args)
@@ -158,11 +159,10 @@ static PyObject * tiles_loadFromPng(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "sii", &fileName, &width, &height))
         return NULL;
 
-    sf::Image map;
-    map.loadFromFile(fileName);
+    inputMap.loadFromFile(fileName);
 
-    const sf::Uint8* pixels = map.getPixelsPtr();
-    sf::Vector2u size = map.getSize();
+    const sf::Uint8* pixels = inputMap.getPixelsPtr();
+    sf::Vector2u size = inputMap.getSize();
 
     MAP_WIDTH = width;
     MAP_HEIGHT = height;
@@ -185,6 +185,41 @@ static PyObject * tiles_draw(PyObject *self, PyObject *args)
 {
     game_getWindow()->draw(tileMapSprite);
     Py_RETURN_NONE;
+}
+
+static PyObject * tiles_collidesWithTile(PyObject *self, PyObject *args)
+{
+    int gameObjectIndex;
+    int R;
+    int G;
+    int B;
+
+    if (!PyArg_ParseTuple(args, "iiii", &gameObjectIndex, &R, &G, &B))
+        return NULL;
+
+    sf::Vector2f objectPosition = game_getGameObject(gameObjectIndex)->getPosition();
+
+    const sf::Uint8* pixels = inputMap.getPixelsPtr();
+    sf::Vector2u size = inputMap.getSize();
+    int length = size.x * size.y * 4;
+
+    sf::IntRect frame = tileMapSprite.getTextureRect();
+
+    sf::FloatRect localBounds = tileMapSprite.getLocalBounds();
+    sf::FloatRect globalBounds = tileMapSprite.getGlobalBounds();
+    float scalerX = localBounds.width / globalBounds.width;
+    float scalerY = localBounds.height / globalBounds.height;
+
+    int x = (int(objectPosition.x) + frame.left / scalerX) / TILE_WIDTH;
+    int y = (int(objectPosition.y) + frame.top / scalerY) / TILE_HEIGHT;
+    int i = (x + (y * size.x)) * 4;
+
+    if ( i > length || x < 0 || y < 0) {
+        Py_RETURN_FALSE;
+    } else if (R == pixels[i] && G == pixels[i+1] && B == pixels[i+2]) {
+        Py_RETURN_TRUE;
+    }
+    Py_RETURN_FALSE;
 }
 
 static PyMethodDef tilesMethods[] = {
@@ -212,6 +247,8 @@ static PyMethodDef tilesMethods[] = {
     {"draw",  tiles_draw, METH_VARARGS,
      "Draws the tiles."},
 
+    {"collidesWithTile",  tiles_collidesWithTile, METH_VARARGS,
+     "Returns true if the game object is inside any tile of given type."},
 
     {NULL, NULL, 0, NULL}
 };
