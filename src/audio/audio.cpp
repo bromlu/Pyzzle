@@ -7,7 +7,9 @@
 using namespace std;
 
 vector<sf::Music*> music;
-vector<sf::Music*> audio;
+vector<sf::SoundBuffer*> audioBuffer;
+vector<sf::Sound*> audio;
+sf::Sound sound;
 
 
 static PyObject * audio_loadMusic(PyObject *self, PyObject * args)
@@ -26,7 +28,6 @@ static PyObject * audio_loadMusic(PyObject *self, PyObject * args)
     }
     
     return PyLong_FromLong(index);
-
 };
 
 static PyObject * audio_playMusic(PyObject *self, PyObject * args)
@@ -43,24 +44,41 @@ static PyObject * audio_playMusic(PyObject *self, PyObject * args)
     Py_RETURN_FALSE;
 };
 
+// sf::Sound loadSound(std::string filename)
+// {
+//     sf::SoundBuffer buffer; // this buffer is local to the function, it will be destroyed...
+//     if (!buffer.loadFromFile(filename)) {
+//         cout << "BAD THINGS" << endl;
+//     };
+//     return sf::Sound(buffer);
+// } // ... here
+
+
 
 static PyObject * audio_loadAudio(PyObject *self, PyObject * args)
 {
+    // sound = loadSound("whistle.wav");
+    // cout << "LOADED" << endl;
+    // sound.play();
     const char *AudioFileName;
 
     if (!PyArg_ParseTuple(args, "s", &AudioFileName))
         return NULL;
     
     long index = audio.size();
-    audio.push_back(new sf::Music());
-
-    if (!audio.at(index)->openFromFile(AudioFileName)) {
+    sf::SoundBuffer* soundBuffer = new sf::SoundBuffer();
+    if (!soundBuffer->loadFromFile(AudioFileName)) {
         cout << "failed to load" << endl;
         return NULL;
     }
+    audioBuffer.push_back(soundBuffer);
+    // audio.push_back(new sf::Sound(*SoundBuffer));
+    sf::Sound newSound(*soundBuffer);
+    newSound.play();
+    cout <<"WAT"<< endl;
+    audio.push_back(&newSound);
     
     return PyLong_FromLong(index);
-
 };
 
 static PyObject * audio_playAudio(PyObject *self, PyObject * args)
@@ -70,8 +88,10 @@ static PyObject * audio_playAudio(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
-    audio.at(index)->play();
-    cout << "playing sound Fx" << endl;
+    if(audio.at(index)->getStatus() != sf::SoundSource::Status::Playing) {
+        audio.at(index)->play();
+        cout << "playing sound Fx" << endl;
+    }
 
     Py_RETURN_FALSE;
 };

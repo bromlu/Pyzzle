@@ -47,8 +47,9 @@ def init():
     global mainCharacter
     mainCharacter = MainCharacter()
     audio.loadMusic("nice_music.ogg")
-    audio.loadAudio("whistle.ogg")
-    audio.playMusic(0)
+    audio.loadAudio("whistle.wav")
+    # audio.playAudio(0)
+    # audio.playMusic(0)
     
 
 def update(): 
