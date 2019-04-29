@@ -1,12 +1,15 @@
 #include <SFML/Graphics.hpp>
 #include "GameObject.hpp"
 #include "./../collision/collision_includes.cpp"
+#include "Animation.hpp"
 #include <iostream>
 using namespace std;
 
 GameObject::GameObject(int globalIndex) {
     this->globalIndex = globalIndex;
     this->position = sf::Vector2f(0.0, 0.0);
+    this->activeAnimationGlobalIndex = -1;
+    this->activeAnimationLocalIndex = -1;
 }
 
 sf::Vector2f GameObject::getPosition() {
@@ -15,16 +18,12 @@ sf::Vector2f GameObject::getPosition() {
 
 void GameObject::setPosition(sf::Vector2f position) {
     this->position = position;
-    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        it->setPosition(position);
-    }
+    this->sprite.setPosition(position);
 }
 
 void GameObject::move(sf::Vector2f distance) {
     this->position += distance;
-    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        it->move(distance);
-    }
+    this->sprite.move(distance);
 }
 
 float GameObject::getAnimationElapsedTime() {
@@ -35,24 +34,67 @@ void GameObject::restartAnimationClock() {
     this->animationClock.restart();
 }
 
+int GameObject::addAnimation() {
+    this->animations.push_back(Animation(this->sprite.getTexture()->getSize().x, this));
+    return this->animations.size() - 1;
+}
+
+void GameObject::addAnimationFrame(int index, int x, int y, int width, int height) {
+    this->animations.at(index).addAnimationFrame(x, y, width, height);
+}
+
+void GameObject::addAnimationFrames(int index, int fromX, int fromY, int toX, int toY, int width, int height) {
+    this->animations.at(index).addAnimationFrames(fromX, fromY, toX, toY, width, height);
+}
+
+Animation* GameObject::getAnimation(int index) {
+    return &(this->animations.at(index));
+}
+
 void GameObject::addSprite(string fileName) {
-    sf::Texture texture = sf::Texture();
+    this->texture = sf::Texture();
     texture.loadFromFile(fileName);
-    this->textures.push_back(texture);
 
-    sf::Sprite sprite(this->textures.at(this->textures.size() - 1));
-    sprite.setPosition(this->position);
-    sprite.setScale(5, 5);
-    this->sprites.push_back(sprite);
+    this->sprite = sf::Sprite(this->texture);
+    this->sprite.setPosition(this->position);
 }
 
-sf::Sprite* GameObject::getSprite(int index) {
-    return &(this->sprites.at(index));
+sf::Sprite* GameObject::getSprite() {
+    return &(this->sprite);
 }
 
-void GameObject::draw(sf::RenderWindow* window) {    
-    for (std::vector<sf::Sprite>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        window->draw(*it);
+void GameObject::draw(sf::RenderWindow* window) {  
+    window->draw(this->sprite);  
+}
+
+int GameObject::getActiveAnimationLocalIndex() {
+    return this->activeAnimationLocalIndex;
+}
+
+int GameObject::getActiveAnimationGlobalIndex() {
+    return this->activeAnimationGlobalIndex;
+}
+
+void GameObject::playAnimation(int globalIndex, int localIndex) {
+    this->activeAnimationGlobalIndex = globalIndex;
+    this->activeAnimationLocalIndex = localIndex;
+}
+
+void GameObject::stopAnimation() {
+    this->animations.at(activeAnimationLocalIndex).stop();
+    this->activeAnimationGlobalIndex = -1;
+    this->activeAnimationLocalIndex = -1;
+}
+
+void GameObject::pauseAnimation() {
+    if(activeAnimationLocalIndex != -1) {
+        this->animations.at(activeAnimationLocalIndex).pause();
+    }
+}
+
+void GameObject::resumeAnimation() {
+    if(activeAnimationLocalIndex != -1) {
+        this->animations.at(activeAnimationLocalIndex).resume();
     }
 }
 

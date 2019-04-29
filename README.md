@@ -71,18 +71,19 @@ Pyzzle includes various features in order to help you with creating the perfect 
 
 ### Currently implemented
 
-- Animations (*Implementation in progress*)
-- Input (*Implementation in progress*)
-- Sprites (*Implementation in progress*)
+- Animations
+- Audio *Implementation in progress*
+- Collision *Implementation in progress*
+- Drawing *Implementation in progress*
+- Tile *Implementation in progress*
+- Input
+- Sprites
 
 ### Future possibilities
 
-- Audio engine
-- Collision engine
-- Drawing engine
-- Event engine
-- Physics engine
-- Tile engine
+- Particle
+- Physics
+- State
 
 ### Game
 
@@ -95,17 +96,29 @@ The game module has the following functions.
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
 | ```void init(string gameFileName, string gameName, int width, int height)``` | Filename of your main game file, name that appears on window, window width, window height | *None* | Creates the window and starts the game loop |
-| ```long createGameObject()``` | *None* | Index of the new object | Creates a new game object |
+| ```int createGameObject()``` | *None* | Index of the new object | Creates a new game object |
 | ```void moveGameObject(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Moves the object by the specified amount |
 | ```void setGameObjectPosition(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x and the y coordinates | *None* | Sets the objects position to the specified coordinates |
+| ```tuple getGameObjectPosition(int GameObjectIndex)``` | The index the game object is at | A tuple with 0 as x and 2 as y | returns the objects position |
 
 ### Animations
+
+```python
+import pyzzle.animations
+```
 
 The animations module has the following functions.
 
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
-| ```void play(int GameObjectIndex)``` | The index the game object is at | *None* | Cycles through the sprite sheet from left to right |
+| ```void play(int gameObjectIndex, int AnimationIndex)``` | Index of the game object, index of the animation to play | *None* | Starts playing the given animation, stops any existing animations |
+| ```void stop(int gameObjectIndex)``` | Index of the game object | *None* | Stops the objects animations |
+| ```void pause(int gameObjectIndex)``` | Index of the game object | *None* | Pauses the objects animations at the current frame |
+| ```void resume(int gameObjectIndex)``` | Index of the game object | *None* | Resumes the objects animations from where it was paused |
+| ```void setDelay(int gameObjectIndex, int AnimationIndex, float delay)``` | Index of the game object, index of the animation, number of seconds to delay by | *None* | Sets the delay time between animation frames |
+| ```int add(int gameObjectIndex)``` | Index of the game object | Index of the new animation | Creates a new animation object on the game object |
+| ```void addFrame(int gameObjectIndex, int AnimationIndex, int x, int y, int width, int height)``` | Index of the game object, index of the animation, left location of frame, top location of frame, width of frame, height of frame | *None* | Add a single frame to the animation object |
+| ```void addFrames(int gameObjectIndex, int AnimationIndex, int fromX, int fromY, int toX, int toY, int width, int height)``` | Index of the game object, index of the animation, left location of start frame, top location of start frame, left location of end frame, top location of end frame, width of frame, height of frame | *None* | Adds a set of frames between the start and stop point to the animation object |
 
 ### Audio
 
@@ -149,13 +162,31 @@ The sprites module has the following functions.
 
 | Function | Parameters | Returns | Purpose |
 | :------: | :--------: | :-----: | :-----: |
-| ```void addSprite(long GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
-| ```void setStartFrame(long GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
-| ```void draw(long GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
+| ```void add(int GameObjectIndex, string imageName)``` | The index the game object is at, the name of the file the sprite sheet is in | *None* | Add a sprite to a game object |
+| ```void setFrame(int GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
+| ```void setScale(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x scale factor, the y scale factor | *None* | Sets the scale of the sprite to be displayed |
+| ```void draw(int GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
 
 ### Tiles
 
-- *TODO*
+```python
+import pyzzle.tiles
+```
+
+The tiles module has the following functions.
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void setTileWidth(float width)``` | The width you want all tiles to be | *None* | Sets the width of all tiles and scales the tilemap appropriately |
+| ```void setTileHeight(float height)``` | The height you want all tiles to be | *None* | Sets the height of all tiles and scales the tilemap appropriately |
+| ```void setTileFrame(int x, int y, int width, int height)``` | The upper left of the frame, the width and the height of the frame | *None* | Sets the section of the tilemap to be displayed |
+| ```void addTextTileType(string filename)``` | The name of the file for the texture | *None* | Adds a tile that it represented by its index, i.e. the first tile you add is represented by a 0, the second a 1, and so on |
+| ```void addPngTileType(string filename, int R, int G, int B)``` | The name of the file for the texture, the RGB values associated with this tile | *None* | Adds a tile that it represented by its color |
+| ```void loadFromText(string filename, int width, int height)``` | The file to be loaded, the width and height of that file | *None* | Loads the given text file and translates it into a tilemap |
+| ```void loadFromPng(string filename, int width, int height)``` | The file to be loaded, the width and height of that file | *None* | Loads the given PNG file and translates it into a tilemap |
+| ```void draw()``` | *None* | *None* | Draws the tilemap |
+
+The Tile subsystem allows you to load a tilemap with either text files or PNG files. Make sure to be consistent with what functions you use, if you mix and match the addTile functions and the loadFrom functions it will lead to undefined behavior.
 
 ## Demos
 
