@@ -76,20 +76,17 @@ static PyObject * audio_playAudio(PyObject *self, PyObject * args)
     Py_RETURN_FALSE;
 };
 
+static PyObject * audio_pauseAudio(PyObject *self, PyObject *args)
+{
+    int index;
 
-// static PyObject * audio_pauseAudio(PyObject *self, PyObject *args)
-// {
-//     int key;
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
 
-//     if (!PyArg_ParseTuple(args, "i", &key))
-//         return NULL;
+    audio.at(index).pause();
 
-//     if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(key))) {
-//         Py_RETURN_TRUE;
-//     }
-
-//     Py_RETURN_FALSE;
-// }
+    Py_RETURN_FALSE;
+}
 
 static PyMethodDef audioMethods[] = {
 
@@ -109,9 +106,9 @@ static PyMethodDef audioMethods[] = {
     {"playAudio", audio_playAudio, METH_VARARGS,
      "Plays loaded audio"},
      
-    //  //pause
-    // {"loadAudio", audio_pauseAudio, METH_VARARGS,
-    //  "Pauses loaded audio"},
+     //pause
+    {"pauseAudio", audio_pauseAudio, METH_VARARGS,
+     "Pauses loaded audio"},
 
     {NULL}
 };

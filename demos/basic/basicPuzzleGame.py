@@ -55,15 +55,19 @@ def update():
     if input.isKeyPressed(22): #W
         game.moveGameObject(mainCharacter.index, 0, -10)
         animations.play(mainCharacter.index, mainCharacter.runUp)
+        audio.pauseAudio(0)
     elif input.isKeyPressed(0): #A
         game.moveGameObject(mainCharacter.index, -10, 0)
         animations.play(mainCharacter.index, mainCharacter.runLeft)
+        audio.pauseAudio(0)
     elif input.isKeyPressed(3): #D
         game.moveGameObject(mainCharacter.index, 10, 0)
         animations.play(mainCharacter.index, mainCharacter.runRight)
+        audio.pauseAudio(0)
     elif input.isKeyPressed(18): #S
         game.moveGameObject(mainCharacter.index, 0, 10)
         animations.play(mainCharacter.index, mainCharacter.runDown)
+        audio.pauseAudio(0)
     else:
         animations.stop(mainCharacter.index)
         audio.playAudio(0)
