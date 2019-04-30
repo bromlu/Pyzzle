@@ -31,6 +31,18 @@ static PyObject * audio_loadMusic(PyObject *self, PyObject * args)
     return PyLong_FromLong(index);
 };
 
+static PyObject * audio_loopMusic(PyObject *self, PyObject * args)
+{
+    int index;
+
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+
+    music.at(index)->setLoop(true);
+
+    Py_RETURN_FALSE;
+};
+
 static PyObject * audio_playMusic(PyObject *self, PyObject * args)
 {
     int index;
@@ -38,10 +50,36 @@ static PyObject * audio_playMusic(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
-    music.at(index)->play();
+    if(music.at(index)->getStatus() != sf::SoundSource::Status::Playing) {
+        music.at(index)->play();
+    }
 
     Py_RETURN_FALSE;
 };
+
+static PyObject * audio_pauseMusic(PyObject *self, PyObject *args)
+{
+    int index;
+
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+
+    music.at(index)->pause();
+
+    Py_RETURN_FALSE;
+}
+
+static PyObject * audio_stopMusic(PyObject *self, PyObject *args)
+{
+    int index;
+
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+
+    music.at(index)->stop();
+
+    Py_RETURN_FALSE;
+}
 
 static PyObject * audio_loadAudio(PyObject *self, PyObject * args)
 {
@@ -88,27 +126,46 @@ static PyObject * audio_pauseAudio(PyObject *self, PyObject *args)
     Py_RETURN_FALSE;
 }
 
+static PyObject * audio_stopAudio(PyObject *self, PyObject *args)
+{
+    int index;
+
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+
+    audio.at(index).stop();
+
+    Py_RETURN_FALSE;
+}
+
 static PyMethodDef audioMethods[] = {
 
-    //load Music
     {"loadMusic", audio_loadMusic, METH_VARARGS,
      "Loads music from file"},
 
-    //play
+    {"loopMusic", audio_loopMusic, METH_VARARGS,
+     "Loops music from file"},
+
     {"playMusic", audio_playMusic, METH_VARARGS,
      "Plays loaded music"},
+
+    {"pauseMusic", audio_pauseMusic, METH_VARARGS,
+     "Pauses loaded music"},
+
+    {"stopMusic", audio_stopMusic, METH_VARARGS,
+     "Stops loaded music"},
      
-     //load Audio
     {"loadAudio", audio_loadAudio, METH_VARARGS,
      "Loads audio from file"},
 
-    //play
     {"playAudio", audio_playAudio, METH_VARARGS,
      "Plays loaded audio"},
      
-     //pause
     {"pauseAudio", audio_pauseAudio, METH_VARARGS,
      "Pauses loaded audio"},
+
+    {"stopAudio", audio_stopAudio, METH_VARARGS,
+     "Stops loaded audio"},
 
     {NULL}
 };

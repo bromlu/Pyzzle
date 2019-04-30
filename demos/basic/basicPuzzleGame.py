@@ -48,6 +48,8 @@ def init():
     mainCharacter = MainCharacter()
     audio.loadMusic("nice_music.ogg")
     audio.loadAudio("whistle.wav")
+    audio.playMusic(0)
+    audio.loopMusic(0)
     
 
 def update(): 
@@ -55,19 +57,21 @@ def update():
     if input.isKeyPressed(22): #W
         game.moveGameObject(mainCharacter.index, 0, -10)
         animations.play(mainCharacter.index, mainCharacter.runUp)
-        audio.pauseAudio(0)
+        audio.stopAudio(0)
+        audio.pauseMusic(0)
     elif input.isKeyPressed(0): #A
         game.moveGameObject(mainCharacter.index, -10, 0)
         animations.play(mainCharacter.index, mainCharacter.runLeft)
-        audio.pauseAudio(0)
+        audio.stopAudio(0)
+        audio.playMusic(0)
     elif input.isKeyPressed(3): #D
         game.moveGameObject(mainCharacter.index, 10, 0)
         animations.play(mainCharacter.index, mainCharacter.runRight)
-        audio.pauseAudio(0)
+        audio.stopAudio(0)
     elif input.isKeyPressed(18): #S
         game.moveGameObject(mainCharacter.index, 0, 10)
         animations.play(mainCharacter.index, mainCharacter.runDown)
-        audio.pauseAudio(0)
+        audio.stopAudio(0)
     else:
         animations.stop(mainCharacter.index)
         audio.playAudio(0)
