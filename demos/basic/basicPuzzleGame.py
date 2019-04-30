@@ -48,8 +48,6 @@ def init():
     mainCharacter = MainCharacter()
     audio.loadMusic("nice_music.ogg")
     audio.loadAudio("whistle.wav")
-    # audio.playAudio(0)
-    # audio.playMusic(0)
     
 
 def update(): 
