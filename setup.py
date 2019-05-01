@@ -31,7 +31,12 @@ tiles = Extension('pyzzle.tiles',
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
                     sources = ['./src/tiles/tiles.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
 
+collision = Extension('pyzzle.collision',
+                    include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
+                    extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
+                    sources = ['./src/collision/collision.cpp', './src/gameObject/GameObject.cpp'])
+
 setup (name = 'pyzzle',
        version = '1.0',
        description = 'This is the pyzzle package',
-       ext_modules = [game, sprites, animations, input, audio, tiles])
+       ext_modules = [game, sprites, animations, input, collision, audio, tiles])

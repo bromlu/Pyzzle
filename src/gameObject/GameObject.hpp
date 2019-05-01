@@ -27,6 +27,12 @@ class GameObject {
 
     void draw(sf::RenderWindow* window);
 
+	void addRect(int left, int top, int width, int height);
+	sf::Rect<float> getGlobalRect(int index);
+	void drawCollisionObjects(sf::RenderWindow* window);
+	bool contains(sf::Vector2f p);
+	bool collides(GameObject* other);
+	bool intersects(float x1, float y1, float x2, float y2);
     int getActiveAnimationLocalIndex();
     int getActiveAnimationGlobalIndex();
 
@@ -41,6 +47,8 @@ class GameObject {
     int activeAnimationLocalIndex;
     int activeAnimationGlobalIndex;
     sf::Vector2f position;
+	vector<sf::Rect<float> > rects;
+    sf::Clock animationClock;
     sf::Sprite sprite;
     sf::Texture texture;
     vector<Animation> animations;
