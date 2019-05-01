@@ -48,7 +48,6 @@ class GameObject {
     int activeAnimationGlobalIndex;
     sf::Vector2f position;
 	vector<sf::Rect<float> > rects;
-    sf::Clock animationClock;
     sf::Sprite sprite;
     sf::Texture texture;
     vector<Animation> animations;
