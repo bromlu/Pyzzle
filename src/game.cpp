@@ -12,6 +12,7 @@ using namespace std;
 sf::RenderWindow window;
 vector<GameObject*> gameObjects;
 vector<Animation*> activeAnimations;
+PyObject *pName, *pModule, *initFunc, *updateFunc, *drawFunc;
 
 static sf::RenderWindow* game_getWindow() {
     return &window;
@@ -62,9 +63,60 @@ static PyObject* game_setGameObjectPosition(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+static PyObject* game_getGameObjectPosition(PyObject *self, PyObject *args) 
+{
+    int index;
+    PyObject* positionTuple = PyTuple_New(2);
+
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+
+    sf::Vector2f position = gameObjects.at(index)->getPosition();
+    PyTuple_SetItem(positionTuple, 0, PyFloat_FromDouble(double(position.x)));
+    PyTuple_SetItem(positionTuple, 1, PyFloat_FromDouble(double(position.y)));
+    return positionTuple;
+}
+
+void loadPythonFunctions(const char *gameFileName, const char *init, const char *draw, const char *update) {
+    initFunc = NULL;
+    updateFunc = NULL;
+    drawFunc = NULL;
+    pName = PyUnicode_DecodeFSDefault(gameFileName);
+
+    pModule = PyImport_Import(pName);
+
+    if (pModule != NULL) {
+        if(PyObject_HasAttrString(pModule, init)) {
+            initFunc = PyObject_GetAttrString(pModule, init);
+        }
+        if (PyObject_HasAttrString(pModule, update)) {
+            updateFunc = PyObject_GetAttrString(pModule, update);
+        } 
+        if (PyObject_HasAttrString(pModule, draw)) {
+            drawFunc = PyObject_GetAttrString(pModule, draw);
+        } 
+    }
+}
+
+static PyObject* game_switchState(PyObject *self, PyObject *args) 
+{
+    const char *gameFileName;
+    const char *initName;
+    const char *updateName;
+    const char *drawName;
+
+    if (!PyArg_ParseTuple(args, "ssss", &gameFileName, &initName, &updateName, &drawName))
+        return NULL;
+
+    loadPythonFunctions(gameFileName, initName, drawName, updateName);
+    if(initFunc) {
+        PyObject_CallObject(initFunc, NULL);
+    }
+    Py_RETURN_NONE;
+}
+
 static PyObject* game_init(PyObject *self, PyObject *args)
 {
-    PyObject *pName, *pModule, *initFunc, *updateFunc, *drawFunc;
     const char *gameFileName;
     const char *gameName;
     int width;
@@ -73,25 +125,10 @@ static PyObject* game_init(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "ssII", &gameFileName, &gameName, &width, &height))
         return NULL;
 
-    pName = PyUnicode_DecodeFSDefault(gameFileName);
-
-    pModule = PyImport_Import(pName);
-    Py_DECREF(pName);
-
-    if (pModule != NULL) {
-        if(PyObject_HasAttrString(pModule, "init")) {
-            initFunc = PyObject_GetAttrString(pModule, "init");
-            PyObject_CallObject(initFunc, NULL);
-            Py_XDECREF(initFunc);
-        }
-        if (PyObject_HasAttrString(pModule, "update")) {
-            updateFunc = PyObject_GetAttrString(pModule, "update");
-        } 
-        if (PyObject_HasAttrString(pModule, "draw")) {
-            drawFunc = PyObject_GetAttrString(pModule, "draw");
-        } 
+    loadPythonFunctions(gameFileName, "init", "draw", "update");
+    if(initFunc) {
+        PyObject_CallObject(initFunc, NULL);
     }
-    Py_DECREF(pModule);
 
     window.create(sf::VideoMode(width, height), gameName);
 
@@ -119,15 +156,18 @@ static PyObject* game_init(PyObject *self, PyObject *args)
             (*it)->animate();
         }
 
+        window.clear();
         if (drawFunc) {
-            window.clear();
             PyObject_CallObject(drawFunc, NULL);
-            window.display();
         }
+        window.display();
     }
     
     Py_XDECREF(drawFunc);
     Py_XDECREF(updateFunc);
+    Py_XDECREF(initFunc);
+    Py_DECREF(pModule);
+    Py_DECREF(pName);
     Py_RETURN_NONE;
 }
 
@@ -136,6 +176,9 @@ static PyMethodDef gameMethods[] = {
     {"init",  game_init, METH_VARARGS,
      "Initializes a SFML window."},
 
+    {"switchState",  game_switchState, METH_VARARGS,
+     "switches the game state."},
+
     {"createGameObject",  game_createGameObject, METH_VARARGS,
      "Creates a new game object and returns its global index."},
 
@@ -143,6 +186,9 @@ static PyMethodDef gameMethods[] = {
      "Creates a new game object and returns its global index."},
 
     {"setGameObjectPosition",  game_setGameObjectPosition, METH_VARARGS,
+     "Creates a new game object and returns its global index."},
+
+    {"getGameObjectPosition",  game_getGameObjectPosition, METH_VARARGS,
      "Creates a new game object and returns its global index."},
 
     {NULL, NULL, 0, NULL} 
