@@ -7,7 +7,7 @@
 #include <string>
 using namespace std;
 
-vector<sf::Texture> textures;
+vector<sf::Image> images;
 map<string, int> colorMap;
 sf::Texture tileMap;
 sf::Sprite tileMapSprite;
@@ -71,9 +71,9 @@ static PyObject * tiles_addTextTileType(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &fileName))
         return NULL;
 
-    sf::Texture texture;
-    texture.loadFromFile(fileName);
-    textures.push_back(texture);
+    sf::Image image;
+    image.loadFromFile(fileName);
+    images.push_back(image);
     Py_RETURN_NONE;
 }
 
@@ -87,11 +87,11 @@ static PyObject * tiles_addPngTileType(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "siii", &fileName, &R, &G, &B))
         return NULL;
 
-    colorMap.insert(pair<string, int>(to_string(R) + to_string(G) + to_string(B), textures.size()));
+    colorMap.insert(pair<string, int>(to_string(R) + to_string(G) + to_string(B), images.size()));
     
-    sf::Texture texture;
-    texture.loadFromFile(fileName);
-    textures.push_back(texture);
+    sf::Image image;
+    image.loadFromFile(fileName);
+    images.push_back(image);
     Py_RETURN_NONE;
 }
 
@@ -106,7 +106,7 @@ static PyObject * tiles_loadFromText(PyObject *self, PyObject *args)
 
     MAP_WIDTH = width;
     MAP_HEIGHT = height;
-    tileMap.create(width * textures.at(0).getSize().x, height * textures.at(0).getSize().y);
+    tileMap.create(width * images.at(0).getSize().x, height * images.at(0).getSize().y);
 
     ifstream mapFile;
     char character;
@@ -119,9 +119,9 @@ static PyObject * tiles_loadFromText(PyObject *self, PyObject *args)
             if(isspace(character)) {
                 if(currentNumber.length() != 0) {
                     int index = stoi(currentNumber);
-                    sf::Texture tileTexture = textures.at(index);
-                    sf::Vector2u size = tileTexture.getSize();
-                    tileMap.update(tileTexture, x * size.x, y * size.y);
+                    sf::Image tileImage = images.at(index);
+                    sf::Vector2u size = tileImage.getSize();
+                    tileMap.update(tileImage, x * size.x, y * size.y);
                     currentNumber = "";
                 }
                 if(character == '\n') {
@@ -136,9 +136,9 @@ static PyObject * tiles_loadFromText(PyObject *self, PyObject *args)
         }
         if(currentNumber.length() != 0) {
             int index = stoi(currentNumber);
-            sf::Texture tileTexture = textures.at(index);
-            sf::Vector2u size = tileTexture.getSize();
-            tileMap.update(tileTexture, x * size.x, y * size.y);
+            sf::Image tileImage = images.at(index);
+            sf::Vector2u size = tileImage.getSize();
+            tileMap.update(tileImage, x * size.x, y * size.y);
         }
         mapFile.close();
     }
@@ -166,13 +166,13 @@ static PyObject * tiles_loadFromPng(PyObject *self, PyObject *args)
 
     MAP_WIDTH = width;
     MAP_HEIGHT = height;
-    tileMap.create(width * textures.at(0).getSize().x, height * textures.at(0).getSize().y);
+    tileMap.create(width * images.at(0).getSize().x, height * images.at(0).getSize().y);
 
     for(unsigned int i = 0; i < size.x * size.y * 4; i += 4) {
         string key = to_string(pixels[i]) + to_string(pixels[(i)+1]) + to_string(pixels[(i)+2]);
-        sf::Texture tileTexture = textures.at(colorMap[key]);
-        sf::Vector2u textureSize = tileTexture.getSize();
-        tileMap.update(tileTexture, int(i / 4 % size.x) * textureSize.x, int(i / 4 / size.y) * textureSize.y);
+        sf::Image tileImage = images.at(colorMap[key]);
+        sf::Vector2u imagesize = tileImage.getSize();
+        tileMap.update(tileImage, int(i / 4 % size.x) * imagesize.x, int(i / 4 / size.y) * imagesize.y);
     }
 
     tileMapSprite.setTexture(tileMap);
