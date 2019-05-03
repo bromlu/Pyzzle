@@ -19,8 +19,8 @@ int MAP_HEIGHT = 0;
 
 void setScale() {
     tileMapSprite.setScale(
-    TILE_WIDTH / textures.at(0).getSize().x, 
-    TILE_HEIGHT / textures.at(0).getSize().y);
+    TILE_WIDTH / images.at(0).getSize().x, 
+    TILE_HEIGHT / images.at(0).getSize().y);
 }
 
 static PyObject * tiles_setTileWidth(PyObject *self, PyObject *args)
