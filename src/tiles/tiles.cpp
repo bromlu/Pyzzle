@@ -187,7 +187,7 @@ static PyObject * tiles_draw(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyObject * tiles_collidesWithTile(PyObject *self, PyObject *args)
+static PyObject * tiles_objectInTile(PyObject *self, PyObject *args)
 {
     int gameObjectIndex;
     int R;
@@ -212,6 +212,40 @@ static PyObject * tiles_collidesWithTile(PyObject *self, PyObject *args)
 
     int x = (int(objectPosition.x) + frame.left / scalerX) / TILE_WIDTH;
     int y = (int(objectPosition.y) + frame.top / scalerY) / TILE_HEIGHT;
+    int i = (x + (y * size.x)) * 4;
+
+    if ( i > length || x < 0 || y < 0) {
+        Py_RETURN_FALSE;
+    } else if (R == pixels[i] && G == pixels[i+1] && B == pixels[i+2]) {
+        Py_RETURN_TRUE;
+    }
+    Py_RETURN_FALSE;
+}
+
+static PyObject * tiles_pointInTile(PyObject *self, PyObject *args)
+{
+    float pointX;
+    float pointY;
+    int R;
+    int G;
+    int B;
+
+    if (!PyArg_ParseTuple(args, "ffiii", &pointX, &pointY, &R, &G, &B))
+        return NULL;
+
+    const sf::Uint8* pixels = inputMap.getPixelsPtr();
+    sf::Vector2u size = inputMap.getSize();
+    int length = size.x * size.y * 4;
+
+    sf::IntRect frame = tileMapSprite.getTextureRect();
+
+    sf::FloatRect localBounds = tileMapSprite.getLocalBounds();
+    sf::FloatRect globalBounds = tileMapSprite.getGlobalBounds();
+    float scalerX = localBounds.width / globalBounds.width;
+    float scalerY = localBounds.height / globalBounds.height;
+
+    int x = (int(pointX) + frame.left / scalerX) / TILE_WIDTH;
+    int y = (int(pointY) + frame.top / scalerY) / TILE_HEIGHT;
     int i = (x + (y * size.x)) * 4;
 
     if ( i > length || x < 0 || y < 0) {
@@ -247,8 +281,11 @@ static PyMethodDef tilesMethods[] = {
     {"draw",  tiles_draw, METH_VARARGS,
      "Draws the tiles."},
 
-    {"collidesWithTile",  tiles_collidesWithTile, METH_VARARGS,
+    {"objectInTile",  tiles_objectInTile, METH_VARARGS,
      "Returns true if the game object is inside any tile of given type."},
+
+    {"pointInTile",  tiles_pointInTile, METH_VARARGS,
+     "Returns true if the game point is inside any tile of given type."},
 
     {NULL, NULL, 0, NULL}
 };
