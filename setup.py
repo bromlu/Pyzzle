@@ -21,12 +21,22 @@ input = Extension('pyzzle.input',
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
                     sources = ['./src/input/input.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
 
+audio = Extension('pyzzle.audio',
+                    include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
+                    extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system', '-lsfml-audio'],
+                    sources = ['./src/audio/audio.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
+                    
 tiles = Extension('pyzzle.tiles',
                     include_dirs = ['/usr/local/include/SFML', '/src/gameObject/', '/usr/local/opt/sfml/lib/'],
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
                     sources = ['./src/tiles/tiles.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'])
 
+collision = Extension('pyzzle.collision',
+                    include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
+                    extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
+                    sources = ['./src/collision/collision.cpp', './src/gameObject/GameObject.cpp'])
+
 setup (name = 'pyzzle',
        version = '1.0',
        description = 'This is the pyzzle package',
-       ext_modules = [game, sprites, animations, input, tiles])
+       ext_modules = [game, sprites, animations, input, collision, audio, tiles])
