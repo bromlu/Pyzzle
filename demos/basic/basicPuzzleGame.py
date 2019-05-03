@@ -2,6 +2,7 @@ from pyzzle import game
 from pyzzle import sprites
 from pyzzle import animations
 from pyzzle import input
+from pyzzle import shapes
 from pyzzle import tiles
 
 WIDTH = 800
@@ -100,3 +101,4 @@ def draw():
     global mainCharacter
     tiles.draw()
     sprites.draw(mainCharacter.index)
+    shapes.drawCircle(200, 400, 400)
