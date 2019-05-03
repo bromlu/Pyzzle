@@ -7,8 +7,9 @@
 #include <string>
 using namespace std;
 
-vector<sf::Texture> textures;
+vector<sf::Image> images;
 map<string, int> colorMap;
+sf::Image inputMap;
 sf::Texture tileMap;
 sf::Sprite tileMapSprite;
 float TILE_WIDTH = 32.0;
@@ -18,8 +19,8 @@ int MAP_HEIGHT = 0;
 
 void setScale() {
     tileMapSprite.setScale(
-    TILE_WIDTH / (tileMapSprite.getLocalBounds().width / MAP_WIDTH), 
-    TILE_HEIGHT / (tileMapSprite.getLocalBounds().height / MAP_HEIGHT));
+    TILE_WIDTH / images.at(0).getSize().x, 
+    TILE_HEIGHT / images.at(0).getSize().y);
 }
 
 static PyObject * tiles_setTileWidth(PyObject *self, PyObject *args)
@@ -71,9 +72,9 @@ static PyObject * tiles_addTextTileType(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &fileName))
         return NULL;
 
-    sf::Texture texture;
-    texture.loadFromFile(fileName);
-    textures.push_back(texture);
+    sf::Image image;
+    image.loadFromFile(fileName);
+    images.push_back(image);
     Py_RETURN_NONE;
 }
 
@@ -87,11 +88,11 @@ static PyObject * tiles_addPngTileType(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "siii", &fileName, &R, &G, &B))
         return NULL;
 
-    colorMap.insert(pair<string, int>(to_string(R) + to_string(G) + to_string(B), textures.size()));
+    colorMap.insert(pair<string, int>(to_string(R) + to_string(G) + to_string(B), images.size()));
     
-    sf::Texture texture;
-    texture.loadFromFile(fileName);
-    textures.push_back(texture);
+    sf::Image image;
+    image.loadFromFile(fileName);
+    images.push_back(image);
     Py_RETURN_NONE;
 }
 
@@ -106,7 +107,7 @@ static PyObject * tiles_loadFromText(PyObject *self, PyObject *args)
 
     MAP_WIDTH = width;
     MAP_HEIGHT = height;
-    tileMap.create(width * textures.at(0).getSize().x, height * textures.at(0).getSize().y);
+    tileMap.create(width * images.at(0).getSize().x, height * images.at(0).getSize().y);
 
     ifstream mapFile;
     char character;
@@ -119,9 +120,9 @@ static PyObject * tiles_loadFromText(PyObject *self, PyObject *args)
             if(isspace(character)) {
                 if(currentNumber.length() != 0) {
                     int index = stoi(currentNumber);
-                    sf::Texture tileTexture = textures.at(index);
-                    sf::Vector2u size = tileTexture.getSize();
-                    tileMap.update(tileTexture, x * size.x, y * size.y);
+                    sf::Image tileImage = images.at(index);
+                    sf::Vector2u size = tileImage.getSize();
+                    tileMap.update(tileImage, x * size.x, y * size.y);
                     currentNumber = "";
                 }
                 if(character == '\n') {
@@ -136,9 +137,9 @@ static PyObject * tiles_loadFromText(PyObject *self, PyObject *args)
         }
         if(currentNumber.length() != 0) {
             int index = stoi(currentNumber);
-            sf::Texture tileTexture = textures.at(index);
-            sf::Vector2u size = tileTexture.getSize();
-            tileMap.update(tileTexture, x * size.x, y * size.y);
+            sf::Image tileImage = images.at(index);
+            sf::Vector2u size = tileImage.getSize();
+            tileMap.update(tileImage, x * size.x, y * size.y);
         }
         mapFile.close();
     }
@@ -158,21 +159,20 @@ static PyObject * tiles_loadFromPng(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "sii", &fileName, &width, &height))
         return NULL;
 
-    sf::Image map;
-    map.loadFromFile(fileName);
+    inputMap.loadFromFile(fileName);
 
-    const sf::Uint8* pixels = map.getPixelsPtr();
-    sf::Vector2u size = map.getSize();
+    const sf::Uint8* pixels = inputMap.getPixelsPtr();
+    sf::Vector2u size = inputMap.getSize();
 
     MAP_WIDTH = width;
     MAP_HEIGHT = height;
-    tileMap.create(width * textures.at(0).getSize().x, height * textures.at(0).getSize().y);
+    tileMap.create(width * images.at(0).getSize().x, height * images.at(0).getSize().y);
 
     for(unsigned int i = 0; i < size.x * size.y * 4; i += 4) {
         string key = to_string(pixels[i]) + to_string(pixels[(i)+1]) + to_string(pixels[(i)+2]);
-        sf::Texture tileTexture = textures.at(colorMap[key]);
-        sf::Vector2u textureSize = tileTexture.getSize();
-        tileMap.update(tileTexture, int(i / 4 % size.x) * textureSize.x, int(i / 4 / size.y) * textureSize.y);
+        sf::Image tileImage = images.at(colorMap[key]);
+        sf::Vector2u imagesize = tileImage.getSize();
+        tileMap.update(tileImage, int(i / 4 % size.x) * imagesize.x, int(i / 4 / size.y) * imagesize.y);
     }
 
     tileMapSprite.setTexture(tileMap);
@@ -185,6 +185,75 @@ static PyObject * tiles_draw(PyObject *self, PyObject *args)
 {
     game_getWindow()->draw(tileMapSprite);
     Py_RETURN_NONE;
+}
+
+static PyObject * tiles_objectInTile(PyObject *self, PyObject *args)
+{
+    int gameObjectIndex;
+    int R;
+    int G;
+    int B;
+
+    if (!PyArg_ParseTuple(args, "iiii", &gameObjectIndex, &R, &G, &B))
+        return NULL;
+
+    sf::Vector2f objectPosition = game_getGameObject(gameObjectIndex)->getPosition();
+
+    const sf::Uint8* pixels = inputMap.getPixelsPtr();
+    sf::Vector2u size = inputMap.getSize();
+    int length = size.x * size.y * 4;
+
+    sf::IntRect frame = tileMapSprite.getTextureRect();
+
+    sf::FloatRect localBounds = tileMapSprite.getLocalBounds();
+    sf::FloatRect globalBounds = tileMapSprite.getGlobalBounds();
+    float scalerX = localBounds.width / globalBounds.width;
+    float scalerY = localBounds.height / globalBounds.height;
+
+    int x = (int(objectPosition.x) + frame.left / scalerX) / TILE_WIDTH;
+    int y = (int(objectPosition.y) + frame.top / scalerY) / TILE_HEIGHT;
+    int i = (x + (y * size.x)) * 4;
+
+    if ( i > length || x < 0 || y < 0) {
+        Py_RETURN_FALSE;
+    } else if (R == pixels[i] && G == pixels[i+1] && B == pixels[i+2]) {
+        Py_RETURN_TRUE;
+    }
+    Py_RETURN_FALSE;
+}
+
+static PyObject * tiles_pointInTile(PyObject *self, PyObject *args)
+{
+    float pointX;
+    float pointY;
+    int R;
+    int G;
+    int B;
+
+    if (!PyArg_ParseTuple(args, "ffiii", &pointX, &pointY, &R, &G, &B))
+        return NULL;
+
+    const sf::Uint8* pixels = inputMap.getPixelsPtr();
+    sf::Vector2u size = inputMap.getSize();
+    int length = size.x * size.y * 4;
+
+    sf::IntRect frame = tileMapSprite.getTextureRect();
+
+    sf::FloatRect localBounds = tileMapSprite.getLocalBounds();
+    sf::FloatRect globalBounds = tileMapSprite.getGlobalBounds();
+    float scalerX = localBounds.width / globalBounds.width;
+    float scalerY = localBounds.height / globalBounds.height;
+
+    int x = (int(pointX) + frame.left / scalerX) / TILE_WIDTH;
+    int y = (int(pointY) + frame.top / scalerY) / TILE_HEIGHT;
+    int i = (x + (y * size.x)) * 4;
+
+    if ( i > length || x < 0 || y < 0) {
+        Py_RETURN_FALSE;
+    } else if (R == pixels[i] && G == pixels[i+1] && B == pixels[i+2]) {
+        Py_RETURN_TRUE;
+    }
+    Py_RETURN_FALSE;
 }
 
 static PyMethodDef tilesMethods[] = {
@@ -212,6 +281,11 @@ static PyMethodDef tilesMethods[] = {
     {"draw",  tiles_draw, METH_VARARGS,
      "Draws the tiles."},
 
+    {"objectInTile",  tiles_objectInTile, METH_VARARGS,
+     "Returns true if the game object is inside any tile of given type."},
+
+    {"pointInTile",  tiles_pointInTile, METH_VARARGS,
+     "Returns true if the game point is inside any tile of given type."},
 
     {NULL, NULL, 0, NULL}
 };

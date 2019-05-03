@@ -3,6 +3,7 @@ from pyzzle import sprites
 from pyzzle import animations
 from pyzzle import input
 from pyzzle import shapes
+from pyzzle import audio
 from pyzzle import tiles
 
 WIDTH = 800
@@ -44,12 +45,6 @@ class MainCharacter:
         animations.play(self.index, self.spin)
 
 if __name__ == "__main__":
-    tiles.setTileWidth(50)
-    tiles.setTileHeight(50)
-    tiles.addPngTileType("black-marble.png", 255,255,255)
-    tiles.addPngTileType("wood-tile.png",0,0,0)
-    tiles.loadFromPng("map.png", 32,32)
-    tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
     game.init("basicPuzzleGame", "Basic Puzzle Game", WIDTH, HEIGHT)
 
 def clampCamera(x):
@@ -62,8 +57,19 @@ def clampCamera(x):
         return x
 
 def init():
+    tiles.addPngTileType("black-marble.png", 255,255,255)
+    tiles.addPngTileType("wood-tile.png",0,0,0)
+    tiles.setTileWidth(50)
+    tiles.setTileHeight(50)
+    tiles.loadFromPng("map.png", 32,32)
+    tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
     global mainCharacter
     mainCharacter = MainCharacter()
+    audio.loadMusic("nice_music.ogg")
+    audio.loadAudio("whistle.wav")
+    audio.playMusic(0)
+    audio.loopMusic(0)
+    
 
 def update(): 
     global mainCharacter
@@ -75,26 +81,31 @@ def update():
         else:
             cameraY = clampCamera(cameraY-8)
         animations.play(mainCharacter.index, mainCharacter.runUp)
+        audio.stopAudio(0)
     elif input.isKeyPressed(0): #A
         if(cameraX <= 0 or game.getGameObjectPosition(mainCharacter.index)[0] > WIDTH/2):
             game.moveGameObject(mainCharacter.index, -5, 0)
         else:
             cameraX = clampCamera(cameraX-8)
         animations.play(mainCharacter.index, mainCharacter.runLeft)
+        audio.stopAudio(0)
     elif input.isKeyPressed(3): #D
         if(cameraX >= WIDTH or game.getGameObjectPosition(mainCharacter.index)[0] < WIDTH/2):
             game.moveGameObject(mainCharacter.index, 5, 0)
         else:
             cameraX = clampCamera(cameraX+8)
         animations.play(mainCharacter.index, mainCharacter.runRight)
+        audio.stopAudio(0)
     elif input.isKeyPressed(18): #S
         if(cameraY >= WIDTH or game.getGameObjectPosition(mainCharacter.index)[1] < HEIGHT/2):
             game.moveGameObject(mainCharacter.index, 0, 5)
         else:
             cameraY = clampCamera(cameraY+8)
         animations.play(mainCharacter.index, mainCharacter.runDown)
+        audio.stopAudio(0)
     else:
         animations.stop(mainCharacter.index)
+        audio.playAudio(0)
     tiles.setTileFrame(cameraX,cameraY,WIDTH,HEIGHT)
 
 def draw(): 
