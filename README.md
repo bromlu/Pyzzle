@@ -72,18 +72,19 @@ Pyzzle includes various features in order to help you with creating the perfect 
 ### Currently implemented
 
 - Animations
-- Audio *Implementation in progress*
-- Collision *Implementation in progress*
-- Drawing *Implementation in progress*
-- Tile *Implementation in progress*
+- Audio
+- Collision
+- Game
 - Input
+- Shapes
 - Sprites
+- Tile
+- Text
 
 ### Future possibilities
 
 - Particle
 - Physics
-- State
 
 ### Game
 
@@ -128,10 +129,6 @@ The animations module has the following functions.
 
 - *TODO*
 
-### Draw
-
-- *TODO*
-
 ### Input
 
 ```python
@@ -144,7 +141,7 @@ The input module has the following functions.
 | :------: | :--------: | :-----: | :-----: |
 | ```bool isKeyPressed(int keyIndex)``` | The index of the key according to [the SFML enum](https://www.sfml-dev.org/documentation/2.5.1/classsf_1_1Keyboard.php) | A boolean answer | Check to see if a key is pressed or not |
 
-### Physics
+### Shapes
 
 - *TODO*
 
