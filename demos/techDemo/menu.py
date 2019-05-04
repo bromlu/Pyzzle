@@ -1,10 +1,8 @@
 import time
+from constants import WIDTH, HEIGHT
 from pyzzle import game
 from pyzzle import text
 from pyzzle import input
-
-WIDTH = 1600
-HEIGHT = 1200
 
 menuItems = []
 currentlySelected = 0
