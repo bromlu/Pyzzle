@@ -132,10 +132,6 @@ The animations module has the following functions.
 
 - *TODO*
 
-### Events
-
-- *TODO*
-
 ### Input
 
 ```python
@@ -166,6 +162,19 @@ The sprites module has the following functions.
 | ```void setFrame(int GameObjectIndex, int left, int top, int width, int height)``` | The index the game object is at, the left location of the frame, the top location of the frame, the width of the frame, the height of the frame | *None* | Sets the frame of the sprite to be displayed |
 | ```void setScale(int GameObjectIndex, float x, float y)``` | The index the game object is at, the x scale factor, the y scale factor | *None* | Sets the scale of the sprite to be displayed |
 | ```void draw(int GameObjectIndex)``` | The index the game object is at | *None* | Draws all of a game objects sprites |
+
+### Text
+
+```python
+import pyzzle.text
+```
+
+The text module has the following functions. Note, draw will **not** work unless loadFonts has been successfully called.
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void loadFont(string fileName)``` | The name of the file the font is in | *None* | Loads the font to be used with text |
+| ```void draw(string text, float x, float y, float weight = 30.0, int r = 255, int g = 255, int b = 255, int a = 255)``` | The text to display, the x and y coordinates to center the text around, the optional weight of the font, the optional color of the font | *None* | Draws text at the given location |
 
 ### Tiles
 
