@@ -8,6 +8,7 @@ from pyzzle import collision
 from pyzzle import shapes
 from pyzzle import text
 
+winMessage = ""
 leftPaddle = None
 rightPaddle = None
 ball = None
@@ -52,7 +53,11 @@ class Ball:
 def init():
     global leftPaddle
     global rightPaddle
+    global leftScore
+    global rightScore
     global ball
+    leftScore = 0
+    rightScore = 0
     ball = Ball()
     resetBall()
     leftPaddle = Paddle(100, HEIGHT / 2 - PADDLE_HEIGHT / 2)
@@ -80,6 +85,7 @@ def update():
     global rightPaddle
     global rightScore
     global leftScore
+    global winMessage
     leftPaddleY = game.getGameObjectPosition(leftPaddle.index)[1]
     rightPaddleY = game.getGameObjectPosition(rightPaddle.index)[1]
     if input.isKeyPressed(18): #S
@@ -106,10 +112,18 @@ def update():
 
     if ballPosition[0] + BALL_RADIUS >= WIDTH:
         rightScore+=1
-        resetBall()
+        if rightScore == 1:
+            winMessage = "Right Player WINS!"
+            game.switchState("pong", "", "gameOverUpdate", "gameOverDraw")
+        else:
+            resetBall()
     elif ballPosition[0] <= 0:
         leftScore+=1
-        resetBall()
+        if leftScore == 1:
+            winMessage = "Left Player WINS!"
+            game.switchState("pong", "", "gameOverUpdate", "gameOverDraw")
+        else:
+            resetBall()
 
 def drawMiddleLine():
     shapes.setOutline(0)
@@ -130,3 +144,14 @@ def draw():
     text.draw(str(leftScore), 100, 100, 100)
     text.draw(str(rightScore), WIDTH - 100, 100, 100)
     drawMiddleLine()
+
+def gameOverUpdate():
+    if input.isKeyPressed(36): #escape
+        game.switchState("menu", "initPlay", "update", "draw")
+    elif input.isKeyPressed(57): #space
+        game.switchState("pong", "init", "update", "draw")
+
+def gameOverDraw():
+    global winMessage
+    text.draw(winMessage, WIDTH/2, HEIGHT/2 - 100, 64.0)
+    text.draw("Hit [esc] to go back to menu or [space] to play again.", WIDTH/2, HEIGHT/2 + 100, 48.0)
