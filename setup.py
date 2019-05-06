@@ -46,13 +46,13 @@ tiles = Extension('pyzzle.tiles',
 collision = Extension('pyzzle.collision',
                     include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
-                    sources = ['./src/collision/collision.cpp', './src/gameObject/GameObject.cpp'],
+                    sources = ['./src/collision/collision.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'],
                     extra_compile_args = ["-std=c++11"])
 
 text = Extension('pyzzle.text',
                     include_dirs = ['/usr/local/include/SFML', '/src/gameObject/'],
                     extra_link_args = ['-lsfml-graphics', '-lsfml-window', '-lsfml-system'],
-                    sources = ['./src/text/text.cpp', './src/gameObject/GameObject.cpp'],
+                    sources = ['./src/text/text.cpp', './src/gameObject/GameObject.cpp', './src/gameObject/Animation.cpp'],
                     extra_compile_args = ["-std=c++11"])
 
 setup (name = 'pyzzle',
