@@ -112,14 +112,14 @@ def update():
 
     if ballPosition[0] + BALL_RADIUS >= WIDTH:
         rightScore+=1
-        if rightScore == 1:
+        if rightScore == 10:
             winMessage = "Right Player WINS!"
             game.switchState("pong", "", "gameOverUpdate", "gameOverDraw")
         else:
             resetBall()
     elif ballPosition[0] <= 0:
         leftScore+=1
-        if leftScore == 1:
+        if leftScore == 10:
             winMessage = "Left Player WINS!"
             game.switchState("pong", "", "gameOverUpdate", "gameOverDraw")
         else:
