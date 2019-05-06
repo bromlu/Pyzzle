@@ -33,23 +33,26 @@ class Paddle:
         sprites.setFrame(self.index, 8, 11, PADDLE_WIDTH, PADDLE_HEIGHT)
         sprites.setScale(self.index, PADDLE_SCALE, PADDLE_SCALE)
 
+def resetBall():
+    global ball
+    ball.vx = BALL_SPEED
+    ball.vy = 0
+    game.setGameObjectPosition(ball.index, WIDTH / 2 - BALL_RADIUS * BALL_SCALE / 2, HEIGHT / 2 - BALL_RADIUS * BALL_SCALE / 2)
+
 class Ball:
     def __init__(self):
         self.index = game.createGameObject()
-        self.vx = BALL_SPEED
-        self.vy = 0
-        game.setGameObjectPosition(self.index, WIDTH / 2 - BALL_RADIUS * BALL_SCALE / 2, HEIGHT / 2 - BALL_RADIUS * BALL_SCALE / 2)
         collision.addCollisionRect(self.index, 0, 0, BALL_RADIUS, BALL_RADIUS, BALL_SCALE)
         sprites.add(self.index, "sprites.png")
         sprites.setFrame(self.index, 27, 21, BALL_RADIUS, BALL_RADIUS)
         sprites.setScale(self.index, BALL_SCALE, BALL_SCALE)
-
 
 def init():
     global leftPaddle
     global rightPaddle
     global ball
     ball = Ball()
+    resetBall()
     leftPaddle = Paddle(100, HEIGHT / 2 - PADDLE_HEIGHT / 2)
     rightPaddle = Paddle(WIDTH - 100 - PADDLE_WIDTH, HEIGHT / 2 - PADDLE_HEIGHT / 2)
 
@@ -73,6 +76,8 @@ def update():
     global ball
     global leftPaddle
     global rightPaddle
+    global rightScore
+    global leftScore
     leftPaddleY = game.getGameObjectPosition(leftPaddle.index)[1]
     rightPaddleY = game.getGameObjectPosition(rightPaddle.index)[1]
     if input.isKeyPressed(18): #S
@@ -96,6 +101,13 @@ def update():
         bounce(leftPaddle.index)
     elif collision.collides(rightPaddle.index, ball.index):
         bounce(rightPaddle.index)
+
+    if ballPosition[0] + BALL_RADIUS >= WIDTH:
+        rightScore+=1
+        resetBall()
+    elif ballPosition[0] <= 0:
+        rightScore+=1
+        resetBall()
 
 def drawMiddleLine():
     shapes.setOutline(0)
