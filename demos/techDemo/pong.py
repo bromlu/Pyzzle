@@ -1,4 +1,5 @@
 import math
+import random
 from constants import WIDTH, HEIGHT
 from pyzzle import game
 from pyzzle import input
@@ -35,8 +36,9 @@ class Paddle:
 
 def resetBall():
     global ball
-    ball.vx = BALL_SPEED
-    ball.vy = 0
+    angle = random.choice([random.randint(-45, 45), random.randint(135, 225)]) * math.pi / 180.0;
+    ball.vx = BALL_SPEED * math.cos(angle)
+    ball.vy = BALL_SPEED * -math.sin(angle)
     game.setGameObjectPosition(ball.index, WIDTH / 2 - BALL_RADIUS * BALL_SCALE / 2, HEIGHT / 2 - BALL_RADIUS * BALL_SCALE / 2)
 
 class Ball:
@@ -106,7 +108,7 @@ def update():
         rightScore+=1
         resetBall()
     elif ballPosition[0] <= 0:
-        rightScore+=1
+        leftScore+=1
         resetBall()
 
 def drawMiddleLine():
