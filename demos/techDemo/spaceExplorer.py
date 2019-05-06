@@ -1,6 +1,6 @@
 import math
 import random
-from constants import WIDTH, HEIGHT
+from constants import WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT
 from pyzzle import game
 from pyzzle import input
 from pyzzle import sprites
@@ -8,6 +8,7 @@ from pyzzle import collision
 from pyzzle import shapes
 from pyzzle import text
 from pyzzle import animations
+from pyzzle import tiles
 
 player = None
 SHIP_HEIGHT = 512
@@ -52,6 +53,15 @@ class Ship:
 def init():
     global player
     player = Ship()
+    tiles.addPngTileType("aestroid_brown.png", 255,255,255)
+    tiles.addPngTileType("aestroid_dark.png", 165,165,165)
+    tiles.addPngTileType("aestroid_gray_2.png", 80,124,159)
+    tiles.addPngTileType("aestroid_gray.png", 159,139,80)
+    tiles.addPngTileType("beacon.png", 105,255,0)
+    tiles.addPngTileType("space.jpg",0,0,0)
+    tiles.setTileWidth(TILE_WIDTH)
+    tiles.setTileHeight(TILE_HEIGHT)
+    tiles.loadFromPng("map.png", 50,50)
 
 def update():
     global player
@@ -77,6 +87,7 @@ def update():
 
 def draw():
     global player
+    tiles.draw()
+    text.draw("Fuel", 150, 50, 100, 104, 255, 0)
+    text.draw(str(player.fuel), 300, 50, 100, 104, 255, 0)
     sprites.draw(player.index)
-    text.draw("Fuel", 150, 50, 100)
-    text.draw(str(player.fuel), 300, 50, 100)
