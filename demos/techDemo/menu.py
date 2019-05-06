@@ -38,6 +38,9 @@ def gotoThanks():
 def gotoPong():
     game.switchState("pong", "init", "update", "draw")
 
+def gotoSpace():
+    game.switchState("spaceExplorer", "init", "update", "draw")
+
 if __name__ == "__main__":
     text.loadFont("trench100free.otf")
     game.init("menu", "Pyzzle Tech Demo", WIDTH, HEIGHT)
@@ -58,7 +61,7 @@ def initPlay():
     menuItems = []
     currentlySelected = 0
     menuItems.append(MenuItem("Pong", WIDTH/2, HEIGHT/2 - 100, 72.0, gotoPong))
-    menuItems.append(MenuItem("Space Explorer", WIDTH/2, HEIGHT/2, 72.0, gotoHome))
+    menuItems.append(MenuItem("Space Explorer", WIDTH/2, HEIGHT/2, 72.0, gotoSpace))
     menuItems.append(MenuItem("Back", WIDTH/2, HEIGHT/2 + 100, 72.0, gotoHome))
     menuItems[currentlySelected].selected = True
 
