@@ -17,7 +17,7 @@ PADDLE_SCALE = 3
 PADDLE_SPEED = 10
 BALL_RADIUS = 6
 BALL_SCALE = 3
-BALL_SPEED = 10
+BALL_SPEED = 5
 
 if __name__ == "__main__":
     text.loadFont("trench100free.otf")
@@ -27,6 +27,7 @@ class Paddle:
     def __init__(self, x, y):
         self.index = game.createGameObject()
         game.setGameObjectPosition(self.index, x, y)
+        collision.addCollisionRect(self.index, 0, 0, PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_SCALE)
         sprites.add(self.index, "sprites.png")
         sprites.setFrame(self.index, 8, 11, PADDLE_WIDTH, PADDLE_HEIGHT)
         sprites.setScale(self.index, PADDLE_SCALE, PADDLE_SCALE)
@@ -37,6 +38,7 @@ class Ball:
         self.vx = BALL_SPEED
         self.vy = 0
         game.setGameObjectPosition(self.index, WIDTH / 2 - BALL_RADIUS * BALL_SCALE / 2, HEIGHT / 2 - BALL_RADIUS * BALL_SCALE / 2)
+        collision.addCollisionRect(self.index, 0, 0, BALL_RADIUS, BALL_RADIUS, BALL_SCALE)
         sprites.add(self.index, "sprites.png")
         sprites.setFrame(self.index, 27, 21, BALL_RADIUS, BALL_RADIUS)
         sprites.setScale(self.index, BALL_SCALE, BALL_SCALE)
@@ -68,7 +70,12 @@ def update():
     if input.isKeyPressed(73): #Up
         if rightPaddleY > 0:
             game.moveGameObject(rightPaddle.index, 0, -PADDLE_SPEED)
+
     game.moveGameObject(ball.index, ball.vx, ball.vy)
+    if collision.collides(leftPaddle.index, ball.index):
+        ball.vx = BALL_SPEED
+    elif collision.collides(rightPaddle.index, ball.index):
+        ball.vx = -BALL_SPEED
 
 def drawMiddleLine():
     shapes.setOutline(0)
