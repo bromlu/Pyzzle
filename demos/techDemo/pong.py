@@ -1,3 +1,4 @@
+import math
 from constants import WIDTH, HEIGHT
 from pyzzle import game
 from pyzzle import input
@@ -17,7 +18,7 @@ PADDLE_SCALE = 3
 PADDLE_SPEED = 10
 BALL_RADIUS = 6
 BALL_SCALE = 3
-BALL_SPEED = 5
+BALL_SPEED = 10
 
 if __name__ == "__main__":
     text.loadFont("trench100free.otf")
@@ -52,6 +53,22 @@ def init():
     leftPaddle = Paddle(100, HEIGHT / 2 - PADDLE_HEIGHT / 2)
     rightPaddle = Paddle(WIDTH - 100 - PADDLE_WIDTH, HEIGHT / 2 - PADDLE_HEIGHT / 2)
 
+def bounce(paddleIndex):
+    global ball
+    paddlePosition = game.getGameObjectPosition(paddleIndex)
+    relativeX = paddlePosition[0] - WIDTH/2
+    relativeY = paddlePosition[1] - HEIGHT/2
+    normalize = math.sqrt(relativeX * relativeX + relativeY * relativeY)
+    centerX = (relativeX / normalize) * 50
+    centerY = (relativeY / normalize) * 50
+
+    ballPosition = game.getGameObjectPosition(ball.index)
+    relativeX = ballPosition[0] - (paddlePosition[0] + centerX)
+    relativeY = ballPosition[1] - (paddlePosition[1] + centerY)
+    normalize = math.sqrt(relativeX * relativeX + relativeY * relativeY)
+    ball.vx = relativeX/normalize * BALL_SPEED
+    ball.vy = relativeY/normalize * BALL_SPEED
+
 def update():
     global ball
     global leftPaddle
@@ -72,10 +89,13 @@ def update():
             game.moveGameObject(rightPaddle.index, 0, -PADDLE_SPEED)
 
     game.moveGameObject(ball.index, ball.vx, ball.vy)
+    ballPosition = game.getGameObjectPosition(ball.index)
+    if ballPosition[1] + BALL_RADIUS >= HEIGHT or ballPosition[1] <= 0:
+        ball.vy = -ball.vy
     if collision.collides(leftPaddle.index, ball.index):
-        ball.vx = BALL_SPEED
+        bounce(leftPaddle.index)
     elif collision.collides(rightPaddle.index, ball.index):
-        ball.vx = -BALL_SPEED
+        bounce(rightPaddle.index)
 
 def drawMiddleLine():
     shapes.setOutline(0)
