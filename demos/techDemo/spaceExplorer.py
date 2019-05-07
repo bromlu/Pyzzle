@@ -27,7 +27,7 @@ class Beacon:
         self.index = game.createGameObject()
         game.setGameObjectPosition(self.index, WIDTH / 2, SHIP_HEIGHT * SHIP_SCALE)
         sprites.add(self.index, "beacon.png")
-        sprites.setFrame(self.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
+        sprites.setFrame(self.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
         sprites.setScale(self.index, SHIP_SCALE, SHIP_SCALE)
         collision.addCollisionRect(self.index, 0, 0, int(SHIP_WIDTH * SHIP_SCALE), int(SHIP_HEIGHT * SHIP_SCALE))
 
@@ -125,6 +125,7 @@ def update():
         player.fuel = 100
 
     if collision.collides(beacon.index, player.index):
+        sprites.setFrame(beacon.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
         game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
         animations.stop(player.index)
         player.fuel = 100
