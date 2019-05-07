@@ -11,6 +11,7 @@ from pyzzle import animations
 from pyzzle import tiles
 
 player = None
+beacon = None
 deadAnimationFrame = 0
 SHIP_HEIGHT = 512
 SHIP_WIDTH = 512
@@ -21,10 +22,18 @@ if __name__ == "__main__":
     text.loadFont("trench100free.otf")
     game.init("spaceExplorer", "Pyzzle Tech Demo", WIDTH, HEIGHT)
 
+class Beacon:
+    def __init__(self):
+        self.index = game.createGameObject()
+        game.setGameObjectPosition(self.index, WIDTH / 2, 0 + SHIP_HEIGHT * SHIP_SCALE)
+        sprites.add(self.index, "beacon.png")
+        sprites.setFrame(self.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
+        sprites.setScale(self.index, SHIP_SCALE, SHIP_SCALE)
+
 class Ship:
     def __init__(self):
         self.index = game.createGameObject()
-        game.setGameObjectPosition(self.index, WIDTH/2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
+        game.setGameObjectPosition(self.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
         self.fuel = 100
         self.dead = False
         self.vx = 0
@@ -55,12 +64,13 @@ class Ship:
 
 def init():
     global player
+    global beacon
     player = Ship()
+    beacon = Beacon()
     tiles.addPngTileType("aestroid_brown.png", 255,255,255)
     tiles.addPngTileType("aestroid_dark.png", 165,165,165)
     tiles.addPngTileType("aestroid_gray_2.png", 80,124,159)
     tiles.addPngTileType("aestroid_gray.png", 159,139,80)
-    tiles.addPngTileType("beacon.png", 105,255,0)
     tiles.addPngTileType("space.jpg",0,0,0)
     tiles.setTileWidth(TILE_WIDTH)
     tiles.setTileHeight(TILE_HEIGHT)
@@ -88,7 +98,7 @@ def update():
             player.vx += 1
             player.fuel -= 1
     elif deadAnimationFrame == 35:
-        game.setGameObjectPosition(player.index, WIDTH/2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
+        game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
         animations.stop(player.index)
         player.dead = False
         player.fuel = 100
@@ -110,7 +120,9 @@ def update():
 
 def draw():
     global player
+    global beacon
     tiles.draw()
     text.draw("Fuel", 150, 50, 100, 104, 255, 0)
     text.draw(str(player.fuel), 300, 50, 100, 104, 255, 0)
+    sprites.draw(beacon.index)
     sprites.draw(player.index)
