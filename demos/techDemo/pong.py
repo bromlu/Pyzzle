@@ -37,7 +37,7 @@ class Paddle:
 
 def resetBall():
     global ball
-    angle = random.choice([random.randint(-45, 45), random.randint(135, 225)]) * math.pi / 180.0;
+    angle = random.choice([random.randint(-45, 45), random.randint(135, 225)]) * math.pi / 180.0
     ball.vx = BALL_SPEED * math.cos(angle)
     ball.vy = BALL_SPEED * -math.sin(angle)
     game.setGameObjectPosition(ball.index, WIDTH / 2 - BALL_RADIUS * BALL_SCALE / 2, HEIGHT / 2 - BALL_RADIUS * BALL_SCALE / 2)
