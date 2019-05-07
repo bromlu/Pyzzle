@@ -82,13 +82,19 @@ class Ship:
 def init():
     global player
     global beacon
+    global deadAnimationFrameCount
+    global beaconActivatedFrameCount
+    global currentLevel
     player = Ship()
     beacon = Beacon()
+    deadAnimationFrameCount = 0
+    beaconActivatedFrameCount = 0
+    currentLevel = 0
     tiles.addPngTileType("aestroid_brown.png", 255,255,255)
     tiles.addPngTileType("aestroid_dark.png", 165,165,165)
     tiles.addPngTileType("aestroid_gray_2.png", 80,124,159)
     tiles.addPngTileType("aestroid_gray.png", 159,139,80)
-    tiles.addPngTileType("space.jpg",0,0,0)
+    tiles.addPngTileType("space2.png",0,0,0)
     tiles.setTileWidth(TILE_WIDTH)
     tiles.setTileHeight(TILE_HEIGHT)
     tiles.loadFromPng("map.png", 100,100)
@@ -122,8 +128,9 @@ def update():
         if player.won:
             currentLevel+=1
             if currentLevel == len(levels):
-                currentLevel = 0
-            tiles.setTileFrame(*levels[currentLevel])
+                game.switchState("spaceExplorer", "", "gameOverUpdate", "gameOverDraw")
+            else:
+                tiles.setTileFrame(*levels[currentLevel])
         game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - player.height)
         sprites.setFrame(beacon.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
         animations.stop(player.index)
@@ -170,3 +177,12 @@ def draw():
     text.draw(str(player.fuel), 300, 50, 100, 104, 255, 0)
     sprites.draw(beacon.index)
     sprites.draw(player.index)
+
+def gameOverUpdate():
+    if input.isKeyPressed(36): #escape
+        game.switchState("menu", "initPlay", "update", "draw")
+    elif input.isKeyPressed(57): #space
+        game.switchState("spaceExplorer", "init", "update", "draw")
+
+def gameOverDraw():
+    text.draw("Hit [esc] to go back to menu or [space] to play again.", WIDTH/2, HEIGHT/2 + 100, 48.0)
