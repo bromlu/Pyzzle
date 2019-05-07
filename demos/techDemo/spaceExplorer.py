@@ -19,8 +19,13 @@ currentLevel = 0
 levels = [
     (0,0,WIDTH,HEIGHT),
     (50*TILE_WIDTH,0,WIDTH,HEIGHT),
+    (50*TILE_WIDTH*2,0,WIDTH,HEIGHT),
     (0,50*TILE_HEIGHT,WIDTH,HEIGHT),
-    (50*TILE_WIDTH,50*TILE_HEIGHT,WIDTH,HEIGHT)
+    (50*TILE_WIDTH,50*TILE_HEIGHT,WIDTH,HEIGHT),
+    (50*TILE_WIDTH*2,50*TILE_HEIGHT,WIDTH,HEIGHT),
+    (0,50*TILE_HEIGHT*2,WIDTH,HEIGHT),
+    (50*TILE_WIDTH,50*TILE_HEIGHT*2,WIDTH,HEIGHT),
+    (50*TILE_WIDTH*2,50*TILE_HEIGHT*2,WIDTH,HEIGHT),
 ]
 SHIP_HEIGHT = 512
 SHIP_WIDTH = 512
@@ -98,7 +103,7 @@ def init():
     tiles.addPngTileType("assets/space2.png",0,0,0)
     tiles.setTileWidth(TILE_WIDTH)
     tiles.setTileHeight(TILE_HEIGHT)
-    tiles.loadFromPng("assets/map.png", 100,100)
+    tiles.loadFromPng("assets/map.png", 150,150)
     tiles.setTileFrame(0,0,WIDTH,HEIGHT)
     audio.loadAudio("assets/sfx_vehicle_engineloop.wav")
     audio.loadAudio("assets/sfx_exp_medium1.wav")
