@@ -11,6 +11,7 @@ from pyzzle import animations
 from pyzzle import tiles
 
 player = None
+deadAnimationFrame = 0
 SHIP_HEIGHT = 512
 SHIP_WIDTH = 512
 SHIP_SCALE = 0.25
@@ -23,7 +24,9 @@ if __name__ == "__main__":
 class Ship:
     def __init__(self):
         self.index = game.createGameObject()
+        game.setGameObjectPosition(self.index, WIDTH/2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
         self.fuel = 100
+        self.dead = False
         self.vx = 0
         self.vy = 0
         sprites.add(self.index, "spaceship.png")
@@ -65,25 +68,45 @@ def init():
 
 def update():
     global player
+    global deadAnimationFrame
 
-    if not input.isKeyPressed(73):
+    if not player.dead:
+        if not input.isKeyPressed(73):
+            animations.stop(player.index)
+            sprites.setFrame(player.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
+        if input.isKeyPressed(73) and player.fuel > 0: #Up
+            animations.play(player.index, player.move)
+            player.vy -= 1
+            player.fuel -= 1
+        if input.isKeyPressed(74) and player.fuel > 0: #Down
+            player.vy += 1
+            player.fuel -= 1
+        if input.isKeyPressed(71) and player.fuel > 0: #Left
+            player.vx -= 1
+            player.fuel -= 1
+        if input.isKeyPressed(72) and player.fuel > 0: #Right
+            player.vx += 1
+            player.fuel -= 1
+    elif deadAnimationFrame == 35:
+        game.setGameObjectPosition(player.index, WIDTH/2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
         animations.stop(player.index)
-        sprites.setFrame(player.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
-    if input.isKeyPressed(73) and player.fuel > 0: #Up
-        animations.play(player.index, player.move)
-        player.vy -= 1
-        player.fuel -= 1
-    if input.isKeyPressed(74) and player.fuel > 0: #Down
-        player.vy += 1
-        player.fuel -= 1
-    if input.isKeyPressed(71) and player.fuel > 0: #Left
-        player.vx -= 1
-        player.fuel -= 1
-    if input.isKeyPressed(72) and player.fuel > 0: #Right
-        player.vx += 1
-        player.fuel -= 1
+        player.dead = False
+        player.fuel = 100
+        deadAnimationFrame = 0
+    else:
+        deadAnimationFrame += 1
+
 
     game.moveGameObject(player.index, player.vx, player.vy)
+
+    playerPosition = game.getGameObjectPosition(player.index)
+    centerX = playerPosition[0] + SHIP_WIDTH * SHIP_SCALE / 2
+    centerY = playerPosition[1] + SHIP_HEIGHT * SHIP_SCALE / 2
+    if tiles.pointInTile(centerX, centerY, 255, 255, 255) or centerX < 0 or centerX > WIDTH or centerY < 0 or centerY > HEIGHT:
+        player.dead = True
+        player.vx = 0
+        player.vy = 0
+        animations.play(player.index, player.die)
 
 def draw():
     global player
