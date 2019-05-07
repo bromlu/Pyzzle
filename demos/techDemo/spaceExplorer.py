@@ -47,7 +47,7 @@ class Ship:
         self.height = SHIP_HEIGHT * SHIP_SCALE
         self.index = game.createGameObject()
         game.setGameObjectPosition(self.index, WIDTH/2 - self.width / 2, HEIGHT - self.height)
-        self.fuel = 100
+        self.fuel = 50
         self.dead = False
         self.won = False
         self.vx = 0
@@ -129,7 +129,7 @@ def update():
         animations.stop(player.index)
         player.dead = False
         player.won = False
-        player.fuel = 100
+        player.fuel = 50
         deadAnimationFrameCount = 0
         beaconActivatedFrameCount = 0
     elif player.dead:
@@ -150,10 +150,10 @@ def update():
         player.vx = 0
         player.vy = 0
         animations.play(player.index, player.die)
-    elif player.vx == 0 and player.vy == 0 and player.fuel == 0:
+    elif player.vx == 0 and player.vy == 0 and player.fuel == 0 and not player.won:
         game.setGameObjectPosition(player.index, WIDTH/2 - player.width / 2, HEIGHT - player.height)
         animations.stop(player.index)
-        player.fuel = 100
+        player.fuel = 50
 
     if collision.collides(beacon.index, player.index):
         sprites.setFrame(beacon.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
