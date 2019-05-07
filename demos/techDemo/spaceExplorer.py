@@ -29,9 +29,6 @@ SHIP_SPEED = 10
 
 if __name__ == "__main__":
     text.loadFont("assets/trench100free.otf")
-    audio.loadAudio("assets/sfx_vehicle_engineloop.wav")
-    audio.loadAudio("assets/sfx_exp_medium1.wav")
-    audio.loadAudio("assets/sfx_sounds_powerup2.wav")
     game.init("spaceExplorer", "Pyzzle Tech Demo", WIDTH, HEIGHT)
 
 class Beacon:
@@ -103,6 +100,12 @@ def init():
     tiles.setTileHeight(TILE_HEIGHT)
     tiles.loadFromPng("assets/map.png", 100,100)
     tiles.setTileFrame(0,0,WIDTH,HEIGHT)
+    audio.loadAudio("assets/sfx_vehicle_engineloop.wav")
+    audio.loadAudio("assets/sfx_exp_medium1.wav")
+    audio.loadAudio("assets/sfx_sounds_powerup2.wav")
+    audio.loadMusic("assets/music.wav")
+    audio.loopMusic(0)
+    audio.playMusic(0)
 
 def update():
     global player
@@ -191,6 +194,7 @@ def draw():
 
 def gameOverUpdate():
     if input.isKeyPressed(36): #escape
+        audio.stopMusic(0)
         game.switchState("menu", "initPlay", "update", "draw")
     elif input.isKeyPressed(57): #space
         game.switchState("spaceExplorer", "init", "update", "draw")
