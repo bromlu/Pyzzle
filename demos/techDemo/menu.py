@@ -42,7 +42,7 @@ def gotoSpace():
     game.switchState("spaceExplorer", "init", "update", "draw")
 
 if __name__ == "__main__":
-    text.loadFont("trench100free.otf")
+    text.loadFont("assets/trench100free.otf")
     game.init("menu", "Pyzzle Tech Demo", WIDTH, HEIGHT)
 
 def init():

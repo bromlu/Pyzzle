@@ -23,7 +23,7 @@ BALL_SCALE = 3
 BALL_SPEED = 10
 
 if __name__ == "__main__":
-    text.loadFont("trench100free.otf")
+    text.loadFont("assets/trench100free.otf")
     game.init("pong", "Pyzzle Tech Demo", WIDTH, HEIGHT)
 
 class Paddle:
@@ -31,7 +31,7 @@ class Paddle:
         self.index = game.createGameObject()
         game.setGameObjectPosition(self.index, x, y)
         collision.addCollisionRect(self.index, 0, 0, PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_SCALE)
-        sprites.add(self.index, "sprites.png")
+        sprites.add(self.index, "assets/sprites.png")
         sprites.setFrame(self.index, 8, 11, PADDLE_WIDTH, PADDLE_HEIGHT)
         sprites.setScale(self.index, PADDLE_SCALE, PADDLE_SCALE)
 
@@ -46,7 +46,7 @@ class Ball:
     def __init__(self):
         self.index = game.createGameObject()
         collision.addCollisionRect(self.index, 0, 0, BALL_RADIUS, BALL_RADIUS, BALL_SCALE)
-        sprites.add(self.index, "sprites.png")
+        sprites.add(self.index, "assets/sprites.png")
         sprites.setFrame(self.index, 27, 21, BALL_RADIUS, BALL_RADIUS)
         sprites.setScale(self.index, BALL_SCALE, BALL_SCALE)
 
