@@ -110,5 +110,7 @@ def drawAbout():
     drawMenu()
 
 def drawThanks():
-    text.draw("Special Thanks to Imani, Caitlin, and Tim \n      for being great teammates.", WIDTH, HEIGHT/2, 72.0)
+    text.draw("Special Thanks to Imani, Caitlin, and Tim for being great teammates.", WIDTH/2 + 100, HEIGHT/2 - 100, 48.0)
+    text.draw("Thanks to Robinhood76 on freesound.org for the music,", WIDTH/2 + 100, HEIGHT/2, 48.0)
+    text.draw("Juhani Junkala for the sound effects, and Unlucky studio for the sprites", WIDTH/2 + 100, HEIGHT/2 + 100, 48.0)
     drawMenu()
