@@ -112,9 +112,11 @@ def update():
     game.moveGameObject(player.index, player.vx, player.vy)
 
     playerPosition = game.getGameObjectPosition(player.index)
-    centerX = playerPosition[0] + SHIP_WIDTH * SHIP_SCALE / 2
-    centerY = playerPosition[1] + SHIP_HEIGHT * SHIP_SCALE / 2
-    if tiles.pointInTile(centerX, centerY, 255, 255, 255) or centerX < 0 or centerX > WIDTH or centerY < 0 or centerY > HEIGHT:
+    centerX = playerPosition[0] + (SHIP_WIDTH * SHIP_SCALE / 2)
+    centerY = playerPosition[1] + (SHIP_HEIGHT * SHIP_SCALE / 2)
+    if (tiles.pointInTile(centerX, centerY, 255, 255, 255) or tiles.pointInTile(centerX, centerY, 165,165,165) or 
+            tiles.pointInTile(centerX, centerY,80,124,159) or tiles.pointInTile(centerX, centerY, 159,139,80) or 
+            centerX < 0 or centerX > WIDTH or centerY < 0 or centerY > HEIGHT):
         player.dead = True
         player.vx = 0
         player.vy = 0
