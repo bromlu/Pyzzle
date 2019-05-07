@@ -7,8 +7,8 @@
 using namespace std;
 
 vector<sf::Music*> music;
+vector<sf::Sound*> audio;
 vector<sf::SoundBuffer> audioBuffers;
-vector<sf::Sound> audio;
 sf::Sound sound;
 sf::SoundBuffer buffer;
 
@@ -95,7 +95,11 @@ static PyObject * audio_loadAudio(PyObject *self, PyObject * args)
         cout << "failed to load" << endl;
         return NULL;
     }
-    audio.push_back(sf::Sound(audioBuffers.at(index)));
+    audio.push_back(new sf::Sound());
+
+    for(int i = 0; i <= index; i++) {
+        audio.at(i)->setBuffer(audioBuffers.at(i));
+    }
 
     return PyLong_FromLong(index);
 };
@@ -107,8 +111,8 @@ static PyObject * audio_playAudio(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
-    if(audio.at(index).getStatus() != sf::SoundSource::Status::Playing) {
-        audio.at(index).play();
+    if(audio.at(index)->getStatus() != sf::SoundSource::Status::Playing) {
+        audio.at(index)->play();
     }
 
     Py_RETURN_FALSE;
@@ -121,7 +125,7 @@ static PyObject * audio_pauseAudio(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
-    audio.at(index).pause();
+    audio.at(index)->pause();
 
     Py_RETURN_FALSE;
 }
@@ -133,7 +137,7 @@ static PyObject * audio_stopAudio(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "i", &index))
         return NULL;
 
-    audio.at(index).stop();
+    audio.at(index)->stop();
 
     Py_RETURN_FALSE;
 }
