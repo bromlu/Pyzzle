@@ -33,22 +33,28 @@ if __name__ == "__main__":
 class Beacon:
     def __init__(self):
         self.index = game.createGameObject()
+        self.width = SHIP_WIDTH * SHIP_SCALE
+        self.height = SHIP_HEIGHT * SHIP_SCALE
         game.setGameObjectPosition(self.index, WIDTH / 2, SHIP_HEIGHT * SHIP_SCALE)
         sprites.add(self.index, "beacon.png")
         sprites.setFrame(self.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
         sprites.setScale(self.index, SHIP_SCALE, SHIP_SCALE)
-        collision.addCollisionRect(self.index, 0, 0, int(SHIP_WIDTH * SHIP_SCALE), int(SHIP_HEIGHT * SHIP_SCALE))
+        collision.addCollisionRect(self.index, int(self.width / 4), int(self.width / 4), int(self.width / 2), int(self.height / 2))
 
 class Ship:
     def __init__(self):
+        self.width = SHIP_WIDTH * SHIP_SCALE
+        self.height = SHIP_HEIGHT * SHIP_SCALE
         self.index = game.createGameObject()
-        game.setGameObjectPosition(self.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
+        game.setGameObjectPosition(self.index, WIDTH/2 - self.width / 2, HEIGHT - self.height)
         self.fuel = 100
         self.dead = False
         self.won = False
         self.vx = 0
         self.vy = 0
-        collision.addCollisionRect(self.index, 0, 0, int(SHIP_WIDTH * SHIP_SCALE), int(SHIP_HEIGHT * SHIP_SCALE))
+
+        collision.addCollisionRect(self.index, int(self.width/2 - 10), 12, int(self.width / 8), int(self.height / 4))
+        collision.addCollisionRect(self.index, 10, 15 + int(self.height / 4), int(self.width - 20), int(self.height / 4))
         sprites.add(self.index, "spaceship.png")
         sprites.setFrame(self.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
         sprites.setScale(self.index, SHIP_SCALE, SHIP_SCALE)
@@ -118,7 +124,7 @@ def update():
             if currentLevel == len(levels):
                 currentLevel = 0
             tiles.setTileFrame(*levels[currentLevel])
-        game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
+        game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - player.height)
         sprites.setFrame(beacon.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
         animations.stop(player.index)
         player.dead = False
@@ -135,8 +141,8 @@ def update():
     game.moveGameObject(player.index, player.vx, player.vy)
 
     playerPosition = game.getGameObjectPosition(player.index)
-    centerX = playerPosition[0] + (SHIP_WIDTH * SHIP_SCALE / 2)
-    centerY = playerPosition[1] + (SHIP_HEIGHT * SHIP_SCALE / 2)
+    centerX = playerPosition[0] + (player.width / 2)
+    centerY = playerPosition[1] + (player.height / 2)
     if (tiles.pointInTile(centerX, centerY, 255, 255, 255) or tiles.pointInTile(centerX, centerY, 165,165,165) or 
             tiles.pointInTile(centerX, centerY,80,124,159) or tiles.pointInTile(centerX, centerY, 159,139,80) or 
             centerX < 0 or centerX > WIDTH or centerY < 0 or centerY > HEIGHT):
@@ -145,7 +151,7 @@ def update():
         player.vy = 0
         animations.play(player.index, player.die)
     if player.vx == 0 and player.vy == 0 and player.fuel == 0:
-        game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
+        game.setGameObjectPosition(player.index, WIDTH/2 - player.width / 2, HEIGHT - player.height)
         animations.stop(player.index)
         player.fuel = 100
 
@@ -164,3 +170,5 @@ def draw():
     text.draw(str(player.fuel), 300, 50, 100, 104, 255, 0)
     sprites.draw(beacon.index)
     sprites.draw(player.index)
+    collision.drawCollisionObjects(player.index)
+    collision.drawCollisionObjects(beacon.index)
