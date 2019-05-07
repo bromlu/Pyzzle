@@ -197,7 +197,11 @@ static PyObject * tiles_objectInTile(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "iiii", &gameObjectIndex, &R, &G, &B))
         return NULL;
 
-    sf::Vector2f objectPosition = game_getGameObject(gameObjectIndex)->getPosition();
+    GameObject* gameObject = game_getGameObject(gameObjectIndex);
+    sf::Sprite* sprite = gameObject->getSprite();
+    sf::Vector2f objectPosition = gameObject->getPosition();
+    sf::IntRect objectFrame = sprite->getTextureRect();
+    sf::Vector2f scale = sprite->getScale();
 
     const sf::Uint8* pixels = inputMap.getPixelsPtr();
     sf::Vector2u size = inputMap.getSize();
@@ -210,14 +214,20 @@ static PyObject * tiles_objectInTile(PyObject *self, PyObject *args)
     float scalerX = localBounds.width / globalBounds.width;
     float scalerY = localBounds.height / globalBounds.height;
 
-    int x = (int(objectPosition.x) + frame.left / scalerX) / TILE_WIDTH;
-    int y = (int(objectPosition.y) + frame.top / scalerY) / TILE_HEIGHT;
-    int i = (x + (y * size.x)) * 4;
+    for(int col = objectPosition.y; col <= objectFrame.height * scale.y + objectPosition.y; col += TILE_HEIGHT) {
+        for(int row = objectPosition.x; row <= objectFrame.width * scale.x + objectPosition.x; row += TILE_WIDTH) {
+            int x = (int(row) + frame.left / scalerX) / TILE_WIDTH;
+            int y = (int(col) + frame.top / scalerY) / TILE_HEIGHT;
+            int i = (x + (y * size.x)) * 4;
 
-    if ( i > length || x < 0 || y < 0) {
-        Py_RETURN_FALSE;
-    } else if (R == pixels[i] && G == pixels[i+1] && B == pixels[i+2]) {
-        Py_RETURN_TRUE;
+            if ( i < length && x > 0 && y > 0) {
+                if (R == pixels[i] && G == pixels[i+1] && B == pixels[i+2]) {
+                    if (gameObject->contains(sf::Vector2f(row, col))) {
+                        Py_RETURN_TRUE;
+                    }
+                }
+            }
+        }
     }
     Py_RETURN_FALSE;
 }

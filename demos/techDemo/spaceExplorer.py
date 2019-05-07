@@ -143,14 +143,14 @@ def update():
     playerPosition = game.getGameObjectPosition(player.index)
     centerX = playerPosition[0] + (player.width / 2)
     centerY = playerPosition[1] + (player.height / 2)
-    if (tiles.pointInTile(centerX, centerY, 255, 255, 255) or tiles.pointInTile(centerX, centerY, 165,165,165) or 
-            tiles.pointInTile(centerX, centerY,80,124,159) or tiles.pointInTile(centerX, centerY, 159,139,80) or 
+    if (tiles.objectInTile(player.index, 255, 255, 255) or tiles.objectInTile(player.index, 165,165,165) or 
+            tiles.objectInTile(player.index,80,124,159) or tiles.objectInTile(player.index, 159,139,80) or 
             centerX < 0 or centerX > WIDTH or centerY < 0 or centerY > HEIGHT):
         player.dead = True
         player.vx = 0
         player.vy = 0
         animations.play(player.index, player.die)
-    if player.vx == 0 and player.vy == 0 and player.fuel == 0:
+    elif player.vx == 0 and player.vy == 0 and player.fuel == 0:
         game.setGameObjectPosition(player.index, WIDTH/2 - player.width / 2, HEIGHT - player.height)
         animations.stop(player.index)
         player.fuel = 100
@@ -170,5 +170,3 @@ def draw():
     text.draw(str(player.fuel), 300, 50, 100, 104, 255, 0)
     sprites.draw(beacon.index)
     sprites.draw(player.index)
-    collision.drawCollisionObjects(player.index)
-    collision.drawCollisionObjects(beacon.index)
