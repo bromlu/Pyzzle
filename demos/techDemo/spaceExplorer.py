@@ -9,6 +9,7 @@ from pyzzle import shapes
 from pyzzle import text
 from pyzzle import animations
 from pyzzle import tiles
+from pyzzle import audio
 
 player = None
 beacon = None
@@ -27,7 +28,10 @@ SHIP_SCALE = 0.25
 SHIP_SPEED = 10
 
 if __name__ == "__main__":
-    text.loadFont("trench100free.otf")
+    text.loadFont("assets/trench100free.otf")
+    audio.loadAudio("assets/sfx_vehicle_engineloop.wav")
+    audio.loadAudio("assets/sfx_exp_medium1.wav")
+    audio.loadAudio("assets/sfx_sounds_powerup2.wav")
     game.init("spaceExplorer", "Pyzzle Tech Demo", WIDTH, HEIGHT)
 
 class Beacon:
@@ -36,7 +40,7 @@ class Beacon:
         self.width = SHIP_WIDTH * SHIP_SCALE
         self.height = SHIP_HEIGHT * SHIP_SCALE
         game.setGameObjectPosition(self.index, WIDTH / 2, SHIP_HEIGHT * SHIP_SCALE)
-        sprites.add(self.index, "beacon.png")
+        sprites.add(self.index, "assets/beacon.png")
         sprites.setFrame(self.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
         sprites.setScale(self.index, SHIP_SCALE, SHIP_SCALE)
         collision.addCollisionRect(self.index, int(self.width / 4), int(self.width / 4), int(self.width / 2), int(self.height / 2))
@@ -55,7 +59,7 @@ class Ship:
 
         collision.addCollisionRect(self.index, int(self.width/2 - 10), 12, int(self.width / 8), int(self.height / 4))
         collision.addCollisionRect(self.index, 10, 15 + int(self.height / 4), int(self.width - 20), int(self.height / 4))
-        sprites.add(self.index, "spaceship.png")
+        sprites.add(self.index, "assets/spaceship.png")
         sprites.setFrame(self.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
         sprites.setScale(self.index, SHIP_SCALE, SHIP_SCALE)
 
@@ -90,14 +94,14 @@ def init():
     deadAnimationFrameCount = 0
     beaconActivatedFrameCount = 0
     currentLevel = 0
-    tiles.addPngTileType("aestroid_brown.png", 255,255,255)
-    tiles.addPngTileType("aestroid_dark.png", 165,165,165)
-    tiles.addPngTileType("aestroid_gray_2.png", 80,124,159)
-    tiles.addPngTileType("aestroid_gray.png", 159,139,80)
-    tiles.addPngTileType("space2.png",0,0,0)
+    tiles.addPngTileType("assets/aestroid_brown.png", 255,255,255)
+    tiles.addPngTileType("assets/aestroid_dark.png", 165,165,165)
+    tiles.addPngTileType("assets/aestroid_gray_2.png", 80,124,159)
+    tiles.addPngTileType("assets/aestroid_gray.png", 159,139,80)
+    tiles.addPngTileType("assets/space2.png",0,0,0)
     tiles.setTileWidth(TILE_WIDTH)
     tiles.setTileHeight(TILE_HEIGHT)
-    tiles.loadFromPng("map.png", 100,100)
+    tiles.loadFromPng("assets/map.png", 100,100)
     tiles.setTileFrame(0,0,WIDTH,HEIGHT)
 
 def update():
@@ -111,8 +115,10 @@ def update():
         if not input.isKeyPressed(73):
             animations.stop(player.index)
             sprites.setFrame(player.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
+            audio.stopAudio(0)
         if input.isKeyPressed(73) and player.fuel > 0: #Up
             animations.play(player.index, player.move)
+            audio.playAudio(0)
             player.vy -= 1
             player.fuel -= 1
         if input.isKeyPressed(74) and player.fuel > 0: #Down
@@ -133,6 +139,7 @@ def update():
                 tiles.setTileFrame(*levels[currentLevel])
         game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - player.height)
         sprites.setFrame(beacon.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
+        audio.stopAudio(0)
         animations.stop(player.index)
         player.dead = False
         player.won = False
@@ -156,6 +163,8 @@ def update():
         player.dead = True
         player.vx = 0
         player.vy = 0
+        audio.stopAudio(0)
+        audio.playAudio(1)
         animations.play(player.index, player.die)
     elif player.vx == 0 and player.vy == 0 and player.fuel == 0 and not player.won:
         game.setGameObjectPosition(player.index, WIDTH/2 - player.width / 2, HEIGHT - player.height)
@@ -165,6 +174,8 @@ def update():
     if collision.collides(beacon.index, player.index):
         sprites.setFrame(beacon.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
         animations.stop(player.index)
+        audio.stopAudio(0)
+        audio.playAudio(2)
         player.won = True
         player.vx = 0
         player.vy = 0
