@@ -12,7 +12,15 @@ from pyzzle import tiles
 
 player = None
 beacon = None
-deadAnimationFrame = 0
+deadAnimationFrameCount = 0
+beaconActivatedFrameCount = 0
+currentLevel = 0
+levels = [
+    (0,0,WIDTH,HEIGHT),
+    (50*TILE_WIDTH,0,WIDTH,HEIGHT),
+    (0,50*TILE_HEIGHT,WIDTH,HEIGHT),
+    (50*TILE_WIDTH,50*TILE_HEIGHT,WIDTH,HEIGHT)
+]
 SHIP_HEIGHT = 512
 SHIP_WIDTH = 512
 SHIP_SCALE = 0.25
@@ -37,6 +45,7 @@ class Ship:
         game.setGameObjectPosition(self.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
         self.fuel = 100
         self.dead = False
+        self.won = False
         self.vx = 0
         self.vy = 0
         collision.addCollisionRect(self.index, 0, 0, int(SHIP_WIDTH * SHIP_SCALE), int(SHIP_HEIGHT * SHIP_SCALE))
@@ -76,13 +85,17 @@ def init():
     tiles.addPngTileType("space.jpg",0,0,0)
     tiles.setTileWidth(TILE_WIDTH)
     tiles.setTileHeight(TILE_HEIGHT)
-    tiles.loadFromPng("map.png", 50,50)
+    tiles.loadFromPng("map.png", 100,100)
+    tiles.setTileFrame(0,0,WIDTH,HEIGHT)
 
 def update():
     global player
-    global deadAnimationFrame
+    global deadAnimationFrameCount
+    global beaconActivatedFrameCount
+    global currentLevel
+    global levels
 
-    if not player.dead:
+    if not player.dead and not player.won:
         if not input.isKeyPressed(73):
             animations.stop(player.index)
             sprites.setFrame(player.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
@@ -99,14 +112,24 @@ def update():
         if input.isKeyPressed(72) and player.fuel > 0: #Right
             player.vx += 1
             player.fuel -= 1
-    elif deadAnimationFrame == 35:
+    elif deadAnimationFrameCount == 35 or beaconActivatedFrameCount == 35:
+        if player.won:
+            currentLevel+=1
+            if currentLevel == len(levels):
+                currentLevel = 0
+            tiles.setTileFrame(*levels[currentLevel])
         game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
+        sprites.setFrame(beacon.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
         animations.stop(player.index)
         player.dead = False
+        player.won = False
         player.fuel = 100
-        deadAnimationFrame = 0
-    else:
-        deadAnimationFrame += 1
+        deadAnimationFrameCount = 0
+        beaconActivatedFrameCount = 0
+    elif player.dead:
+        deadAnimationFrameCount += 1
+    elif player.won:
+        beaconActivatedFrameCount += 1
 
 
     game.moveGameObject(player.index, player.vx, player.vy)
@@ -128,9 +151,8 @@ def update():
 
     if collision.collides(beacon.index, player.index):
         sprites.setFrame(beacon.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
-        game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - SHIP_HEIGHT * SHIP_SCALE)
         animations.stop(player.index)
-        player.fuel = 100
+        player.won = True
         player.vx = 0
         player.vy = 0
 
