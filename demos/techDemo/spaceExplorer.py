@@ -13,8 +13,7 @@ from pyzzle import audio
 
 player = None
 beacon = None
-deadAnimationFrameCount = 0
-beaconActivatedFrameCount = 0
+animationFrameCount = 0
 currentLevel = 0
 levels = [
     (0,0,WIDTH,HEIGHT),
@@ -57,10 +56,7 @@ class Ship:
         self.fuel = MAX_FUEL
         self.dead = False
         self.won = False
-        self.vx = 0
-        self.vy = 0
-        self.ax = 0
-        self.ay = 0
+        self.stop()
 
         collision.addCollisionRect(self.index, int(self.width/2 - 10), 12, int(self.width / 8), int(self.height / 4))
         collision.addCollisionRect(self.index, 10, 15 + int(self.height / 4), int(self.width - 20), int(self.height / 4))
@@ -88,16 +84,20 @@ class Ship:
         animations.addFrame(self.index, self.die, 1024, 1536, SHIP_WIDTH, SHIP_HEIGHT)
         animations.addFrame(self.index, self.die, 1536, 1536, SHIP_WIDTH, SHIP_HEIGHT)
 
+    def stop(self):
+        self.vx = 0
+        self.vy = 0
+        self.ax = 0
+        self.ay = 0
+
 def init():
     global player
     global beacon
-    global deadAnimationFrameCount
-    global beaconActivatedFrameCount
+    global animationFrameCount
     global currentLevel
     player = Ship()
     beacon = Beacon()
-    deadAnimationFrameCount = 0
-    beaconActivatedFrameCount = 0
+    animationFrameCount = 0
     currentLevel = 0
     tiles.addPngTileType("assets/aestroid_brown.png", 255,255,255)
     tiles.addPngTileType("assets/aestroid_dark.png", 165,165,165)
@@ -115,19 +115,35 @@ def init():
     audio.loopMusic(0)
     audio.playMusic(0)
 
+def resetLevel():
+    global player
+    global animationFrameCount
+
+    game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - player.height)
+    sprites.setFrame(beacon.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
+    audio.stopAudio(0)
+    animations.stop(player.index)
+    player.dead = False
+    player.won = False
+    player.fuel = MAX_FUEL
+    player.stop()
+    animationFrameCount = 0
+
 def update():
     global player
-    global deadAnimationFrameCount
-    global beaconActivatedFrameCount
+    global animationFrameCount
     global currentLevel
     global levels
+
+    if input.isKeyPressed(17) and not player.dead and not player.won: #R
+        resetLevel()
 
     if not player.dead and not player.won:
         ay = player.ay
         ax = player.ax
         player.ay = 0
         player.ax = 0
-        if not input.isKeyPressed(73):
+        if not input.isKeyPressed(73) or player.fuel <= 0:
             animations.stop(player.index)
             sprites.setFrame(player.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
             audio.stopAudio(0)
@@ -149,26 +165,16 @@ def update():
             player.ax = ax
             player.ax += 0.1
             player.fuel -= 1
-    elif deadAnimationFrameCount == 35 or beaconActivatedFrameCount == 35:
+    elif animationFrameCount == 35:
         if player.won:
             currentLevel+=1
             if currentLevel == len(levels):
                 game.switchState("spaceExplorer", "", "gameOverUpdate", "gameOverDraw")
             else:
                 tiles.setTileFrame(*levels[currentLevel])
-        game.setGameObjectPosition(player.index, WIDTH/2 - SHIP_WIDTH * SHIP_SCALE / 2, HEIGHT - player.height)
-        sprites.setFrame(beacon.index,0,SHIP_HEIGHT,SHIP_WIDTH,SHIP_HEIGHT)
-        audio.stopAudio(0)
-        animations.stop(player.index)
-        player.dead = False
-        player.won = False
-        player.fuel = MAX_FUEL
-        deadAnimationFrameCount = 0
-        beaconActivatedFrameCount = 0
-    elif player.dead:
-        deadAnimationFrameCount += 1
-    elif player.won:
-        beaconActivatedFrameCount += 1
+        resetLevel()
+    elif player.dead or player.won:
+        animationFrameCount += 1
 
     if player.ax > 1:
         player.ax = 1
@@ -189,17 +195,12 @@ def update():
             tiles.objectInTile(player.index,80,124,159) or tiles.objectInTile(player.index, 159,139,80) or 
             centerX < 0 or centerX > WIDTH or centerY < 0 or centerY > HEIGHT):
         player.dead = True
-        player.vx = 0
-        player.vy = 0
-        player.ax = 0
-        player.ay = 0
+        player.stop()
         audio.stopAudio(0)
         audio.playAudio(1)
         animations.play(player.index, player.die)
     elif player.vx == 0 and player.vy == 0 and player.fuel == 0 and not player.won:
-        game.setGameObjectPosition(player.index, WIDTH/2 - player.width / 2, HEIGHT - player.height)
-        animations.stop(player.index)
-        player.fuel = MAX_FUEL
+        resetLevel()
 
     if collision.collides(beacon.index, player.index):
         sprites.setFrame(beacon.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
@@ -207,10 +208,7 @@ def update():
         audio.stopAudio(0)
         audio.playAudio(2)
         player.won = True
-        player.vx = 0
-        player.vy = 0
-        player.ax = 0
-        player.ay = 0
+        player.stop()
 
 def drawFuel():
     text.draw("Fuel", 150, 50, 100, 35, 173, 184)
@@ -220,6 +218,8 @@ def drawFuel():
     if(player.fuel != 0):
         shapes.drawRectangle(220, 37, player.fuel * 4, 40)
         shapes.setColor(35, 173, 184)
+    else:
+        text.draw("Press 'R' to restart", 460, 100, 48, 35, 173, 184)
     shapes.setOutline(2)  
     shapes.drawRectangle(220, 37, MAX_FUEL * 4, 40)
 
