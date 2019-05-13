@@ -31,6 +31,7 @@ SHIP_HEIGHT = 512
 SHIP_WIDTH = 512
 SHIP_SCALE = 0.25
 SHIP_SPEED = 10
+MAX_FUEL = 75
 
 if __name__ == "__main__":
     text.loadFont("assets/trench100free.otf")
@@ -53,11 +54,13 @@ class Ship:
         self.height = SHIP_HEIGHT * SHIP_SCALE
         self.index = game.createGameObject()
         game.setGameObjectPosition(self.index, WIDTH/2 - self.width / 2, HEIGHT - self.height)
-        self.fuel = 50
+        self.fuel = MAX_FUEL
         self.dead = False
         self.won = False
         self.vx = 0
         self.vy = 0
+        self.ax = 0
+        self.ay = 0
 
         collision.addCollisionRect(self.index, int(self.width/2 - 10), 12, int(self.width / 8), int(self.height / 4))
         collision.addCollisionRect(self.index, 10, 15 + int(self.height / 4), int(self.width - 20), int(self.height / 4))
@@ -120,6 +123,10 @@ def update():
     global levels
 
     if not player.dead and not player.won:
+        ay = player.ay
+        ax = player.ax
+        player.ay = 0
+        player.ax = 0
         if not input.isKeyPressed(73):
             animations.stop(player.index)
             sprites.setFrame(player.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
@@ -127,16 +134,20 @@ def update():
         if input.isKeyPressed(73) and player.fuel > 0: #Up
             animations.play(player.index, player.move)
             audio.playAudio(0)
-            player.vy -= 1
+            player.ay = ay
+            player.ay -= 0.1
             player.fuel -= 1
         if input.isKeyPressed(74) and player.fuel > 0: #Down
-            player.vy += 1
+            player.ay = ay
+            player.ay += 0.1
             player.fuel -= 1
         if input.isKeyPressed(71) and player.fuel > 0: #Left
-            player.vx -= 1
+            player.ax = ax
+            player.ax -= 0.1
             player.fuel -= 1
         if input.isKeyPressed(72) and player.fuel > 0: #Right
-            player.vx += 1
+            player.ax = ax
+            player.ax += 0.1
             player.fuel -= 1
     elif deadAnimationFrameCount == 35 or beaconActivatedFrameCount == 35:
         if player.won:
@@ -151,7 +162,7 @@ def update():
         animations.stop(player.index)
         player.dead = False
         player.won = False
-        player.fuel = 50
+        player.fuel = MAX_FUEL
         deadAnimationFrameCount = 0
         beaconActivatedFrameCount = 0
     elif player.dead:
@@ -159,7 +170,16 @@ def update():
     elif player.won:
         beaconActivatedFrameCount += 1
 
-
+    if player.ax > 1:
+        player.ax = 1
+    if player.ay > 1:
+        player.ay = 1
+    if player.ax < -1:
+        player.ax = -1
+    if player.ay < -1:
+        player.ay = -1
+    player.vx += player.ax
+    player.vy += player.ay
     game.moveGameObject(player.index, player.vx, player.vy)
 
     playerPosition = game.getGameObjectPosition(player.index)
@@ -171,13 +191,15 @@ def update():
         player.dead = True
         player.vx = 0
         player.vy = 0
+        player.ax = 0
+        player.ay = 0
         audio.stopAudio(0)
         audio.playAudio(1)
         animations.play(player.index, player.die)
     elif player.vx == 0 and player.vy == 0 and player.fuel == 0 and not player.won:
         game.setGameObjectPosition(player.index, WIDTH/2 - player.width / 2, HEIGHT - player.height)
         animations.stop(player.index)
-        player.fuel = 50
+        player.fuel = MAX_FUEL
 
     if collision.collides(beacon.index, player.index):
         sprites.setFrame(beacon.index,0,0,SHIP_WIDTH,SHIP_HEIGHT)
@@ -187,13 +209,25 @@ def update():
         player.won = True
         player.vx = 0
         player.vy = 0
+        player.ax = 0
+        player.ay = 0
+
+def drawFuel():
+    text.draw("Fuel", 150, 50, 100, 35, 173, 184)
+    shapes.setFill(True)
+    if player.fuel < MAX_FUEL / 3:
+        shapes.setColor(249, 14, 14)
+    if(player.fuel != 0):
+        shapes.drawRectangle(220, 37, player.fuel * 4, 40)
+        shapes.setColor(35, 173, 184)
+    shapes.setOutline(2)  
+    shapes.drawRectangle(220, 37, MAX_FUEL * 4, 40)
 
 def draw():
     global player
     global beacon
     tiles.draw()
-    text.draw("Fuel", 150, 50, 100, 104, 255, 0)
-    text.draw(str(player.fuel), 300, 50, 100, 104, 255, 0)
+    drawFuel()
     sprites.draw(beacon.index)
     sprites.draw(player.index)
 
