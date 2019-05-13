@@ -211,6 +211,8 @@ def update():
         player.stop()
 
 def drawFuel():
+    global player 
+
     text.draw("Fuel", 150, 50, 100, 35, 173, 184)
     shapes.setFill(True)
     if player.fuel < MAX_FUEL / 3:
@@ -218,7 +220,7 @@ def drawFuel():
     if(player.fuel != 0):
         shapes.drawRectangle(220, 37, player.fuel * 4, 40)
         shapes.setColor(35, 173, 184)
-    else:
+    elif not player.won or player.dead:
         text.draw("Press 'R' to restart", 460, 100, 48, 35, 173, 184)
     shapes.setOutline(2)  
     shapes.drawRectangle(220, 37, MAX_FUEL * 4, 40)
