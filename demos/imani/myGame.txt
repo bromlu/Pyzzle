@@ -1,0 +1,35 @@
+Assets
+- graphic
+- music
+- audio
+
+
+
+Game: Go around collecting carrots
+
+- how you pick carrots
+dig out carrots
+don't step on ripe carrots or they die
+
+
+- how you ripen carrots
+carrots change color when ready to be picked
+
+
+- what you are collecting carrots for
+
+
+ideas
+- bunny carrying bucket, picks up carrot
+- carrot seeds/plant
+- 
+
+
+- seasonal music
+- 
+
+- falling carrots - wheel barrow
+- multiple windows??
+
+???? window position - get + set position, need size of window
+
