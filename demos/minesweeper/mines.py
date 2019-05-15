@@ -1,4 +1,5 @@
 import math
+import time
 from random import randint
 
 from pyzzle import game
@@ -11,9 +12,9 @@ from pyzzle import text
 
 #WIDTH = 800
 #HEIGHT = 800
-SCALE = 1
-BOARDWIDTH = 10
-BOARDHEIGHT = 10
+SCALE = 2
+BOARDWIDTH = 40
+BOARDHEIGHT = 30
 TILESIZE = 16 * SCALE
 HEADERHEIGHT = 64 * SCALE
 PADDING = 6 * SCALE
@@ -23,7 +24,7 @@ PLAYHEIGHT = BOARDHEIGHT * TILESIZE
 PLAYOFFSET = PADDING * 2 + HEADERHEIGHT
 WIDTH = PLAYWIDTH + PADDING * 2
 HEIGHT = PLAYHEIGHT + PADDING * 3 + HEADERHEIGHT
-MINECOUNT = 15
+MINECOUNT = math.floor(BOARDWIDTH * BOARDHEIGHT * .15) #30
 CURSOROUTLINE = 2 * SCALE
 
 board = []
@@ -36,6 +37,8 @@ action_paused = False
 clear_buffer = []
 left = MINECOUNT
 first = True
+base_time = 0
+display_time = "0"
 
 tile_blank = game.createGameObject()
 tile_clear = game.createGameObject()
@@ -52,21 +55,6 @@ tile_bomb = game.createGameObject()
 tile_boom = game.createGameObject()
 tile_wrong = game.createGameObject()
 
-sprites.setScale(tile_blank, SCALE, SCALE)
-sprites.setScale(tile_clear, SCALE, SCALE)
-sprites.setScale(tile_1, SCALE, SCALE)
-sprites.setScale(tile_2, SCALE, SCALE)
-sprites.setScale(tile_3, SCALE, SCALE)
-sprites.setScale(tile_4, SCALE, SCALE)
-sprites.setScale(tile_5, SCALE, SCALE)
-sprites.setScale(tile_6, SCALE, SCALE)
-sprites.setScale(tile_7, SCALE, SCALE)
-sprites.setScale(tile_8, SCALE, SCALE)
-sprites.setScale(tile_flag, SCALE, SCALE)
-sprites.setScale(tile_bomb, SCALE, SCALE)
-sprites.setScale(tile_boom, SCALE, SCALE)
-sprites.setScale(tile_wrong, SCALE, SCALE)
-
 sprites.add(tile_blank, "assets/tile_blank.png")
 sprites.add(tile_clear, "assets/tile_clear.png")
 sprites.add(tile_1, "assets/tile_1.png")
@@ -82,8 +70,23 @@ sprites.add(tile_bomb, "assets/tile_bomb.png")
 sprites.add(tile_boom, "assets/tile_boom.png")
 sprites.add(tile_wrong, "assets/tile_wrong.png")
 
+sprites.setScale(tile_blank, SCALE, SCALE)
+sprites.setScale(tile_clear, SCALE, SCALE)
+sprites.setScale(tile_1, SCALE, SCALE)
+sprites.setScale(tile_2, SCALE, SCALE)
+sprites.setScale(tile_3, SCALE, SCALE)
+sprites.setScale(tile_4, SCALE, SCALE)
+sprites.setScale(tile_5, SCALE, SCALE)
+sprites.setScale(tile_6, SCALE, SCALE)
+sprites.setScale(tile_7, SCALE, SCALE)
+sprites.setScale(tile_8, SCALE, SCALE)
+sprites.setScale(tile_flag, SCALE, SCALE)
+sprites.setScale(tile_bomb, SCALE, SCALE)
+sprites.setScale(tile_boom, SCALE, SCALE)
+sprites.setScale(tile_wrong, SCALE, SCALE)
+
 if __name__ == "__main__":
-	# text.loadFont("trench100free.otf")
+	text.loadFont("assets/FSEX300.ttf")
 	game.init("mines", "Mine Sweeper", WIDTH, HEIGHT)
 
 
@@ -179,10 +182,14 @@ def reveal_mines():
 
 # UPDATE FUNCTIONS------------------------------------------------------------------------------>
 def lose():
+	global game_state
+	game_state = -1
 	reveal_mines()
 	print("You Lost!")
 
 def win():
+	global game_state
+	game_state = 1
 	clear_board()
 	print("You Won!")
 
@@ -197,7 +204,6 @@ def check_clears():
 	for y in range(BOARDHEIGHT):
 		for x in range(BOARDWIDTH):
 			if board[y][x][0] != -1 and board[y][x][1] != 2:
-				print("Tile at", x, y, "is", board[y][x][0], "and is not cleared.\n")
 				return False
 	return True
 
@@ -217,7 +223,7 @@ def flag_tile():
 def clear_tile(x, y, base = False):
 	global board
 
-	if tile_exists(x, y) and base and board[y][x][0] == -1:
+	if tile_exists(x, y) and base and board[y][x][0] == -1 and board[y][x][1] == 0:
 		board[y][x][0] = -2
 		lose()
 
@@ -267,10 +273,10 @@ def handle_move():
 			cursorx += 1
 	
 		cursorx = clamp(cursorx, 0, BOARDWIDTH - 1)
-		cursory = clamp(cursory, 0, BOARDHEIGHT - 1)
+		cursory = clamp(cursory, -1, BOARDHEIGHT - 1)
 
 def handle_action():
-	global action_paused, first
+	global action_paused, first, base_time, display_time, left
 	action = False
 
 	if check_keys([23, 25]):
@@ -280,13 +286,14 @@ def handle_action():
 	else:
 		action_paused = False
 
-	if action:
+	if action and game_state == 0:
 		if input.isKeyPressed(23):
 			flag_tile()
 		elif input.isKeyPressed(25):
 			if first:
 				place_mines(cursorx, cursory)
 				first = False
+				base_time = time.time()
 
 			clear_tile(cursorx, cursory, True)
 			while len(clear_buffer) > 0:
@@ -295,10 +302,16 @@ def handle_action():
 
 		if check_clears():
 			win()
-	
-	#for i in range(100):
-	#	if input.isKeyPressed(i):
-	#		print(i)
+	if action and cursory == -1:
+		reset_board()
+		first = True
+		display_time = "0"
+		left = MINECOUNT
+
+def update_time():
+	global display_time
+	if not first and game_state == 0:
+		display_time = str(math.floor(time.time() - base_time))
 
 
 
@@ -347,12 +360,22 @@ def draw_board():
 				move_and_draw(x, y, tile_wrong)
 			else:
 				move_and_draw(x, y, tile_blank)
+
+def draw_header():
+	str_left = str(left)
+	text.draw(str_left, PADDING + ((len(str_left) * 28 / 2) + 14) * SCALE, PADDING + 29 * SCALE, 64 * SCALE, 248, 246, 242)
+	text.draw(display_time, WIDTH - (PADDING + math.floor(len(display_time) * 28 / 2) + 14) * SCALE, PADDING + 29 * SCALE, 64 * SCALE, 248, 246, 242)
 	
 def draw_cursor():
 	global cursorx, cursory
-	shapes.setOutline(CURSOROUTLINE)
-	shapes.setColor(255, 167, 36)
-	shapes.drawRectangle(PADDING + cursorx * TILESIZE - CURSOROUTLINE, PLAYOFFSET + cursory * TILESIZE - CURSOROUTLINE, TILESIZE + CURSOROUTLINE * 2, TILESIZE + CURSOROUTLINE * 2)
+	if cursory != -1:
+		shapes.setOutline(CURSOROUTLINE)
+		shapes.setColor(255, 167, 36)
+		shapes.drawRectangle(PADDING + cursorx * TILESIZE - CURSOROUTLINE, PLAYOFFSET + cursory * TILESIZE - CURSOROUTLINE, TILESIZE + CURSOROUTLINE * 2, TILESIZE + CURSOROUTLINE * 2)
+	else:
+		shapes.setOutline(CURSOROUTLINE)
+		shapes.setColor(255, 167, 36)
+		shapes.drawRectangle(int((WIDTH - HEADERHEIGHT) / 2), PADDING, CURSOROUTLINE + HEADERHEIGHT, CURSOROUTLINE + HEADERHEIGHT)
 
 
 
@@ -364,9 +387,11 @@ def init():
 def update():
 	handle_move()
 	handle_action()
+	update_time()
 
 def draw():
 	draw_outline()
 	draw_board()
+	draw_header()
 	draw_cursor()
 
