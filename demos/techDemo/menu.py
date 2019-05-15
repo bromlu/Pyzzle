@@ -38,8 +38,11 @@ def gotoThanks():
 def gotoPong():
     game.switchState("pong", "init", "update", "draw")
 
+def gotoSpace():
+    game.switchState("spaceExplorer", "init", "update", "draw")
+
 if __name__ == "__main__":
-    text.loadFont("trench100free.otf")
+    text.loadFont("assets/trench100free.otf")
     game.init("menu", "Pyzzle Tech Demo", WIDTH, HEIGHT)
 
 def init():
@@ -58,7 +61,7 @@ def initPlay():
     menuItems = []
     currentlySelected = 0
     menuItems.append(MenuItem("Pong", WIDTH/2, HEIGHT/2 - 100, 72.0, gotoPong))
-    menuItems.append(MenuItem("Space Explorer", WIDTH/2, HEIGHT/2, 72.0, gotoHome))
+    menuItems.append(MenuItem("Space Explorer", WIDTH/2, HEIGHT/2, 72.0, gotoSpace))
     menuItems.append(MenuItem("Back", WIDTH/2, HEIGHT/2 + 100, 72.0, gotoHome))
     menuItems[currentlySelected].selected = True
 
@@ -107,5 +110,7 @@ def drawAbout():
     drawMenu()
 
 def drawThanks():
-    text.draw("Special Thanks to Imani, Caitlin, and Tim \n      for being great teammates.", WIDTH, HEIGHT/2, 72.0)
+    text.draw("Special Thanks to Imani, Caitlin, and Tim for being great teammates.", WIDTH/2 + 100, HEIGHT/2 - 100, 48.0)
+    text.draw("Thanks to Robinhood76 on freesound.org for the music,", WIDTH/2 + 100, HEIGHT/2, 48.0)
+    text.draw("Juhani Junkala for the sound effects, and Unlucky studio for the sprites", WIDTH/2 + 100, HEIGHT/2 + 100, 48.0)
     drawMenu()
