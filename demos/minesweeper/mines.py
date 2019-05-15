@@ -13,8 +13,8 @@ from pyzzle import text
 #WIDTH = 800
 #HEIGHT = 800
 SCALE = 2
-BOARDWIDTH = 40
-BOARDHEIGHT = 30
+BOARDWIDTH = 20
+BOARDHEIGHT = 20
 TILESIZE = 16 * SCALE
 HEADERHEIGHT = 64 * SCALE
 PADDING = 6 * SCALE
@@ -276,7 +276,7 @@ def handle_move():
 		cursory = clamp(cursory, -1, BOARDHEIGHT - 1)
 
 def handle_action():
-	global action_paused, first, base_time, display_time, left
+	global action_paused, first, base_time, display_time, left, game_state
 	action = False
 
 	if check_keys([23, 25]):
@@ -307,6 +307,7 @@ def handle_action():
 		first = True
 		display_time = "0"
 		left = MINECOUNT
+		game_state = 0
 
 def update_time():
 	global display_time
