@@ -123,11 +123,35 @@ The animations module has the following functions.
 
 ### Audio
 
-- *TODO*
+```python
+import pyzzle.audio
+```
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```int loadMusic(string filename)``` | The filename of the music file | The index of the music | Loads music that can be played |
+| ```void playMusic(int musicIndex)``` | Index of the music | *None* | Plays the music |
+| ```void pauseMusic(int musicIndex)``` | Index of the music | *None* | Pauses the music |
+| ```void stopMusic(int musicIndex)``` | Index of the music | *None* | Stops the music |
+| ```void loopMusic(int musicIndex)``` | Index of the music | *None* | Tells the music to loop infinitely |
+| ```int loadAudio(string filename)``` | The filename of the music file | Index of the new audio object | Loads audio that can be played |
+| ```void playAudio(int audioIndex)``` | Index of the audio | *None* | Plays the audio |
+| ```void pauseAudio(int audioIndex)``` | Index of the audio | *None* | Pauses the audio |
+| ```void stopAudio(int audioIndex)``` | Index of the audio | *None* | Stops the audio |
 
 ### Collision
 
-- *TODO*
+```python
+import pyzzle.collision
+```
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void addCollisionRect(int index, int left, int top, int width, int height, int scale = 0;)``` | Index of the game object to add collision rects to, left offset of rect, top offset of rect, width of rect, height of rect, scale of rect | *None* | Adds a collision rectangle to the game object |
+| ```void drawCollisionObjects(int object)``` | Index of the game object | *None* | Draws the collision rects to the screen, mostly used for debugging |
+| ```bool contains(int gameObject, float x, float y)``` | Index of the game object, x coordinate to check, y coordinate to check | True or False | Checks if the coordinates are in the game object |
+| ```void collides(int gameObject1, int gameObject2)``` | Index of the first game object, index of the second game object | True or False | Checks if two game objects collide |
+| ```void intersects(int gameObject, float x1, float y1, float x2, float y2)``` | Index of the game object, the start and end coordinates of a line | True or False | Checks if a line intersects with a gameObject |
 
 ### Input
 
@@ -143,7 +167,18 @@ The input module has the following functions.
 
 ### Shapes
 
-- *TODO*
+```python
+import pyzzle.shapes
+```
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void drawCircle(int x, int y, int radius)``` | The x and y coordinates for the circle, the radius of the circle | *None* | Draws a circle |
+| ```void drawRectangle(int x, int y, int w, int h)``` | The x and y coordinates, the width and height | *None* | Draws a rectangle |
+| ```void drawPolygon(int x, int y, int radius, int n)``` | The x and y coordinates, the radius, the number of points in the polygon | *None* | Draws a polygon |
+| ```void setFill()``` | *None* | *None* | Turns fill on for all shapes being drawn |
+| ```void setOutline(int weight = 10)``` | The weight of the outline | *None* | Sets the outline for all shapes being drawn |
+| ```void setColor(int r, int g, int b, int a = 255)``` | The red, green, blue, and alpha values of the color | *None* | Sets the color for all shapes being drawn |
 
 ### Sprites
 
