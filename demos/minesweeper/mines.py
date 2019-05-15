@@ -159,7 +159,8 @@ def reset_board():
 			board[y].append([0, 0])
 
 def clear_board():
-	global board
+	global board, left
+	left = 0
 
 	for y in range(BOARDHEIGHT):
 		for x in range(BOARDWIDTH):
