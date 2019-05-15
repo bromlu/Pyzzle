@@ -123,7 +123,21 @@ The animations module has the following functions.
 
 ### Audio
 
-- *TODO*
+```python
+import pyzzle.audio
+```
+
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void loadMusic(string filename)``` | The filename of the music file | The index of the music | Loads music that can be played |
+| ```void playMusic(int musicIndex)``` | Index of the music | *None* | Plays the music |
+| ```void pauseMusic(int musicIndex)``` | Index of the music | *None* | Pauses the music |
+| ```void stopMusic(int musicIndex)``` | Index of the music | *None* | Stops the music |
+| ```void loopMusic(int musicIndex)``` | Index of the music | *None* | Tells the music to loop infinitely |
+| ```void loadAudio(string filename)``` | The filename of the music file | Index of the new audio object | Loads audio that can be played |
+| ```void playAudio(int audioIndex)``` | Index of the audio | *None* | Plays the audio |
+| ```void pauseAudio(int audioIndex)``` | Index of the audio | *None* | Pauses the audio |
+| ```void stopAudio(int audioIndex)``` | Index of the audio | *None* | Stops the audio |
 
 ### Collision
 
