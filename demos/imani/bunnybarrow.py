@@ -25,7 +25,6 @@ hurtSound = None
 
 mainCharacter = None
 shovelTimer = 0
-# titleCharacter = None
 carrots = []
 rocks = []
 score = 0
@@ -59,9 +58,6 @@ def init():
     menuItems.append(MenuItem("play", WIDTH/2, HEIGHT/2 - 50, 50, gotoGame))
     menuItems[currentlySelected].selected = True
     hurtSound = audio.loadAudio("assets/hurt.wav")
-    # global titleCharacter
-    # titleCharacter = MainCharacter()
-    # game.setGameObjectPosition(titleCharacter.index, 0, 500)
 
 def update():
     global menuItems
@@ -87,18 +83,11 @@ def update():
     if input.isKeyPressed(58): # Enter
         menuItems[currentlySelected].action()
 
-    # TODO: create beginning animation
-    # for i in range(0, 5)
-    #     game.moveGameObject(mainCharacter.index, 5, 0)
-    #     animations.play(mainCharacter.index, mainCharacter.runRight)
-
 
 def draw():
     text.draw("Bunny Barrow!", WIDTH/2, 100.0, 100.0)
     for item in menuItems:
         item.draw()
-    # global titleCharacter
-    # sprite.draw(titleCharacter.index)
 def end_draw():
     global score
     text.draw("score: " + str(score), WIDTH/2, 100.0, 50.0)
@@ -132,8 +121,8 @@ class MainCharacter:
         game.setGameObjectPosition(self.barrow1Index, -64, 720)
        
         collision.addCollisionRect(self.index, 6, 10, 20, 21, 3)
-        collision.addCollisionRect(self.shovelRIndex, 0, 10, 5, 10, 3)
-        collision.addCollisionRect(self.shovelLIndex, 0, 10, 5, 10, 3)
+        collision.addCollisionRect(self.shovelRIndex, 20, 20, 5, 10, 3)
+        collision.addCollisionRect(self.shovelLIndex, 0, 20, 5, 10, 3)
         collision.addCollisionRect(self.barrowIndex, 5, 10, 20, 5, 3)
         collision.addCollisionRect(self.barrow1Index, 5, 10, 20, 5, 3)
         
@@ -266,10 +255,10 @@ def move():
         pos = game.getGameObjectPosition(mainCharacter.index)
         shovelTimer += 1
         if right:
-            game.setGameObjectPosition(mainCharacter.shovelRIndex, pos[0] + 96, pos[1] + 32)
+            game.setGameObjectPosition(mainCharacter.shovelRIndex, pos[0], pos[1])
             animations.play(mainCharacter.shovelRIndex, mainCharacter.digR)
         else:
-            game.setGameObjectPosition(mainCharacter.shovelLIndex, pos[0] - 15, pos[1] + 32)
+            game.setGameObjectPosition(mainCharacter.shovelLIndex, pos[0], pos[1])
             animations.play(mainCharacter.shovelLIndex, mainCharacter.digL)
         dig = True
     else:
