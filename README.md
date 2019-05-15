@@ -167,7 +167,18 @@ The input module has the following functions.
 
 ### Shapes
 
+```python
+import pyzzle.shapes
+```
 
+| Function | Parameters | Returns | Purpose |
+| :------: | :--------: | :-----: | :-----: |
+| ```void drawCircle(int x, int y, int radius)``` | The x and y coordinates for the circle, the radius of the circle | *None* | Draws a circle |
+| ```void drawRectangle(int x, int y, int w, int h)``` | The x and y coordinates, the width and height | *None* | Draws a rectangle |
+| ```void drawPolygon(int x, int y, int radius, int n)``` | The x and y coordinates, the radius, the number of points in the polygon | *None* | Draws a polygon |
+| ```void setFill()``` | *None* | *None* | Turns fill on for all shapes being drawn |
+| ```void setOutline(int weight = 10)``` | The weight of the outline | *None* | Sets the outline for all shapes being drawn |
+| ```void setColor(int r, int g, int b, int a = 255)``` | The red, green, blue, and alpha values of the color | *None* | Sets the color for all shapes being drawn |
 
 ### Sprites
 
